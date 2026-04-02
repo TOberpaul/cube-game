@@ -50,39 +50,52 @@ function createRoundedBoxGeometry(w, h, d, r, seg) {
 // --- Pip layouts (face-local coordinates, fraction of SIZE) ---
 const PIP_LAYOUTS = {
   1: [[0, 0]],
-  2: [[-0.25, 0.25], [0.25, -0.25]],
-  3: [[-0.25, 0.25], [0, 0], [0.25, -0.25]],
-  4: [[-0.25, 0.25], [0.25, 0.25], [-0.25, -0.25], [0.25, -0.25]],
-  5: [[-0.25, 0.25], [0.25, 0.25], [0, 0], [-0.25, -0.25], [0.25, -0.25]],
-  6: [[-0.25, 0.25], [0.25, 0.25], [-0.25, 0], [0.25, 0], [-0.25, -0.25], [0.25, -0.25]],
+  2: [[-0.24, 0.24], [0.24, -0.24]],
+  3: [[-0.24, 0.24], [0, 0], [0.24, -0.24]],
+  4: [[-0.24, 0.24], [0.24, 0.24], [-0.24, -0.24], [0.24, -0.24]],
+  5: [[-0.24, 0.24], [0.24, 0.24], [0, 0], [-0.24, -0.24], [0.24, -0.24]],
+  6: [[-0.24, 0.24], [0.24, 0.24], [-0.24, 0], [0.24, 0], [-0.24, -0.24], [0.24, -0.24]],
 };
 
-// --- Create indented pip (concave sphere cutout) ---
-function createPip(normal, right, up, px, py, pipMat) {
-  // Use a sphere slightly sunk into the face for the indented look
-  const geo = new THREE.SphereGeometry(PIP_RADIUS, PIP_SEGMENTS, PIP_SEGMENTS, 0, Math.PI * 2, 0, Math.PI / 2);
-  // Rotate hemisphere to face inward (concave)
-  const pip = new THREE.Mesh(geo, pipMat);
+// --- Create a single pip as a cylinder disc embedded in the face ---
+function createPipMesh(pipMat) {
+  // Thin cylinder oriented along +Y by default
+  const geo = new THREE.CylinderGeometry(PIP_RADIUS, PIP_RADIUS, PIP_DEPTH, PIP_SEGMENTS);
+  const mesh = new THREE.Mesh(geo, pipMat);
+  mesh.castShadow = false;
+  mesh.receiveShadow = true;
+  return mesh;
+}
 
-  const surfaceOffset = SIZE / 2 - PIP_DEPTH * 0.3;
-  pip.position.copy(normal.clone().multiplyScalar(surfaceOffset));
-  pip.position.add(right.clone().multiplyScalar(px * SIZE));
-  pip.position.add(up.clone().multiplyScalar(py * SIZE));
+// --- Position and orient a pip on a face ---
+function placePip(pip, normal, right, up, px, py) {
+  // Place the pip so it's half-embedded in the face surface
+  // The cylinder's axis is along local Y, we need to rotate it to align with the face normal
+  const halfSurface = SIZE / 2;
+  // Position: on the face surface, sunk in by half the pip depth
+  const offset = halfSurface - PIP_DEPTH * 0.4;
 
-  // Orient: look along the inward normal
-  const inward = normal.clone().negate();
-  pip.lookAt(pip.position.clone().add(inward));
+  pip.position.set(0, 0, 0);
+  pip.position.addScaledVector(normal, offset);
+  pip.position.addScaledVector(right, px * SIZE);
+  pip.position.addScaledVector(up, py * SIZE);
 
-  pip.castShadow = false;
-  pip.receiveShadow = true;
-  return pip;
+  // Orient: cylinder Y-axis should align with face normal
+  // Default cylinder axis is Y, so we need to rotate from Y to the face normal
+  const yAxis = new THREE.Vector3(0, 1, 0);
+  const quat = new THREE.Quaternion().setFromUnitVectors(yAxis, normal);
+  pip.quaternion.copy(quat);
 }
 
 // --- Create all pips for one face ---
 function createFacePips(value, normal, up, pipMat) {
   const right = new THREE.Vector3().crossVectors(up, normal).normalize();
   const positions = PIP_LAYOUTS[value];
-  return positions.map(([px, py]) => createPip(normal, right, up, px, py, pipMat));
+  return positions.map(([px, py]) => {
+    const pip = createPipMesh(pipMat);
+    placePip(pip, normal, right, up, px, py);
+    return pip;
+  });
 }
 
 // --- Create a single die mesh group ---
@@ -106,12 +119,11 @@ function createDieMesh(isDark) {
   body.receiveShadow = true;
   group.add(body);
 
-  // Pip material: dark, slightly recessed look
+  // Pip material: dark circles sunk into the surface
   const pipMat = new THREE.MeshStandardMaterial({
-    color: isDark ? 0xd0d0d4 : 0x2a2a2e,
-    roughness: 0.8,
+    color: isDark ? 0xc0c0c4 : 0x1a1a1e,
+    roughness: 0.9,
     metalness: 0.0,
-    side: THREE.DoubleSide,
   });
 
   // Face definitions: value → normal, up

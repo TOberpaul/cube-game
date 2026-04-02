@@ -12,6 +12,7 @@ vi.mock('three', () => {
     crossVectors(a, b) { return this; }
     normalize() { return this; }
     negate() { this.x = -this.x; this.y = -this.y; this.z = -this.z; return this; }
+    addScaledVector(v, s) { this.x += v.x * s; this.y += v.y * s; this.z += v.z * s; return this; }
     copy(v) { this.x = v.x; this.y = v.y; this.z = v.z; return this; }
     set(x, y, z) { this.x = x; this.y = y; this.z = z; return this; }
     fromBufferAttribute() { return this; }
@@ -33,7 +34,7 @@ vi.mock('three', () => {
   class MockMaterial { dispose() {} constructor() { this.color = { getHex: () => 0, setHex() {} }; this.emissive = { setHex() {} }; this.emissiveIntensity = 0; this.side = 0; } }
   class PhysicalMaterial extends MockMaterial { constructor(opts) { super(); if (opts?.sheenColor) this.sheenColor = opts.sheenColor; } }
   class Mesh {
-    constructor() { this.position = new Vector3(); this.rotation = new Vector3(); this.scale = new Vector3(1,1,1); this.castShadow = false; this.receiveShadow = false; this.userData = {}; this.parent = null; this.children = []; }
+    constructor() { this.position = new Vector3(); this.rotation = new Vector3(); this.scale = new Vector3(1,1,1); this.castShadow = false; this.receiveShadow = false; this.userData = {}; this.parent = null; this.children = []; this.quaternion = { copy() { return this; }, setFromUnitVectors() { return this; } }; }
     lookAt() {}
   }
   class Group {
@@ -60,10 +61,11 @@ vi.mock('three', () => {
   class Raycaster { setFromCamera() {} intersectObjects() { return []; } }
   return {
     Scene, PerspectiveCamera, WebGLRenderer, Mesh, Group, Vector3,
-    BoxGeometry: MockGeometry, CylinderGeometry: MockGeometry, PlaneGeometry: MockGeometry, SphereGeometry: MockGeometry,
+    BoxGeometry: MockGeometry, CylinderGeometry: MockGeometry, PlaneGeometry: MockGeometry,
     MeshStandardMaterial: MockMaterial, MeshPhysicalMaterial: PhysicalMaterial, ShadowMaterial: MockMaterial,
     AmbientLight: Light, DirectionalLight: Light,
     Raycaster, Vector2: Vector3,
+    Quaternion: class { copy() { return this; } setFromUnitVectors() { return this; } },
     PCFSoftShadowMap: 0, ACESFilmicToneMapping: 0,
     Color: class { constructor() {} },
     DoubleSide: 2,
