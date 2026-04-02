@@ -4,16 +4,18 @@
 import * as THREE from 'three';
 
 /**
- * Rotation targets to show each die value (1–6).
- * Standard die: 1 opposite 6, 2 opposite 5, 3 opposite 4.
+ * Rotation targets to show each die value (1–6) facing UP toward the camera.
+ * Face layout: 1=+Z, 2=+Y, 3=-X, 4=+X, 5=-Y, 6=-Z
+ * Camera looks from above-front, so the top face (+Y) is most visible.
+ * We rotate so the desired value faces +Y (up).
  */
 const VALUE_ROTATIONS = {
-  1: { x: 0, y: 0, z: 0 },
-  2: { x: -Math.PI / 2, y: 0, z: 0 },
-  3: { x: 0, y: Math.PI / 2, z: 0 },
-  4: { x: 0, y: -Math.PI / 2, z: 0 },
-  5: { x: Math.PI / 2, y: 0, z: 0 },
-  6: { x: Math.PI, y: 0, z: 0 },
+  1: { x: -Math.PI / 2, y: 0, z: 0 },   // rotate 1 (front +Z) up to +Y
+  2: { x: 0, y: 0, z: 0 },               // 2 is already on +Y (top)
+  3: { x: 0, y: 0, z: -Math.PI / 2 },    // rotate 3 (-X) up to +Y
+  4: { x: 0, y: 0, z: Math.PI / 2 },     // rotate 4 (+X) up to +Y
+  5: { x: Math.PI, y: 0, z: 0 },          // rotate 5 (-Y) up to +Y (flip)
+  6: { x: Math.PI / 2, y: 0, z: 0 },     // rotate 6 (-Z) up to +Y
 };
 
 const DIE_SIZE = 1;

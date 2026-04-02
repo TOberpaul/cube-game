@@ -192,7 +192,7 @@ const kniffelScoring = {
     const options = [];
 
     for (const cat of ALL_CATEGORIES) {
-      if (sheet.categories[cat] === null) {
+      if (sheet.categories[cat] == null) {
         options.push({
           id: cat,
           name: CATEGORY_NAMES[cat],
@@ -247,7 +247,8 @@ const kniffelScoring = {
       const sheet = state.scores[player.id];
       if (!sheet) return false;
       for (const cat of ALL_CATEGORIES) {
-        if (sheet.categories[cat] === null) return false;
+        // Check for null OR undefined (key might not exist in categories)
+        if (sheet.categories[cat] == null) return false;
       }
     }
     return true;
