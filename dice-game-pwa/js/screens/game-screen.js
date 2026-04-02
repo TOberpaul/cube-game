@@ -70,7 +70,7 @@ export function createGameScreen() {
         engine.startGame('free-roll', [{ id: 'player-1', name: t('scoreboard.player') + ' 1' }]);
       }
 
-      buildUI();
+      await buildUI();
       bindEngineEvents();
       bindKeyboard();
       updateUI();
@@ -96,7 +96,7 @@ export function createGameScreen() {
   /**
    * Builds the game screen DOM structure.
    */
-  function buildUI() {
+  async function buildUI() {
     if (!container) return;
     container.innerHTML = '';
 
@@ -151,7 +151,7 @@ export function createGameScreen() {
 
     // Initialize dice renderer
     renderer = createDiceRenderer();
-    renderer.create(diceArea, mode.diceCount);
+    await renderer.create(diceArea, mode.diceCount);
 
     // Initialize scoreboard
     scoreboard = createScoreboard();

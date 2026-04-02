@@ -32,7 +32,8 @@ const ASSETS_TO_CACHE = [
   './js/screens/lobby-screen.js',
   './js/screens/game-screen.js',
   './js/screens/result-screen.js',
-  './locales/de.json'
+  './locales/de.json',
+  './assets/dice.glb'
 ];
 
 // Install — cache all assets

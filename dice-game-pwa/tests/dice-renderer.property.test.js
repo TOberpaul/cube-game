@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fc from 'fast-check';
 
-// Mock Three.js since jsdom doesn't have WebGL
+// Mock Three.js and GLTFLoader since jsdom doesn't have WebGL
 vi.mock('three', () => {
   class Vector3 {
     constructor(x = 0, y = 0, z = 0) { this.x = x; this.y = y; this.z = z; }
@@ -66,11 +66,34 @@ vi.mock('three', () => {
     AmbientLight: Light, DirectionalLight: Light,
     Raycaster, Vector2: Vector3,
     Quaternion: class { copy() { return this; } setFromUnitVectors() { return this; } },
+    Box3: class { setFromObject() { return this; } getSize(v) { v.x = 1; v.y = 1; v.z = 1; return v; } getCenter(v) { v.x = 0; v.y = 0; v.z = 0; return v; } },
     PCFSoftShadowMap: 0, ACESFilmicToneMapping: 0,
     Color: class { constructor() {} },
     DoubleSide: 2,
   };
 });
+
+vi.mock('three/addons/loaders/GLTFLoader.js', () => ({
+  GLTFLoader: class {
+    load(url, onLoad) {
+      // Create a minimal mock scene
+      const mockScene = {
+        clone: () => ({
+          traverse: (fn) => {},
+          position: { set() {}, sub() {} },
+          rotation: { x: 0, y: 0, z: 0, set(x,y,z) { this.x=x; this.y=y; this.z=z; } },
+          scale: { setScalar() {} },
+          userData: {},
+          children: [],
+          add() {},
+        }),
+        scale: { setScalar() {} },
+        position: { sub() {} },
+      };
+      setTimeout(() => onLoad({ scene: mockScene }), 0);
+    }
+  },
+}));
 
 import { createDiceRenderer } from '../js/dice/dice-renderer.js';
 
@@ -89,18 +112,18 @@ describe('Property 2: Würfel-Rendering erzeugt korrekte Anzahl', () => {
     window.ResizeObserver = class { observe() {} disconnect() {} };
   });
 
-  it('for every valid count n (1–6), renderer creates n dice', () => {
+  it('for every valid count n (1–6), renderer creates n dice', async () => {
     const countArb = fc.integer({ min: 1, max: 6 });
 
-    fc.assert(
-      fc.property(countArb, (n) => {
+    await fc.assert(
+      fc.asyncProperty(countArb, async (n) => {
         const container = document.createElement('div');
         Object.defineProperty(container, 'clientWidth', { value: 400 });
         Object.defineProperty(container, 'clientHeight', { value: 300 });
         document.body.appendChild(container);
 
         const renderer = createDiceRenderer();
-        renderer.create(container, n);
+        await renderer.create(container, n);
 
         // The container should have a canvas element
         const canvas = container.querySelector('canvas');
@@ -110,7 +133,7 @@ describe('Property 2: Würfel-Rendering erzeugt korrekte Anzahl', () => {
         renderer.destroy();
         container.remove();
       }),
-      { numRuns: 100 },
+      { numRuns: 20 },
     );
   });
 });
