@@ -1,0 +1,35 @@
+/* ========================================
+   TABS
+   Usage:
+   <nav class="tabs" role="tablist">
+     <button class="adaptive list__item list__item--active" data-material="transparent" data-interactive role="tab" aria-selected="true">Tab 1</button>
+     <button class="adaptive list__item" data-material="transparent" data-interactive role="tab">Tab 2</button>
+     <button class="adaptive list__item" data-material="transparent" data-interactive role="tab">Tab 3</button>
+   </nav>
+   <div class="tabs__panel" role="tabpanel">Content</div>
+   ======================================== */
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: var(--size-1) solid var(--db-border);
+  padding: 0;
+}
+
+.tabs > .list__item {
+  justify-content: center;
+  font-family: inherit;
+}
+
+.tabs > .list__item--active::after {
+  top: auto;
+  bottom: 0;
+  left: var(--size-padding-min);
+  right: var(--size-padding-min);
+  width: auto;
+  height: var(--size-padding-min);
+}
+
+.tabs__panel {
+  padding: var(--layout-spacing);
+}

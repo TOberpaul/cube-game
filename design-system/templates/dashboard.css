@@ -1,0 +1,80 @@
+/* ========================================
+   DASHBOARD TEMPLATE
+   Usage:
+   <body class="adaptive page">
+     <header class="adaptive header" data-material="filled">...</header>
+     <div class="dashboard">
+       <aside class="adaptive sidebar" data-material="filled-2">...</aside>
+       <main class="dashboard__content page__main">
+         <div class="dashboard__top">
+           <h1 class="adaptive headline" data-level="3">Dashboard</h1>
+           <div class="dashboard__actions">
+             <button class="adaptive button" data-interactive data-material="origin" data-color="action">Export</button>
+           </div>
+         </div>
+         <div class="stats-row">...</div>
+         <div class="dashboard__grid">
+           <article class="adaptive card" data-material="filled">
+             <div class="card__content">Chart / Table / Content</div>
+           </article>
+         </div>
+       </main>
+     </div>
+   </body>
+   ======================================== */
+
+.dashboard {
+  display: flex;
+  flex: 1;
+}
+
+.dashboard__content {
+  flex: 1;
+  padding: var(--layout-spacing);
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-spacing);
+  overflow-y: auto;
+}
+
+.dashboard__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--layout-spacing);
+}
+
+.dashboard__actions {
+  display: flex;
+  gap: var(--layout-spacing-min);
+}
+
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--size-384), 1fr));
+  gap: var(--layout-spacing-min);
+}
+
+@media (max-width: 48rem) {
+  .dashboard {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: var(--size-1) solid var(--db-border);
+  }
+  .sidebar__nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .sidebar .list__item--active::after {
+    top: auto;
+    bottom: 0;
+    left: var(--size-padding-min);
+    right: var(--size-padding-min);
+    width: auto;
+    height: var(--size-padding-min);
+  }
+}

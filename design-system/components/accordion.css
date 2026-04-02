@@ -1,0 +1,57 @@
+/* ========================================
+   ACCORDION
+   Usage:
+   <details class="adaptive accordion" data-material="filled" data-interactive>
+     <summary class="accordion__header">
+       <span class="accordion__title">Title</span>
+       <span class="accordion__icon">
+         <!-- Lucide chevron-down -->
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+       </span>
+     </summary>
+     <div class="accordion__body" onclick="event.stopPropagation()">
+       <p class="adaptive text">Content</p>
+     </div>
+   </details>
+   ======================================== */
+
+.accordion {
+  overflow: hidden;
+}
+
+.accordion__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-gap-max);
+  padding: var(--layout-spacing-min) var(--layout-spacing);
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+.accordion__header::-webkit-details-marker {
+  display: none;
+}
+
+.accordion__icon {
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.accordion__icon svg {
+  width: var(--size-icon);
+  height: var(--size-icon);
+  fill: none;
+  stroke: currentColor;
+}
+
+.accordion[open] .accordion__icon {
+  transform: rotate(180deg);
+}
+
+.accordion__body {
+  padding: 0 var(--layout-spacing) var(--layout-spacing);
+}

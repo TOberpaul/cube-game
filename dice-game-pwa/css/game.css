@@ -1,0 +1,423 @@
+/* ========================================
+   Game Screen & Scoreboard Styles
+   Validates: Requirements 1.3, 1.4, 1.5, 9.4, 9.5, 10.4
+   ======================================== */
+
+/* --- Game Screen Layout --- */
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  color: var(--theme-neutral-14, #fff);
+}
+
+.game-screen__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--theme-neutral-3, #2E3036);
+}
+
+.game-screen__player-info {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--theme-neutral-14, #fff);
+  margin: 0;
+}
+
+.game-screen__rolls-info {
+  font-size: 0.875rem;
+  color: var(--theme-neutral-8, #8A919E);
+  margin: 0;
+}
+
+/* --- Dice Area --- */
+.game-screen__dice-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 280px;
+  min-height: 200px;
+  max-height: 400px;
+  position: relative;
+}
+
+.game-screen__dice-area canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+/* --- Roll Button --- */
+.game-screen__roll-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  min-width: 44px;
+  padding: 0.875rem 2rem;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+  background: var(--theme-neutral-14, #fff);
+  color: var(--theme-neutral-0, #0D0E11);
+  align-self: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.game-screen__roll-btn:hover:not(:disabled) {
+  background: var(--theme-neutral-12, #EDEEF0);
+}
+
+.game-screen__roll-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.game-screen__roll-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.game-screen__roll-btn:focus-visible {
+  outline: 2px solid var(--theme-blue-7, #1D6FF7);
+  outline-offset: 2px;
+}
+
+/* --- Scoreboard --- */
+.game-screen__scoreboard {
+  flex: 1;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scoreboard {
+  width: 100%;
+}
+
+.scoreboard__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--theme-neutral-14, #fff);
+}
+
+.scoreboard__round {
+  font-size: 0.8125rem;
+  color: var(--theme-neutral-8, #8A919E);
+  margin: 0 0 0.75rem;
+}
+
+/* --- Simple Scoreboard (free-roll) --- */
+.scoreboard__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.scoreboard__player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 0.75rem;
+  border-radius: 10px;
+  background: var(--theme-neutral-2, #222428);
+  transition: background-color 0.15s ease;
+}
+
+.scoreboard__player--active {
+  background: var(--theme-neutral-3, #2E3036);
+  box-shadow: inset 0 0 0 1px var(--theme-neutral-5, #484B53);
+}
+
+.scoreboard__player-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--theme-neutral-14, #fff);
+}
+
+.scoreboard__player-score {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-neutral-14, #fff);
+}
+
+/* --- Kniffel Scoreboard Table --- */
+.scoreboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.scoreboard__table th,
+.scoreboard__table td {
+  padding: 0.5rem 0.625rem;
+  text-align: center;
+  border-bottom: 1px solid var(--theme-neutral-2, #222428);
+}
+
+.scoreboard__table th {
+  font-weight: 500;
+  color: var(--theme-neutral-8, #8A919E);
+}
+
+.scoreboard__category {
+  text-align: left;
+  font-weight: 500;
+  color: var(--theme-neutral-10, #C3C7CE);
+  white-space: nowrap;
+}
+
+.scoreboard__player-header {
+  font-weight: 600;
+  color: var(--theme-neutral-14, #fff);
+  font-size: 0.8125rem;
+}
+
+.scoreboard__player--active {
+  color: var(--theme-blue-8, #638BFA);
+}
+
+.scoreboard__cell {
+  color: var(--theme-neutral-8, #8A919E);
+}
+
+.scoreboard__cell--filled {
+  color: var(--theme-neutral-14, #fff);
+  font-weight: 600;
+}
+
+.scoreboard__cell--available {
+  padding: 0.25rem;
+}
+
+.scoreboard__cell--empty {
+  color: var(--theme-neutral-5, #484B53);
+}
+
+/* --- Scoreboard Select Button --- */
+.scoreboard__select-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--theme-neutral-4, #3B3E44);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--theme-blue-8, #638BFA);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.scoreboard__select-btn:hover {
+  background: var(--theme-neutral-2, #222428);
+  border-color: var(--theme-blue-8, #638BFA);
+}
+
+.scoreboard__select-btn:focus-visible {
+  outline: 2px solid var(--theme-blue-7, #1D6FF7);
+  outline-offset: 1px;
+}
+
+.scoreboard__select-btn--selected {
+  background: var(--theme-blue-8, #638BFA);
+  color: #fff;
+  border-color: var(--theme-blue-8, #638BFA);
+  transform: scale(1.1);
+  transition: all 0.15s ease;
+}
+
+/* --- Special Rows --- */
+.scoreboard__row--bonus .scoreboard__category,
+.scoreboard__row--section .scoreboard__category {
+  font-style: italic;
+  color: var(--theme-neutral-7, #727782);
+}
+
+.scoreboard__row--section {
+  border-top: 2px solid var(--theme-neutral-3, #2E3036);
+}
+
+.scoreboard__row--section td {
+  font-weight: 600;
+  color: var(--theme-neutral-10, #C3C7CE);
+}
+
+.scoreboard__row--total {
+  border-top: 2px solid var(--theme-neutral-5, #484B53);
+}
+
+.scoreboard__row--total th,
+.scoreboard__row--total td {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  padding-top: 0.75rem;
+}
+
+.scoreboard__cell--total {
+  color: var(--theme-neutral-14, #fff);
+}
+
+.scoreboard__category--total {
+  color: var(--theme-neutral-14, #fff);
+}
+
+/* --- Light Mode Override --- */
+@media (prefers-color-scheme: light) {
+  .game-screen {
+    color: var(--theme-neutral-0, #0D0E11);
+  }
+
+  .game-screen__player-info {
+    color: var(--theme-neutral-0, #0D0E11);
+  }
+
+  .game-screen__rolls-info {
+    color: var(--theme-neutral-6, #5A5E68);
+  }
+
+  .game-screen__header {
+    border-bottom-color: var(--theme-neutral-11, #E1E2E6);
+  }
+
+  .game-screen__roll-btn {
+    background: var(--theme-neutral-0, #0D0E11);
+    color: var(--theme-neutral-14, #fff);
+  }
+
+  .game-screen__roll-btn:hover:not(:disabled) {
+    background: var(--theme-neutral-2, #222428);
+  }
+
+  .scoreboard__title,
+  .scoreboard__player-name,
+  .scoreboard__player-score,
+  .scoreboard__cell--filled,
+  .scoreboard__cell--total,
+  .scoreboard__category--total,
+  .scoreboard__player-header {
+    color: var(--theme-neutral-0, #0D0E11);
+  }
+
+  .scoreboard__player {
+    background: var(--theme-neutral-13, #F3F3F5);
+  }
+
+  .scoreboard__player--active {
+    background: var(--theme-neutral-12, #EDEEF0);
+    box-shadow: inset 0 0 0 1px var(--theme-neutral-10, #C3C7CE);
+  }
+
+  .scoreboard__table th,
+  .scoreboard__table td {
+    border-bottom-color: var(--theme-neutral-12, #EDEEF0);
+  }
+
+  .scoreboard__row--section {
+    border-top-color: var(--theme-neutral-11, #E1E2E6);
+  }
+
+  .scoreboard__row--total {
+    border-top-color: var(--theme-neutral-9, #A6ABB6);
+  }
+
+  .scoreboard__select-btn {
+    border-color: var(--theme-neutral-10, #C3C7CE);
+    color: var(--theme-blue-6, #1558C6);
+  }
+
+  .scoreboard__select-btn:hover {
+    background: var(--theme-neutral-13, #F3F3F5);
+    border-color: var(--theme-blue-6, #1558C6);
+  }
+}
+
+/* --- Responsive --- */
+@media (min-width: 480px) {
+  .game-screen {
+    padding: 1.5rem;
+    gap: 2rem;
+  }
+
+  .game-screen__dice-area {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .game-screen {
+    padding: 2rem;
+  }
+
+  .game-screen__roll-btn {
+    max-width: 280px;
+  }
+
+  .scoreboard__table {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .game-screen {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .game-screen__header {
+    width: 100%;
+  }
+
+  .game-screen__dice-area {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .game-screen__roll-btn {
+    flex: 0 0 auto;
+    width: auto;
+    align-self: center;
+  }
+
+  .game-screen__scoreboard {
+    width: 100%;
+  }
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .game-screen__roll-btn {
+    transition: none;
+  }
+
+  .scoreboard__player,
+  .scoreboard__select-btn {
+    transition: none;
+  }
+}

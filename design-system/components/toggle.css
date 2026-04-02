@@ -1,0 +1,59 @@
+/* ========================================
+   TOGGLE
+   Usage:
+   <label class="adaptive toggle" data-interactive>
+     <input class="toggle__input" type="checkbox" />
+     <span class="adaptive toggle__track" data-material="filled-2"></span>
+     <span class="toggle__label">Label</span>
+   </label>
+   ======================================== */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-gap-max);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.toggle__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle__track {
+  position: relative;
+  width: calc(var(--size-container) * 1.5);
+  height: var(--size-icon);
+  border-radius: var(--size-border-radius-full);
+  padding: 0;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle__track::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--size-padding-min);
+  transform: translateY(-50%);
+  width: calc(var(--size-container) - 2 * var(--size-padding-min));
+  height: calc(var(--size-container) - 2 * var(--size-padding-min));
+  border-radius: var(--size-border-radius-full);
+  background: var(--db-border);
+  transition: left 0.2s, background 0.2s;
+}
+
+.toggle__input:checked ~ .toggle__track {
+  background: var(--data-mode-1);
+  border-color: var(--data-mode-1);
+}
+
+.toggle__input:checked ~ .toggle__track::after {
+  left: calc(100% - var(--size-container) + var(--size-padding-min));
+  background: var(--data-mode-14);
+}

@@ -1,0 +1,37 @@
+/* ========================================
+   LINK
+   Usage:
+   <a class="adaptive link" href="#">Link text</a>
+   <a class="adaptive link" href="#" data-color="action">Action link</a>
+   ======================================== */
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: underline;
+  text-underline-offset: 0.125rem;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.link:hover {
+  text-decoration-thickness: 0.125rem;
+}
+
+.link svg,
+.link .icon {
+  width: var(--size-icon);
+  height: var(--size-icon);
+  color: var(--db-visual);
+  fill: currentColor;
+  stroke: none;
+  flex-shrink: 0;
+}
+
+.link svg[fill="none"],
+.link .icon[fill="none"] {
+  fill: none;
+  stroke: currentColor;
+}

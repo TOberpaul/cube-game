@@ -1,0 +1,47 @@
+/* ========================================
+   BUTTON
+   Usage:
+   <button class="adaptive button" data-interactive>Label</button>
+   <button class="adaptive button" data-interactive data-material="origin" data-color="action">Primary</button>
+   <button class="adaptive button" data-interactive data-material="filled">Secondary</button>
+   <button class="adaptive button" data-interactive data-material="transparent">Ghost</button>
+   <button class="adaptive button button--icon-only" data-interactive><svg>...</svg></button>
+   <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-relation="smaller">Small</button>
+   ======================================== */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--size-padding);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.button svg,
+.button .icon {
+  width: var(--size-icon);
+  height: var(--size-icon);
+  color: var(--db-visual);
+  fill: currentColor;
+  stroke: none;
+  flex-shrink: 0;
+}
+
+.button svg[fill="none"],
+.button .icon[fill="none"] {
+  fill: none;
+  stroke: currentColor;
+}
+
+.button--icon-only {
+  padding: 0;
+  width: var(--size-container);
+}
+
+.button--full-width {
+  width: 100%;
+}

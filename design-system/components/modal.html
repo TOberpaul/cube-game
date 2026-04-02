@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modal – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="modal.css" />
+  <link rel="stylesheet" href="button.css" />
+  <link rel="stylesheet" href="headline.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <!-- Static preview (open attribute for demo) -->
+  <dialog class="adaptive modal" data-material="filled" open>
+    <div class="modal__header">
+      <h3 class="adaptive headline" data-level="4">Confirm Action</h3>
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent">✕</button>
+    </div>
+    <div class="modal__body">
+      <p class="adaptive text">Are you sure you want to proceed? This action cannot be undone.</p>
+    </div>
+    <div class="modal__footer">
+      <button class="adaptive button" data-interactive data-material="transparent">Cancel</button>
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action">Confirm</button>
+    </div>
+  </dialog>
+
+</body>
+</html>

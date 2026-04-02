@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accordion – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="accordion.css" />
+  <link rel="stylesheet" href="headline.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; max-width: 40rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <details class="adaptive accordion" data-material="filled" data-interactive>
+    <summary class="accordion__header">
+      <span class="accordion__title">What is the Design System?</span>
+      <span class="accordion__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+    <div class="accordion__body" onclick="event.stopPropagation()">
+      <p class="adaptive text">A pure CSS design system using data attributes for color, material, size, and emphasis.</p>
+    </div>
+  </details>
+
+  <details class="adaptive accordion" data-material="filled" data-interactive>
+    <summary class="accordion__header">
+      <span class="accordion__title">How does .adaptive work?</span>
+      <span class="accordion__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+    <div class="accordion__body" onclick="event.stopPropagation()">
+      <p class="adaptive text">.adaptive is the base class that provides default padding, border-radius, font-size, background, color, border, line-height, and gap.</p>
+    </div>
+  </details>
+
+  <details class="adaptive accordion" data-material="filled" data-interactive open>
+    <summary class="accordion__header">
+      <span class="accordion__title">Open by default</span>
+      <span class="accordion__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </summary>
+    <div class="accordion__body" onclick="event.stopPropagation()">
+      <p class="adaptive text">This accordion starts open via the <code>open</code> attribute.</p>
+    </div>
+  </details>
+
+</body>
+</html>

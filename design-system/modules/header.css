@@ -1,0 +1,108 @@
+/* ========================================
+   HEADER / NAVIGATION
+   Usage:
+   <header class="adaptive header" data-material="filled">
+   or for contained width (e.g. landing pages):
+   <header class="adaptive header header--contained" data-material="filled">
+     <div class="header__inner">
+       <a class="header__logo" href="/" aria-label="Home">
+         <svg>...</svg>
+         <span class="header__brand">Brand</span>
+       </a>
+       <nav class="header__nav" aria-label="Main navigation">
+         <a class="adaptive link header__nav-item" href="#">Features</a>
+         <a class="adaptive link header__nav-item" href="#">Pricing</a>
+         <a class="adaptive link header__nav-item" href="#">About</a>
+       </nav>
+       <div class="header__actions">
+         <button class="adaptive button" data-interactive data-material="transparent">Login</button>
+         <button class="adaptive button" data-interactive data-material="origin" data-color="action">Sign Up</button>
+       </div>
+       <button class="adaptive button button--icon-only header__menu-toggle" data-interactive data-material="transparent" aria-label="Menu">☰</button>
+     </div>
+   </header>
+   ======================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: var(--size-1) solid var(--db-border);
+  background: var(--db-background);
+  color: var(--db-text);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--layout-spacing);
+  padding: 0 var(--layout-spacing);
+  height: calc(var(--size-container) * 2);
+  margin: 0 auto;
+}
+
+.header--contained .header__inner {
+  max-width: var(--size-1280);
+}
+
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--size-gap-max);
+  text-decoration: none;
+  color: var(--db-text);
+  flex-shrink: 0;
+}
+
+.header__logo svg {
+  width: var(--size-container);
+  height: var(--size-container);
+  fill: none;
+  stroke: currentColor;
+  color: var(--db-visual);
+}
+
+.header__brand {
+  font-size: var(--h6-size);
+  line-height: var(--h6-line-height);
+  font-weight: 700;
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--layout-spacing-min);
+  flex: 1;
+}
+
+.header__nav-item {
+  text-decoration: none;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.header__nav-item:hover {
+  opacity: 1;
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--size-gap-max);
+  flex-shrink: 0;
+}
+
+.header__menu-toggle {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .header__nav,
+  .header__actions {
+    display: none;
+  }
+  .header__menu-toggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+}

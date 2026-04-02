@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Progress & Loader – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="progress.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; max-width: 32rem; }
+    .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Progress Bar</h2>
+  <div class="adaptive progress" data-material="filled-2">
+    <div class="adaptive progress__bar" data-material="origin" data-color="action" style="width: 25%"></div>
+  </div>
+  <div class="adaptive progress" data-material="filled-2">
+    <div class="adaptive progress__bar" data-material="origin" data-color="action" style="width: 60%"></div>
+  </div>
+  <div class="adaptive progress" data-material="filled-2">
+    <div class="adaptive progress__bar" data-material="origin" data-color="green" style="width: 100%"></div>
+  </div>
+
+  <h2 class="adaptive">Loader / Spinner</h2>
+  <div class="demo-row">
+    <span class="adaptive loader" data-color="action"></span>
+    <span class="adaptive loader" data-color="brand"></span>
+    <span class="adaptive loader" data-color="green"></span>
+  </div>
+
+</body>
+</html>

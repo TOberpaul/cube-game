@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Page – Template Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <!-- Components -->
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/headline.css" />
+  <link rel="stylesheet" href="../components/link.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/select.css" />
+  <link rel="stylesheet" href="../components/textarea.css" />
+  <link rel="stylesheet" href="../components/divider.css" />
+  <link rel="stylesheet" href="../components/section.css" />
+  <!-- Modules -->
+  <link rel="stylesheet" href="../modules/header.css" />
+  <link rel="stylesheet" href="../modules/footer.css" />
+  <link rel="stylesheet" href="../modules/form-section.css" />
+  <!-- Template -->
+  <link rel="stylesheet" href="page.css" />
+  <link rel="stylesheet" href="form-page.css" />
+</head>
+<body class="adaptive page" data-color="neutral">
+
+  <!-- HEADER -->
+  <header class="adaptive header" data-material="filled">
+    <div class="header__inner">
+      <a class="header__logo" href="/" aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span class="header__brand">Platform</span>
+      </a>
+      <nav class="header__nav" aria-label="Main navigation">
+        <a class="adaptive link header__nav-item" href="#">Features</a>
+        <a class="adaptive link header__nav-item" href="#">Pricing</a>
+        <a class="adaptive link header__nav-item" href="#">About</a>
+      </nav>
+      <div class="header__actions">
+        <button class="adaptive button" data-interactive data-material="transparent">Login</button>
+        <button class="adaptive button" data-interactive data-material="origin" data-color="action">Sign Up</button>
+      </div>
+      <button class="adaptive button button--icon-only header__menu-toggle" data-interactive data-material="transparent" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main class="page__main">
+    <section class="adaptive section">
+      <div class="section__inner">
+        <div class="form-page">
+          <div class="form-page__header">
+            <h1 class="adaptive headline" data-level="2">Contact Us</h1>
+            <p class="adaptive text" data-emphasis="weak">Fill out the form below and we'll get back to you within 24 hours.</p>
+          </div>
+          <form class="form-section">
+            <div class="form-section__row">
+              <label class="adaptive input">
+                <span class="adaptive input__label" data-relation="smaller-3">First Name</span>
+                <input class="adaptive input__field" type="text" placeholder="Jane" data-material="filled-2" data-interactive />
+              </label>
+              <label class="adaptive input">
+                <span class="adaptive input__label" data-relation="smaller-3">Last Name</span>
+                <input class="adaptive input__field" type="text" placeholder="Doe" data-material="filled-2" data-interactive />
+              </label>
+            </div>
+            <label class="adaptive input">
+              <span class="adaptive input__label" data-relation="smaller-3">Email</span>
+              <input class="adaptive input__field" type="email" placeholder="jane@example.com" data-material="filled-2" data-interactive />
+            </label>
+            <label class="adaptive input">
+              <span class="adaptive input__label" data-relation="smaller-3">Subject</span>
+              <select class="adaptive select" data-material="filled-2" data-interactive>
+                <option>General Inquiry</option>
+                <option>Support</option>
+                <option>Sales</option>
+                <option>Partnership</option>
+              </select>
+            </label>
+            <label class="adaptive input">
+              <span class="adaptive input__label" data-relation="smaller-3">Message</span>
+              <textarea class="adaptive textarea" data-material="filled-2" data-interactive placeholder="How can we help?"></textarea>
+            </label>
+            <div class="form-section__actions">
+              <button class="adaptive button" data-interactive data-material="origin" data-color="action">Send Message</button>
+              <button class="adaptive button" data-interactive data-material="transparent">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="adaptive footer" data-material="inverted" data-container-contrast="max">
+    <div class="footer__inner">
+      <div class="footer__columns">
+        <div class="footer__column">
+          <h4 class="adaptive headline footer__heading" data-level="6">Company</h4>
+          <nav class="footer__links">
+            <a class="adaptive link" href="#">About</a>
+            <a class="adaptive link" href="#">Careers</a>
+          </nav>
+        </div>
+        <div class="footer__column">
+          <h4 class="adaptive headline footer__heading" data-level="6">Support</h4>
+          <nav class="footer__links">
+            <a class="adaptive link" href="#">Help Center</a>
+            <a class="adaptive link" href="#">Contact</a>
+          </nav>
+        </div>
+      </div>
+      <hr class="adaptive divider" />
+      <div class="footer__bottom">
+        <p class="adaptive text text--small">© 2026 Platform. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

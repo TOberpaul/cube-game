@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tabs – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="list.css" />
+  <link rel="stylesheet" href="tabs.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 0; max-width: 40rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <nav class="tabs" role="tablist">
+    <button class="adaptive list__item list__item--active" data-material="transparent" data-interactive role="tab" aria-selected="true">Overview</button>
+    <button class="adaptive list__item" data-material="transparent" data-interactive role="tab">Details</button>
+    <button class="adaptive list__item" data-material="transparent" data-interactive role="tab">Settings</button>
+  </nav>
+  <div class="tabs__panel" role="tabpanel">
+    <p class="adaptive text">Tab panel content goes here.</p>
+  </div>
+
+</body>
+</html>

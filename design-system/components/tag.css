@@ -1,0 +1,34 @@
+/* ========================================
+   TAG / CHIP
+   Usage:
+   <span class="adaptive tag" data-material="vibrant">Label</span>
+   <span class="adaptive tag" data-material="vibrant" data-color="green">Success</span>
+   <button class="adaptive tag" data-interactive data-material="vibrant">Removable <svg>...</svg></button>
+   ======================================== */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--size-padding);
+  border-radius: var(--size-border-radius);
+  font-size: var(--size-text-min);
+  line-height: var(--size-line-height-min);
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.tag svg,
+.tag .icon {
+  width: var(--size-icon);
+  height: var(--size-icon);
+  color: var(--db-visual);
+  fill: currentColor;
+  stroke: none;
+  flex-shrink: 0;
+}
+
+.tag svg[fill="none"],
+.tag .icon[fill="none"] {
+  fill: none;
+  stroke: currentColor;
+}

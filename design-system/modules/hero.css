@@ -1,0 +1,61 @@
+/* ========================================
+   HERO SECTION
+   Usage:
+   <section class="adaptive hero" data-material="origin" data-color="brand">
+     <div class="hero__inner">
+       <div class="hero__content">
+         <h1 class="adaptive headline" data-level="1">Hero Title</h1>
+         <p class="adaptive text">Hero description text goes here.</p>
+         <div class="hero__actions">
+           <button class="adaptive button" data-interactive data-material="origin" data-size="lg">Get Started</button>
+           <button class="adaptive button" data-interactive data-material="origin" data-size="lg">Learn More</button>
+         </div>
+       </div>
+       <div class="hero__media">
+         <img src="..." alt="..." />
+       </div>
+     </div>
+   </section>
+   ======================================== */
+
+.hero {
+  padding: var(--layout-spacing-max) var(--layout-spacing);
+  background: var(--db-background);
+  color: var(--db-text);
+}
+
+.hero__inner {
+  max-width: var(--size-1280);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--layout-spacing-max);
+  align-items: center;
+}
+
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-spacing-min);
+}
+
+.hero__actions {
+  display: flex;
+  gap: var(--layout-spacing-min);
+  padding-top: var(--layout-spacing-min);
+}
+
+.hero__media img {
+  width: 100%;
+  border-radius: var(--size-border-radius);
+  display: block;
+}
+
+@media (max-width: 48rem) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+  }
+  .hero__media {
+    order: -1;
+  }
+}

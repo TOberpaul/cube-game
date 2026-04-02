@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Section – Module Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/select.css" />
+  <link rel="stylesheet" href="../components/textarea.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/section.css" />
+  <link rel="stylesheet" href="../components/headline.css" />
+  <link rel="stylesheet" href="form-section.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <section class="adaptive section">
+    <div class="section__inner">
+      <h2 class="adaptive headline" data-level="2">Contact Us</h2>
+      <form class="form-section">
+        <div class="form-section__row">
+          <label class="adaptive input">
+            <span class="adaptive input__label" data-relation="smaller-3">First Name</span>
+            <input class="adaptive input__field" type="text" placeholder="Jane" data-material="filled-2" data-interactive />
+          </label>
+          <label class="adaptive input">
+            <span class="adaptive input__label" data-relation="smaller-3">Last Name</span>
+            <input class="adaptive input__field" type="text" placeholder="Doe" data-material="filled-2" data-interactive />
+          </label>
+        </div>
+        <label class="adaptive input">
+          <span class="adaptive input__label" data-relation="smaller-3">Email</span>
+          <input class="adaptive input__field" type="email" placeholder="jane@example.com" data-material="filled-2" data-interactive />
+        </label>
+        <label class="adaptive input">
+          <span class="adaptive input__label" data-relation="smaller-3">Subject</span>
+          <select class="adaptive select" data-material="filled-2" data-interactive>
+            <option>General Inquiry</option>
+            <option>Support</option>
+            <option>Sales</option>
+          </select>
+        </label>
+        <label class="adaptive input">
+          <span class="adaptive input__label" data-relation="smaller-3">Message</span>
+          <textarea class="adaptive textarea" data-material="filled-2" data-interactive placeholder="Your message..."></textarea>
+        </label>
+        <div class="form-section__actions">
+          <button class="adaptive button" data-interactive data-material="origin" data-color="action">Send Message</button>
+          <button class="adaptive button" data-interactive data-material="transparent">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</body>
+</html>

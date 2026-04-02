@@ -1,0 +1,20 @@
+/* ========================================
+   PAGINATION
+   Usage:
+   <nav class="adaptive pagination" aria-label="Pagination">
+     <button class="adaptive button button--icon-only" data-interactive data-material="transparent" data-relation="smaller">‹</button>
+     <button class="adaptive button" data-interactive data-material="transparent" data-relation="smaller">1</button>
+     <button class="adaptive button" data-interactive data-material="semi-transparent" data-relation="smaller">2</button>
+     <button class="adaptive button" data-interactive data-material="transparent" data-relation="smaller">3</button>
+     <button class="adaptive button button--icon-only" data-interactive data-material="transparent" data-relation="smaller">›</button>
+   </nav>
+   ======================================== */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--size-gap-min);
+  border: none;
+  background: none;
+  padding: 0;
+}

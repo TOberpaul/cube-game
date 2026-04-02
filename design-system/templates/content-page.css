@@ -1,0 +1,30 @@
+/* ========================================
+   DETAIL / CONTENT PAGE TEMPLATE
+   Usage:
+   <body class="adaptive page">
+     <header class="adaptive header" data-material="filled">...</header>
+     <main class="page__main">
+       <section class="adaptive section">
+         <div class="section__inner">
+           <nav class="adaptive breadcrumb">...</nav>
+           <article class="content-page">
+             <h1 class="adaptive headline" data-level="1">Page Title</h1>
+             <p class="adaptive text">Content...</p>
+           </article>
+         </div>
+       </section>
+     </main>
+     <footer class="adaptive footer" data-material="inverted" data-container-contrast="max">...</footer>
+   </body>
+   ======================================== */
+
+.content-page {
+  max-width: var(--size-768);
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-spacing-min);
+}
+
+.content-page .headline {
+  padding-bottom: var(--layout-spacing-min);
+}

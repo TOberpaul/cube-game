@@ -1,0 +1,25 @@
+/* ========================================
+   STATS / KPI ROW
+   Usage:
+   <div class="stats-row">
+     <article class="adaptive card stats-row__item" data-material="filled">
+       <div class="card__content">
+         <div style="display:flex;justify-content:space-between;align-items:flex-start">
+           <p class="adaptive text text--small" data-emphasis="weak">Total Users</p>
+           <span class="adaptive badge" data-material="vibrant" data-color="green" data-relation="smaller">+12.5%</span>
+         </div>
+         <p class="adaptive headline" data-level="2">12,345</p>
+       </div>
+     </article>
+   </div>
+   ======================================== */
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--size-192), 1fr));
+  gap: var(--layout-spacing-min);
+}
+
+.stats-row__item .card__content {
+  gap: var(--size-gap-max);
+}

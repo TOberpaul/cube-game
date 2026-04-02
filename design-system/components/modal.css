@@ -1,0 +1,56 @@
+/* ========================================
+   MODAL / DIALOG
+   Usage:
+   <dialog class="adaptive modal" data-material="filled" open>
+     <div class="modal__header">
+       <h3 class="adaptive headline" data-level="4">Title</h3>
+       <button class="adaptive button button--icon-only" data-interactive data-material="transparent">✕</button>
+     </div>
+     <div class="modal__body">
+       <p class="adaptive text">Content</p>
+     </div>
+     <div class="modal__footer">
+       <button class="adaptive button" data-interactive data-material="transparent">Cancel</button>
+       <button class="adaptive button" data-interactive data-material="origin" data-color="action">Confirm</button>
+     </div>
+   </dialog>
+   ======================================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(calc(100% - var(--layout-spacing-max)), var(--size-640));
+  max-height: calc(100dvh - var(--layout-spacing-max));
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 var(--size-8) var(--size-32) rgba(0, 0, 0, 0.15);
+}
+
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-gap-max);
+  padding: var(--layout-spacing-min);
+  border-bottom: var(--size-1) solid var(--db-border);
+}
+
+.modal__body {
+  padding: var(--layout-spacing);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--layout-spacing-min);
+  padding: var(--layout-spacing-min);
+  border-top: var(--size-1) solid var(--db-border);
+}

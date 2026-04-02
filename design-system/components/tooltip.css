@@ -1,0 +1,33 @@
+/* ========================================
+   TOOLTIP
+   Usage:
+   <span class="tooltip-wrapper">
+     <button class="adaptive button" data-interactive>Hover me</button>
+     <span class="adaptive tooltip" data-material="inverted" data-container-contrast="max" role="tooltip">Tooltip text</span>
+   </span>
+   ======================================== */
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + var(--size-gap-min));
+  left: 50%;
+  transform: translateX(-50%);
+  min-height: 0;
+  padding: var(--size-padding-min) var(--size-padding);
+  font-size: var(--size-text-min);
+  line-height: var(--size-line-height-min);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 1000;
+}
+
+.tooltip-wrapper:hover .tooltip {
+  opacity: 1;
+}

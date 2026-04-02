@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Textarea – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="input.css" />
+  <link rel="stylesheet" href="textarea.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; max-width: 32rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <label class="adaptive input">
+    <span class="adaptive input__label" data-relation="smaller-3">Message</span>
+    <textarea class="adaptive textarea" data-material="filled-2" data-interactive placeholder="Write your message..."></textarea>
+  </label>
+
+  <label class="adaptive input">
+    <span class="adaptive input__label" data-relation="smaller-3">Description</span>
+    <textarea class="adaptive textarea" data-material="filled-2" data-interactive placeholder="Describe the issue..."></textarea>
+    <span class="adaptive input__hint" data-relation="smaller-3">Max 500 characters.</span>
+  </label>
+
+</body>
+</html>

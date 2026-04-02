@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Template Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <!-- Components -->
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/card.css" />
+  <link rel="stylesheet" href="../components/headline.css" />
+  <link rel="stylesheet" href="../components/link.css" />
+  <link rel="stylesheet" href="../components/list.css" />
+  <link rel="stylesheet" href="../components/badge.css" />
+  <link rel="stylesheet" href="../components/tag.css" />
+  <link rel="stylesheet" href="../components/table.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/icon.css" />
+  <!-- Modules -->
+  <link rel="stylesheet" href="../modules/header.css" />
+  <link rel="stylesheet" href="../modules/sidebar.css" />
+  <link rel="stylesheet" href="../modules/stats-row.css" />
+  <!-- Template -->
+  <link rel="stylesheet" href="page.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body class="adaptive page" data-color="neutral">
+
+  <!-- HEADER -->
+  <header class="adaptive header" data-material="filled">
+    <div class="header__inner">
+      <a class="header__logo" href="/" aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span class="header__brand">Dashboard</span>
+      </a>
+      <nav class="header__nav" aria-label="Main navigation">
+        <a class="adaptive link header__nav-item" href="#">Overview</a>
+        <a class="adaptive link header__nav-item" href="#">Reports</a>
+        <a class="adaptive link header__nav-item" href="#">Settings</a>
+      </nav>
+      <div class="header__actions">
+        <button class="adaptive button" data-interactive data-material="transparent">Help</button>
+      </div>
+      <button class="adaptive button button--icon-only header__menu-toggle" data-interactive data-material="transparent" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="adaptive sidebar" data-material="filled-2">
+      <nav class="sidebar__nav">
+        <a class="adaptive list__item list__item--active" data-material="transparent" data-interactive href="#">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a class="adaptive list__item" data-material="transparent" data-interactive href="#">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Analytics
+        </a>
+        <a class="adaptive list__item" data-material="transparent" data-interactive href="#">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Users
+        </a>
+        <a class="adaptive list__item" data-material="transparent" data-interactive href="#">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="dashboard__content page__main">
+
+      <div class="dashboard__top">
+        <h1 class="adaptive headline" data-level="3">Dashboard</h1>
+        <div class="dashboard__actions">
+          <button class="adaptive button" data-interactive data-material="transparent">Filter</button>
+          <button class="adaptive button" data-interactive data-material="origin" data-color="action">Export</button>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <article class="adaptive card stats-row__item" data-material="filled">
+          <div class="card__content">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <p class="adaptive text text--small" data-emphasis="weak">Total Users</p>
+              <span class="adaptive badge" data-material="vibrant" data-color="green" data-relation="smaller">+12.5%</span>
+            </div>
+            <p class="adaptive headline" data-level="2">12,345</p>
+          </div>
+        </article>
+        <article class="adaptive card stats-row__item" data-material="filled">
+          <div class="card__content">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <p class="adaptive text text--small" data-emphasis="weak">Revenue</p>
+              <span class="adaptive badge" data-material="vibrant" data-color="green" data-relation="smaller">+8.3%</span>
+            </div>
+            <p class="adaptive headline" data-level="2">€84,200</p>
+          </div>
+        </article>
+        <article class="adaptive card stats-row__item" data-material="filled">
+          <div class="card__content">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <p class="adaptive text text--small" data-emphasis="weak">Active Sessions</p>
+              <span class="adaptive badge" data-material="vibrant" data-color="red" data-relation="smaller">-2.1%</span>
+            </div>
+            <p class="adaptive headline" data-level="2">1,892</p>
+          </div>
+        </article>
+        <article class="adaptive card stats-row__item" data-material="filled">
+          <div class="card__content">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <p class="adaptive text text--small" data-emphasis="weak">Conversion</p>
+              <span class="adaptive badge" data-material="vibrant" data-color="green" data-relation="smaller">+0.5%</span>
+            </div>
+            <p class="adaptive headline" data-level="2">3.24%</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- CONTENT GRID -->
+      <div class="dashboard__grid">
+        <article class="adaptive card" data-material="filled">
+          <div class="card__content">
+            <h3 class="adaptive headline" data-level="4">Recent Activity</h3>
+            <table class="adaptive table">
+              <thead>
+                <tr><th>User</th><th>Action</th><th>Time</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Anna Schmidt</td><td>Created report</td><td>2 min ago</td></tr>
+                <tr><td>Max Müller</td><td>Updated settings</td><td>15 min ago</td></tr>
+                <tr><td>Lisa Weber</td><td>Exported data</td><td>1 hour ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+        <article class="adaptive card" data-material="filled">
+          <div class="card__content">
+            <h3 class="adaptive headline" data-level="4">Quick Actions</h3>
+            <p class="adaptive text">Common tasks and shortcuts for your workflow.</p>
+            <div style="display: flex; flex-direction: column; gap: var(--layout-spacing-min); padding-top: var(--layout-spacing-min);">
+              <button class="adaptive button button--full-width" data-interactive data-material="filled">Create New Report</button>
+              <button class="adaptive button button--full-width" data-interactive data-material="filled">Invite Team Member</button>
+              <button class="adaptive button button--full-width" data-interactive data-material="filled">View All Analytics</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

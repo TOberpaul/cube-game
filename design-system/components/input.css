@@ -1,0 +1,39 @@
+/* ========================================
+   INPUT
+   Usage:
+   <label class="adaptive input">
+     <span class="adaptive input__label" data-relation="smaller-3">Label</span>
+     <input class="adaptive input__field" type="text" placeholder="Placeholder" data-material="filled-2" data-interactive />
+     <span class="adaptive input__hint" data-relation="smaller-3">Hint text</span>
+   </label>
+   ======================================== */
+
+.input {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.input__label {
+  min-height: 0;
+}
+
+.input__field {
+  padding: 0 var(--size-padding);
+  font-family: inherit;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input__field::placeholder {
+  color: var(--db-text);
+  opacity: 0.5;
+}
+
+.input__hint {
+  min-height: 0;
+  opacity: 0.75;
+}

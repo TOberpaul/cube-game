@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Table – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="table.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Default Table</h2>
+  <table class="adaptive table" data-material="filled">
+    <thead>
+      <tr><th>Name</th><th>Role</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Anna Schmidt</td><td>Engineer</td><td>Active</td></tr>
+      <tr><td>Max Müller</td><td>Designer</td><td>Active</td></tr>
+      <tr><td>Lisa Weber</td><td>Manager</td><td>Inactive</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="adaptive">Interactive Rows</h2>
+  <table class="adaptive table" data-material="filled">
+    <thead>
+      <tr><th>Route</th><th>Departure</th><th>Arrival</th></tr>
+    </thead>
+    <tbody>
+      <tr data-interactive><td>Berlin → München</td><td>08:00</td><td>12:15</td></tr>
+      <tr data-interactive><td>Hamburg → Köln</td><td>09:30</td><td>13:45</td></tr>
+      <tr data-interactive><td>Frankfurt → Stuttgart</td><td>10:00</td><td>11:20</td></tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+/* ========================================
+   TABLE
+   Usage:
+   <table class="adaptive table" data-material="filled">
+     <thead>
+       <tr><th>Header</th><th>Header</th></tr>
+     </thead>
+     <tbody>
+       <tr><td>Cell</td><td>Cell</td></tr>
+     </tbody>
+   </table>
+   ======================================== */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.table th,
+.table td {
+  padding: var(--size-padding-min) var(--size-padding);
+  text-align: left;
+  border-bottom: var(--size-1) solid var(--db-border);
+}
+
+.table th {
+  font-weight: 700;
+  font-size: var(--size-text-min);
+  line-height: var(--size-line-height-min);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.table tbody tr[data-interactive]:hover {
+  background: var(--db-background-hovered);
+}

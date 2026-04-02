@@ -1,0 +1,34 @@
+/* ========================================
+   FORM PAGE TEMPLATE
+   Usage:
+   <body class="adaptive page">
+     <header class="adaptive header" data-material="filled">...</header>
+     <main class="page__main">
+       <section class="adaptive section">
+         <div class="section__inner">
+           <div class="form-page">
+             <div class="form-page__header">
+               <h1 class="adaptive headline" data-level="2">Form Title</h1>
+               <p class="adaptive text" data-emphasis="weak">Description</p>
+             </div>
+             <form class="form-section">...</form>
+           </div>
+         </div>
+       </section>
+     </main>
+     <footer class="adaptive footer" data-material="inverted" data-container-contrast="max">...</footer>
+   </body>
+   ======================================== */
+
+.form-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-spacing);
+  max-width: var(--size-640);
+}
+
+.form-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-gap-max);
+}

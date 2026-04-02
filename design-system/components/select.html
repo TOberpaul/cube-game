@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="input.css" />
+  <link rel="stylesheet" href="select.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; max-width: 24rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <label class="adaptive input">
+    <span class="adaptive input__label" data-relation="smaller-3">Country</span>
+    <select class="adaptive select" data-material="filled-2" data-interactive>
+      <option>Germany</option>
+      <option>Austria</option>
+      <option>Switzerland</option>
+      <option>France</option>
+    </select>
+  </label>
+
+  <label class="adaptive input">
+    <span class="adaptive input__label" data-relation="smaller-3">Priority</span>
+    <select class="adaptive select" data-material="filled-2" data-interactive>
+      <option>Low</option>
+      <option>Medium</option>
+      <option selected>High</option>
+      <option>Critical</option>
+    </select>
+  </label>
+
+</body>
+</html>

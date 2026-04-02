@@ -1,0 +1,51 @@
+/* ========================================
+   TESTIMONIAL BLOCK
+   Usage:
+   <section class="adaptive section" data-material="filled-2">
+     <div class="section__inner">
+       <div class="testimonial-grid">
+         <blockquote class="adaptive card testimonial" data-material="filled">
+           <div class="card__content">
+             <p class="adaptive text">"Quote text here."</p>
+             <div class="testimonial__author">
+               <span class="adaptive avatar" data-material="origin" data-size="sm">JD</span>
+               <div>
+                 <p class="adaptive text" style="font-weight:600">Jane Doe</p>
+                 <p class="adaptive text text--small" data-emphasis="weak">CEO, Company</p>
+               </div>
+             </div>
+           </div>
+         </blockquote>
+       </div>
+     </div>
+   </section>
+   ======================================== */
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--size-288), 1fr));
+  gap: var(--layout-spacing-min);
+}
+
+.testimonial {
+  margin: 0;
+  border: none;
+}
+
+.testimonial__author {
+  display: flex;
+  align-items: center;
+  gap: var(--size-gap-max);
+  padding-top: var(--size-gap-max);
+}
+
+.testimonial__author div {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.testimonial__author p {
+  margin: 0;
+  min-height: 0;
+}

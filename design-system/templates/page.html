@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Base Page – Template Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/headline.css" />
+  <link rel="stylesheet" href="../components/link.css" />
+  <link rel="stylesheet" href="../components/divider.css" />
+  <link rel="stylesheet" href="../components/section.css" />
+  <link rel="stylesheet" href="../modules/header.css" />
+  <link rel="stylesheet" href="../modules/footer.css" />
+  <link rel="stylesheet" href="page.css" />
+</head>
+<body class="adaptive page" data-color="neutral">
+
+  <!-- HEADER -->
+  <header class="adaptive header" data-material="filled">
+    <div class="header__inner">
+      <a class="header__logo" href="/" aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span class="header__brand">Brand</span>
+      </a>
+      <nav class="header__nav" aria-label="Main navigation">
+        <a class="adaptive link header__nav-item" href="#">Link 1</a>
+        <a class="adaptive link header__nav-item" href="#">Link 2</a>
+        <a class="adaptive link header__nav-item" href="#">Link 3</a>
+      </nav>
+      <div class="header__actions">
+        <button class="adaptive button" data-interactive data-material="origin" data-color="action">Action</button>
+      </div>
+      <button class="adaptive button button--icon-only header__menu-toggle" data-interactive data-material="transparent" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="page__main">
+    <section class="adaptive section">
+      <div class="section__inner">
+        <h1 class="adaptive headline" data-level="1">Page Title</h1>
+        <p class="adaptive text">This is the base page template. It provides the minimal structure: header, main content area, and footer. All other templates extend this pattern.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="adaptive footer" data-material="inverted" data-container-contrast="max">
+    <div class="footer__inner">
+      <div class="footer__columns">
+        <div class="footer__column">
+          <h4 class="adaptive headline footer__heading" data-level="6">Company</h4>
+          <nav class="footer__links">
+            <a class="adaptive link" href="#">About</a>
+            <a class="adaptive link" href="#">Contact</a>
+          </nav>
+        </div>
+      </div>
+      <hr class="adaptive divider" />
+      <div class="footer__bottom">
+        <p class="adaptive text text--small">© 2026 Brand. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

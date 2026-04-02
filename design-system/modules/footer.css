@@ -1,0 +1,78 @@
+/* ========================================
+   FOOTER
+   Usage:
+   <footer class="adaptive footer" data-material="inverted" data-container-contrast="max">
+     <div class="footer__inner">
+       <div class="footer__columns">
+         <div class="footer__column">
+           <h4 class="adaptive headline footer__heading" data-level="6">Company</h4>
+           <nav class="footer__links">
+             <a class="adaptive link" href="#">About</a>
+             <a class="adaptive link" href="#">Careers</a>
+           </nav>
+         </div>
+         <div class="footer__column">
+           <h4 class="adaptive headline footer__heading" data-level="6">Product</h4>
+           <nav class="footer__links">
+             <a class="adaptive link" href="#">Features</a>
+             <a class="adaptive link" href="#">Pricing</a>
+           </nav>
+         </div>
+       </div>
+       <hr class="adaptive divider" />
+       <div class="footer__bottom">
+         <p class="adaptive text text--small">© 2026 Company. All rights reserved.</p>
+       </div>
+     </div>
+   </footer>
+   ======================================== */
+
+.footer {
+  background: var(--db-background);
+  color: var(--db-text);
+  padding: var(--layout-spacing-max) var(--layout-spacing);
+}
+
+.footer__inner {
+  max-width: var(--size-1280);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-spacing);
+}
+
+.footer__columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--size-192), 1fr));
+  gap: var(--layout-spacing);
+}
+
+.footer__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-gap-max);
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-gap-max);
+}
+
+.footer__links .link {
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.footer__links .link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--layout-spacing);
+  opacity: 0.7;
+}

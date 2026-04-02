@@ -1,0 +1,42 @@
+/* ========================================
+   FORM SECTION
+   Usage:
+   <section class="adaptive section">
+     <div class="section__inner">
+       <form class="form-section">
+         <div class="form-section__row">
+           <label class="adaptive input">...</label>
+           <label class="adaptive input">...</label>
+         </div>
+         <label class="adaptive input">...</label>
+         <div class="form-section__actions">
+           <button class="adaptive button" data-interactive data-material="origin" data-color="action">Submit</button>
+         </div>
+       </form>
+     </div>
+   </section>
+   ======================================== */
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-spacing-min);
+  max-width: var(--size-640);
+}
+
+.form-section__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--layout-spacing-min);
+}
+
+@media (max-width: 30rem) {
+  .form-section__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-section__actions {
+  display: flex;
+  gap: var(--layout-spacing-min);
+}

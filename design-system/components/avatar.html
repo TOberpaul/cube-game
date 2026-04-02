@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avatar – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="avatar.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+    .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Initials</h2>
+  <div class="demo-row">
+    <span class="adaptive avatar" data-material="vibrant">AB</span>
+    <span class="adaptive avatar" data-material="vibrant" data-color="brand">CD</span>
+    <span class="adaptive avatar" data-material="vibrant" data-color="blue">EF</span>
+    <span class="adaptive avatar" data-material="vibrant" data-color="green">GH</span>
+  </div>
+
+  <h2 class="adaptive">Origin Material</h2>
+  <div class="demo-row">
+    <span class="adaptive avatar" data-material="origin" data-color="brand">DB</span>
+    <span class="adaptive avatar" data-material="origin" data-color="action">AC</span>
+  </div>
+
+  <h2 class="adaptive">Sizes</h2>
+  <div class="demo-row">
+    <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="xs">XS</span>
+    <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="sm">SM</span>
+    <span class="adaptive avatar" data-material="vibrant" data-color="brand">MD</span>
+    <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="lg">LG</span>
+    <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="xl">XL</span>
+  </div>
+
+  <h2 class="adaptive">With Image</h2>
+  <div class="demo-row">
+    <span class="adaptive avatar" data-material="origin" data-color="brand">
+      <img src="https://i.pravatar.cc/80?img=1" alt="User avatar" />
+    </span>
+    <span class="adaptive avatar" data-material="origin" data-color="brand" data-size="lg">
+      <img src="https://i.pravatar.cc/80?img=2" alt="User avatar" />
+    </span>
+  </div>
+
+</body>
+</html>

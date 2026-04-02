@@ -1,0 +1,20 @@
+/* ========================================
+   LANDINGPAGE TEMPLATE
+   Usage:
+   <body class="adaptive page">
+     <header class="adaptive header" data-material="filled">...</header>
+     <main class="page__main">
+       <section class="adaptive hero" data-material="vibrant" data-color="brand">...</section>
+       <section class="adaptive section">
+         <!-- Feature Grid -->
+       </section>
+       <section class="adaptive section" data-material="filled-2">
+         <!-- Testimonials -->
+       </section>
+       <section class="adaptive cta" data-material="origin" data-color="action">...</section>
+     </main>
+     <footer class="adaptive footer" data-material="inverted" data-container-contrast="max">...</footer>
+   </body>
+   ======================================== */
+
+/* No additional CSS needed — landingpages compose from existing modules */

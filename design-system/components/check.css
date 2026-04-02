@@ -1,0 +1,74 @@
+/* ========================================
+   CHECKBOX / RADIO
+   Usage:
+   <label class="adaptive check" data-interactive>
+     <input class="check__input" type="checkbox" />
+     <span class="adaptive check__box" data-material="filled-2">
+       <svg class="check__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+     </span>
+     <span class="check__label">Label</span>
+   </label>
+   <label class="adaptive check" data-interactive>
+     <input class="check__input" type="radio" name="group" />
+     <span class="adaptive check__radio" data-material="filled-2"></span>
+     <span class="check__label">Label</span>
+   </label>
+   ======================================== */
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-gap-max);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.check__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.check__box,
+.check__radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.check__radio {
+  border-radius: var(--size-border-radius-full);
+}
+
+.check__input:checked ~ .check__box,
+.check__input:checked ~ .check__radio {
+  background: var(--data-mode-1);
+  border-color: var(--data-mode-1);
+}
+
+.check__box .check__icon {
+  display: none;
+  width: 100%;
+  height: 100%;
+  color: var(--data-mode-14);
+}
+
+.check__input:checked ~ .check__box .check__icon {
+  display: block;
+}
+
+.check__input:checked ~ .check__radio::after {
+  content: "";
+  width: calc(var(--size-container) / 2 );
+  height: calc(var(--size-container) / 2 );
+  border-radius: var(--size-border-radius-full);
+  background: var(--data-mode-14);
+}

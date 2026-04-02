@@ -1,0 +1,46 @@
+/* ========================================
+   CARD
+   Usage:
+   <article class="adaptive card" data-material="filled">
+     <img class="card__media" src="..." alt="..." />
+     <div class="card__content">
+       <h3 class="adaptive headline" data-level="3">Title</h3>
+       <p class="adaptive text">Description</p>
+     </div>
+     <div class="card__actions">
+       <button class="adaptive button" data-interactive data-material="origin" data-color="action">Action</button>
+     </div>
+   </article>
+   ======================================== */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.card__media {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+.card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-gap-max);
+  padding: var(--layout-spacing);
+}
+
+.card__actions {
+  display: flex;
+  gap: var(--layout-spacing-min);
+  padding: 0 var(--layout-spacing) var(--layout-spacing);
+}
+
+.card[data-interactive] {
+  transition: background 0.15s;
+}

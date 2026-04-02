@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toggle – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="toggle.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Toggle Switch</h2>
+
+  <label class="adaptive toggle" data-interactive>
+    <input class="toggle__input" type="checkbox" />
+    <span class="adaptive toggle__track" data-material="filled-2"></span>
+    <span class="toggle__label">Notifications</span>
+  </label>
+
+  <label class="adaptive toggle" data-interactive>
+    <input class="toggle__input" type="checkbox" checked />
+    <span class="adaptive toggle__track" data-material="filled-2"></span>
+    <span class="toggle__label">Dark Mode (on)</span>
+  </label>
+
+  <label class="adaptive toggle" data-interactive>
+    <input class="toggle__input" type="checkbox" />
+    <span class="adaptive toggle__track" data-material="filled-2"></span>
+    <span class="toggle__label">Auto-save</span>
+  </label>
+
+</body>
+</html>

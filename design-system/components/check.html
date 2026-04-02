@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkbox & Radio – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="check.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+    .demo-col { display: flex; flex-direction: column; gap: 0.75rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Checkboxes</h2>
+  <div class="demo-col">
+    <label class="adaptive check" data-interactive>
+      <input class="check__input" type="checkbox" />
+      <span class="adaptive check__box" data-material="filled-2">
+        <svg class="check__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </span>
+      <span class="check__label">Option A</span>
+    </label>
+    <label class="adaptive check" data-interactive>
+      <input class="check__input" type="checkbox" checked />
+      <span class="adaptive check__box" data-material="filled-2">
+        <svg class="check__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </span>
+      <span class="check__label">Option B (checked)</span>
+    </label>
+    <label class="adaptive check" data-interactive>
+      <input class="check__input" type="checkbox" />
+      <span class="adaptive check__box" data-material="filled-2">
+        <svg class="check__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </span>
+      <span class="check__label">Option C</span>
+    </label>
+  </div>
+
+  <h2 class="adaptive">Radio Buttons</h2>
+  <div class="demo-col">
+    <label class="adaptive check" data-interactive>
+      <input class="check__input" type="radio" name="demo" checked />
+      <span class="adaptive check__radio" data-material="filled-2"></span>
+      <span class="check__label">Choice 1 (selected)</span>
+    </label>
+    <label class="adaptive check" data-interactive>
+      <input class="check__input" type="radio" name="demo" />
+      <span class="adaptive check__radio" data-material="filled-2"></span>
+      <span class="check__label">Choice 2</span>
+    </label>
+    <label class="adaptive check" data-interactive>
+      <input class="check__input" type="radio" name="demo" />
+      <span class="adaptive check__radio" data-material="filled-2"></span>
+      <span class="check__label">Choice 3</span>
+    </label>
+  </div>
+
+</body>
+</html>

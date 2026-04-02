@@ -1,0 +1,318 @@
+/* ========================================
+   3D Dice Styling
+   CSS 3D transforms with soft, premium look
+   Validates: Requirements 3.1, 3.2, 3.5
+   ======================================== */
+
+/* --- Custom Properties --- */
+:root {
+  --dice-size: 64px;
+  --dice-gap: 16px;
+  --dice-perspective: 600px;
+  --dice-radius: 14%;
+  --dice-bg: #f5f5f7;
+  --dice-bg-gradient: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.04) 100%
+  );
+  --dice-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.04);
+  --dice-shadow-held:
+    0 0 0 2px var(--theme-blue-6, #1558C6),
+    0 0 12px rgba(21, 88, 198, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+  --pip-color: #1d1d1f;
+  --pip-size: 18%;
+  --pip-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  --dice-transition: 0.2s ease;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dice-bg: #2c2c2e;
+    --dice-bg-gradient: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.12) 100%
+    );
+    --dice-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.3),
+      0 4px 8px rgba(0, 0, 0, 0.25),
+      0 8px 24px rgba(0, 0, 0, 0.2);
+    --dice-shadow-held:
+      0 0 0 2px var(--theme-blue-8, #638BFA),
+      0 0 16px rgba(99, 139, 250, 0.35),
+      0 1px 2px rgba(0, 0, 0, 0.3);
+    --pip-color: #f5f5f7;
+    --pip-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* --- Dice Container --- */
+.dice-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--dice-gap);
+  perspective: var(--dice-perspective);
+  padding: 24px;
+}
+
+/* --- Individual Die --- */
+.die {
+  width: var(--dice-size);
+  height: var(--dice-size);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.die:focus-visible {
+  outline: 2px solid var(--theme-blue-7, #1D6FF7);
+  outline-offset: 4px;
+  border-radius: var(--dice-radius);
+}
+
+/* --- Die Face (shared) --- */
+.die-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--dice-radius);
+  background: var(--dice-bg);
+  background-image: var(--dice-bg-gradient);
+  box-shadow: var(--dice-shadow);
+  backface-visibility: hidden;
+  display: grid;
+  padding: 16%;
+  box-sizing: border-box;
+  transition: box-shadow var(--dice-transition);
+}
+
+/* --- 3D Face Transforms --- */
+.die-face--front {
+  transform: rotateY(0deg) translateZ(calc(var(--dice-size) / 2));
+}
+
+.die-face--back {
+  transform: rotateY(180deg) translateZ(calc(var(--dice-size) / 2));
+}
+
+.die-face--right {
+  transform: rotateY(90deg) translateZ(calc(var(--dice-size) / 2));
+}
+
+.die-face--left {
+  transform: rotateY(-90deg) translateZ(calc(var(--dice-size) / 2));
+}
+
+.die-face--top {
+  transform: rotateX(90deg) translateZ(calc(var(--dice-size) / 2));
+}
+
+.die-face--bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--dice-size) / 2));
+}
+
+/* --- Pip (Dot) Base --- */
+.pip {
+  width: var(--pip-size);
+  height: 0;
+  padding-bottom: var(--pip-size);
+  border-radius: 50%;
+  background: var(--pip-color);
+  box-shadow: var(--pip-shadow);
+  align-self: center;
+  justify-self: center;
+}
+
+/* --- Pip Layouts for Values 1–6 --- */
+
+/* Value 1: single center pip */
+.die-face[data-value="1"] {
+  grid-template: 1fr / 1fr;
+  place-items: center;
+}
+
+/* Value 2: top-right + bottom-left diagonal */
+.die-face[data-value="2"] {
+  grid-template: 1fr 1fr / 1fr 1fr;
+}
+.die-face[data-value="2"] .pip:nth-child(1) {
+  grid-row: 1;
+  grid-column: 2;
+  align-self: start;
+  justify-self: end;
+}
+.die-face[data-value="2"] .pip:nth-child(2) {
+  grid-row: 2;
+  grid-column: 1;
+  align-self: end;
+  justify-self: start;
+}
+
+/* Value 3: diagonal top-right, center, bottom-left */
+.die-face[data-value="3"] {
+  grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+}
+.die-face[data-value="3"] .pip:nth-child(1) {
+  grid-row: 1;
+  grid-column: 3;
+  align-self: start;
+  justify-self: end;
+}
+.die-face[data-value="3"] .pip:nth-child(2) {
+  grid-row: 2;
+  grid-column: 2;
+  align-self: center;
+  justify-self: center;
+}
+.die-face[data-value="3"] .pip:nth-child(3) {
+  grid-row: 3;
+  grid-column: 1;
+  align-self: end;
+  justify-self: start;
+}
+
+/* Value 4: 2x2 grid corners */
+.die-face[data-value="4"] {
+  grid-template: 1fr 1fr / 1fr 1fr;
+}
+.die-face[data-value="4"] .pip:nth-child(1) {
+  align-self: start;
+  justify-self: start;
+}
+.die-face[data-value="4"] .pip:nth-child(2) {
+  align-self: start;
+  justify-self: end;
+}
+.die-face[data-value="4"] .pip:nth-child(3) {
+  align-self: end;
+  justify-self: start;
+}
+.die-face[data-value="4"] .pip:nth-child(4) {
+  align-self: end;
+  justify-self: end;
+}
+
+/* Value 5: 4 corners + center */
+.die-face[data-value="5"] {
+  grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+}
+.die-face[data-value="5"] .pip:nth-child(1) {
+  grid-row: 1;
+  grid-column: 1;
+  align-self: start;
+  justify-self: start;
+}
+.die-face[data-value="5"] .pip:nth-child(2) {
+  grid-row: 1;
+  grid-column: 3;
+  align-self: start;
+  justify-self: end;
+}
+.die-face[data-value="5"] .pip:nth-child(3) {
+  grid-row: 2;
+  grid-column: 2;
+  align-self: center;
+  justify-self: center;
+}
+.die-face[data-value="5"] .pip:nth-child(4) {
+  grid-row: 3;
+  grid-column: 1;
+  align-self: end;
+  justify-self: start;
+}
+.die-face[data-value="5"] .pip:nth-child(5) {
+  grid-row: 3;
+  grid-column: 3;
+  align-self: end;
+  justify-self: end;
+}
+
+/* Value 6: 3 rows x 2 columns */
+.die-face[data-value="6"] {
+  grid-template: 1fr 1fr 1fr / 1fr 1fr;
+}
+.die-face[data-value="6"] .pip:nth-child(1) {
+  align-self: start;
+  justify-self: start;
+}
+.die-face[data-value="6"] .pip:nth-child(2) {
+  align-self: start;
+  justify-self: end;
+}
+.die-face[data-value="6"] .pip:nth-child(3) {
+  align-self: center;
+  justify-self: start;
+}
+.die-face[data-value="6"] .pip:nth-child(4) {
+  align-self: center;
+  justify-self: end;
+}
+.die-face[data-value="6"] .pip:nth-child(5) {
+  align-self: end;
+  justify-self: start;
+}
+.die-face[data-value="6"] .pip:nth-child(6) {
+  align-self: end;
+  justify-self: end;
+}
+
+/* --- Held State --- */
+.die--held .die-face {
+  box-shadow: var(--dice-shadow-held);
+}
+
+.die--held {
+  transform: scale(0.95);
+}
+
+/* --- Screenreader-only utility --- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .die {
+    transition: none;
+  }
+
+  .die-face {
+    transition: none;
+  }
+}
+
+/* --- Responsive Sizing --- */
+@media (min-width: 480px) {
+  :root {
+    --dice-size: 80px;
+    --dice-gap: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --dice-size: 96px;
+    --dice-gap: 24px;
+    --dice-perspective: 800px;
+  }
+}

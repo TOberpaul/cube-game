@@ -1,0 +1,22 @@
+/* ========================================
+   BASE PAGE LAYOUT
+   Every page uses this wrapper
+   Usage:
+   <body class="adaptive page">
+     <header class="adaptive header" data-material="filled">...</header>
+     <main class="page__main">...</main>
+     <footer class="adaptive footer" data-material="inverted" data-container-contrast="max">...</footer>
+   </body>
+   ======================================== */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.page__main {
+  flex: 1;
+}

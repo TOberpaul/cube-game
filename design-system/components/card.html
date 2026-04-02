@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="card.css" />
+  <link rel="stylesheet" href="button.css" />
+  <link rel="stylesheet" href="headline.css" />
+  <link rel="stylesheet" href="tag.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+    .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Card with Media</h2>
+
+  <div class="demo-grid">
+    <article class="adaptive card" data-material="filled">
+      <img class="card__media" src="https://picsum.photos/seed/a/600/340" alt="Placeholder" />
+      <div class="card__content">
+        <h3 class="adaptive headline" data-level="3">Card Title</h3>
+        <p class="adaptive text">A short description of this card's content goes here.</p>
+      </div>
+      <div class="card__actions">
+        <button class="adaptive button" data-interactive data-material="origin" data-color="action">Action</button>
+        <button class="adaptive button" data-interactive data-material="transparent">Secondary</button>
+      </div>
+    </article>
+
+    <article class="adaptive card" data-material="filled">
+      <img class="card__media" src="https://picsum.photos/seed/b/600/340" alt="Placeholder" />
+      <div class="card__content">
+        <h3 class="adaptive headline" data-level="3">Another Card</h3>
+        <p class="adaptive text">Cards compose from .adaptive + .card with optional media, content, and actions.</p>
+      </div>
+      <div class="card__actions">
+        <button class="adaptive button" data-interactive data-material="origin" data-color="action">Learn More</button>
+      </div>
+    </article>
+  </div>
+
+  <h2 class="adaptive">Card without Media</h2>
+
+  <div class="demo-grid">
+    <article class="adaptive card" data-material="filled">
+      <div class="card__content">
+        <h3 class="adaptive headline" data-level="4">Content Only</h3>
+        <p class="adaptive text">This card has no image, just content and actions.</p>
+      </div>
+      <div class="card__actions">
+        <button class="adaptive button" data-interactive data-material="transparent">Details</button>
+      </div>
+    </article>
+
+    <article class="adaptive card" data-material="vibrant" data-color="brand">
+      <div class="card__content">
+        <h3 class="adaptive headline" data-level="4">Vibrant Card</h3>
+        <p class="adaptive text">Using data-material="vibrant" and data-color="brand".</p>
+      </div>
+    </article>
+  </div>
+
+  <h2 class="adaptive">Interactive Card</h2>
+
+  <div class="demo-grid">
+    <article class="adaptive card" data-material="filled" data-interactive>
+      <div class="card__content">
+        <span class="adaptive tag" data-material="vibrant" data-color="green" data-relation="smaller">New</span>
+        <h3 class="adaptive headline" data-level="4">Clickable Card</h3>
+        <p class="adaptive text">This card has data-interactive for hover feedback.</p>
+      </div>
+    </article>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+/* ========================================
+   PROGRESS / LOADER
+   Usage:
+   <div class="adaptive progress" data-material="filled-2">
+     <div class="adaptive progress__bar" data-material="origin" data-color="action" style="width: 60%"></div>
+   </div>
+   <span class="adaptive loader" data-color="action"></span>
+   ======================================== */
+
+.progress {
+  width: 100%;
+  height: var(--size-gap-min);
+  min-height: 0;
+  border-radius: var(--size-border-radius-full);
+  padding: 0;
+  border: none;
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  min-height: 0;
+  border-radius: var(--size-border-radius-full);
+  padding: 0;
+  border: none;
+  transition: width 0.3s;
+}
+
+.loader {
+  display: inline-block;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  border: var(--size-2) solid var(--db-border);
+  border-top-color: var(--data-mode-origin-default);
+  border-radius: var(--size-border-radius-full);
+  background: none;
+  padding: 0;
+  animation: loader-spin 0.8s linear infinite;
+}
+
+@keyframes loader-spin {
+  to { transform: rotate(360deg); }
+}

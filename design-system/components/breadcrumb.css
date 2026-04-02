@@ -1,0 +1,30 @@
+/* ========================================
+   BREADCRUMB
+   Usage:
+   <nav class="adaptive breadcrumb" aria-label="Breadcrumb">
+     <a class="adaptive link breadcrumb__item" href="#">Home</a>
+     <span class="breadcrumb__separator" aria-hidden="true">/</span>
+     <a class="adaptive link breadcrumb__item" href="#">Section</a>
+     <span class="breadcrumb__separator" aria-hidden="true">/</span>
+     <span class="breadcrumb__item breadcrumb__item--current" aria-current="page">Current</span>
+   </nav>
+   ======================================== */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--size-gap-min);
+  font-size: var(--size-text-min);
+  line-height: var(--size-line-height-min);
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.breadcrumb__separator {
+  opacity: 0.5;
+}
+
+.breadcrumb__item--current {
+  font-weight: 600;
+}

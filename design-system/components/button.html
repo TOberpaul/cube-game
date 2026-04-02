@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Button – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="button.css" />
+  <link rel="stylesheet" href="icon.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+    .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Button Variants</h2>
+
+  <div class="demo-row">
+    <button class="adaptive button" data-interactive>Default</button>
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action">Primary (Origin)</button>
+    <button class="adaptive button" data-interactive data-material="filled">Filled</button>
+    <button class="adaptive button" data-interactive data-material="vibrant">Vibrant</button>
+    <button class="adaptive button" data-interactive data-material="transparent">Transparent</button>
+  </div>
+
+  <h2 class="adaptive">Colors</h2>
+
+  <div class="demo-row">
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action">Action</button>
+    <button class="adaptive button" data-interactive data-material="origin" data-color="brand">Brand</button>
+    <button class="adaptive button" data-interactive data-material="vibrant" data-color="green">Green</button>
+    <button class="adaptive button" data-interactive data-material="vibrant" data-color="red">Red</button>
+    <button class="adaptive button" data-interactive data-material="vibrant" data-color="blue">Blue</button>
+  </div>
+
+  <h2 class="adaptive">Sizes (via data-size)</h2>
+
+  <div class="demo-row">
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="xs">XS</button>
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="sm">SM</button>
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action">MD (default)</button>
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="lg">LG</button>
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="xl">XL</button>
+  </div>
+
+  <h2 class="adaptive">Relative Size (via data-relation)</h2>
+
+  <div class="demo-row" data-size="lg">
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action">LG Parent</button>
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-relation="smaller">Smaller (= MD)</button>
+  </div>
+
+  <h2 class="adaptive">Icon Button</h2>
+
+  <div class="demo-row">
+    <button class="adaptive button button--icon-only" data-interactive data-material="transparent" aria-label="Close">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button class="adaptive button button--icon-only" data-interactive data-material="origin" data-color="action" aria-label="Add">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+
+  <h2 class="adaptive">With Icon + Label</h2>
+
+  <div class="demo-row">
+    <button class="adaptive button" data-interactive data-material="origin" data-color="action">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Item
+    </button>
+  </div>
+
+  <h2 class="adaptive">Full Width</h2>
+
+  <div>
+    <button class="adaptive button button--full-width" data-interactive data-material="origin" data-color="action">Full Width Button</button>
+  </div>
+
+</body>
+</html>

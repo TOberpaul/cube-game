@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Section – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="section.css" />
+  <link rel="stylesheet" href="headline.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; display: flex; flex-direction: column; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <section class="adaptive section">
+    <div class="section__inner">
+      <h2 class="adaptive headline" data-level="2">Default Section</h2>
+      <p class="adaptive text">A section with default material. Content is centered and max-width constrained.</p>
+    </div>
+  </section>
+
+  <section class="adaptive section" data-material="filled-2">
+    <div class="section__inner">
+      <h2 class="adaptive headline" data-level="2">Filled-2 Section</h2>
+      <p class="adaptive text">Using data-material="filled-2" for subtle background contrast.</p>
+    </div>
+  </section>
+
+  <section class="adaptive section" data-material="vibrant" data-color="brand">
+    <div class="section__inner">
+      <h2 class="adaptive headline" data-level="2">Vibrant Brand Section</h2>
+      <p class="adaptive text">Using data-material="vibrant" with data-color="brand".</p>
+    </div>
+  </section>
+
+</body>
+</html>

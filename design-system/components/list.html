@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="list.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; max-width: 20rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Static List</h2>
+  <ul class="list">
+    <li class="adaptive list__item" data-material="transparent">Static Item 1</li>
+    <li class="adaptive list__item" data-material="transparent">Static Item 2</li>
+    <li class="adaptive list__item" data-material="transparent">Static Item 3</li>
+  </ul>
+
+  <h2 class="adaptive">Interactive List</h2>
+  <ul class="list">
+    <li class="adaptive list__item" data-material="transparent" data-interactive>Item 1</li>
+    <li class="adaptive list__item list__item--active" data-material="transparent" data-interactive>Item 2 (active)</li>
+    <li class="adaptive list__item" data-material="transparent" data-interactive>Item 3</li>
+  </ul>
+
+</body>
+</html>

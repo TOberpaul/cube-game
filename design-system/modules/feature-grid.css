@@ -1,0 +1,35 @@
+/* ========================================
+   FEATURE GRID
+   Usage:
+   <section class="adaptive section">
+     <div class="section__inner">
+       <h2 class="adaptive headline" data-level="2">Features</h2>
+       <div class="feature-grid">
+         <article class="adaptive card feature-grid__item" data-material="filled">
+           <div class="card__content">
+             <span class="adaptive icon-wrapper" data-color="action">
+               <svg>...</svg>
+             </span>
+             <h3 class="adaptive headline" data-level="4">Feature Title</h3>
+             <p class="adaptive text">Feature description.</p>
+           </div>
+         </article>
+       </div>
+     </div>
+   </section>
+   ======================================== */
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--size-288), 1fr));
+  gap: var(--layout-spacing-min);
+}
+
+.feature-grid__item .card__content {
+  gap: var(--layout-spacing-min);
+}
+
+.feature-grid__item .icon-wrapper {
+  width: var(--size-container);
+  height: var(--size-container);
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breadcrumb – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="breadcrumb.css" />
+  <link rel="stylesheet" href="link.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <nav class="adaptive breadcrumb" aria-label="Breadcrumb">
+    <a class="adaptive link breadcrumb__item" href="#">Home</a>
+    <span class="breadcrumb__separator" aria-hidden="true">/</span>
+    <a class="adaptive link breadcrumb__item" href="#">Products</a>
+    <span class="breadcrumb__separator" aria-hidden="true">/</span>
+    <a class="adaptive link breadcrumb__item" href="#">Category</a>
+    <span class="breadcrumb__separator" aria-hidden="true">/</span>
+    <span class="breadcrumb__item breadcrumb__item--current" aria-current="page">Current Page</span>
+  </nav>
+
+</body>
+</html>

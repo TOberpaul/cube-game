@@ -1,0 +1,24 @@
+/* ========================================
+   SECTION / CONTAINER
+   Usage:
+   <section class="adaptive section">
+     <div class="section__inner">Content</div>
+   </section>
+   <section class="adaptive section" data-material="vibrant" data-color="brand">
+     <div class="section__inner">Colored section</div>
+   </section>
+   ======================================== */
+
+.section {
+  padding: var(--layout-spacing-max) var(--layout-spacing);
+  border: none;
+  border-radius: 0;
+}
+
+.section__inner {
+  max-width: var(--size-1280);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-spacing);
+}

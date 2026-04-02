@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design System – Preview</title>
+  <link rel="stylesheet" href="foundation.css" />
+  <link rel="stylesheet" href="components/accordion.css" />
+  <link rel="stylesheet" href="components/avatar.css" />
+  <link rel="stylesheet" href="components/badge.css" />
+  <link rel="stylesheet" href="components/breadcrumb.css" />
+  <link rel="stylesheet" href="components/button.css" />
+  <link rel="stylesheet" href="components/card.css" />
+  <link rel="stylesheet" href="components/check.css" />
+  <link rel="stylesheet" href="components/divider.css" />
+  <link rel="stylesheet" href="components/headline.css" />
+  <link rel="stylesheet" href="components/icon.css" />
+  <link rel="stylesheet" href="components/input.css" />
+  <link rel="stylesheet" href="components/link.css" />
+  <link rel="stylesheet" href="components/list.css" />
+  <link rel="stylesheet" href="components/modal.css" />
+  <link rel="stylesheet" href="components/notification.css" />
+  <link rel="stylesheet" href="components/pagination.css" />
+  <link rel="stylesheet" href="components/progress.css" />
+  <link rel="stylesheet" href="components/section.css" />
+  <link rel="stylesheet" href="components/select.css" />
+  <link rel="stylesheet" href="components/table.css" />
+  <link rel="stylesheet" href="components/tabs.css" />
+  <link rel="stylesheet" href="components/tag.css" />
+  <link rel="stylesheet" href="components/textarea.css" />
+  <link rel="stylesheet" href="components/toggle.css" />
+  <link rel="stylesheet" href="components/tooltip.css" />
+  <link rel="stylesheet" href="modules/cta.css" />
+  <link rel="stylesheet" href="modules/feature-grid.css" />
+  <link rel="stylesheet" href="modules/footer.css" />
+  <link rel="stylesheet" href="modules/form-section.css" />
+  <link rel="stylesheet" href="modules/header.css" />
+  <link rel="stylesheet" href="modules/hero.css" />
+  <link rel="stylesheet" href="modules/sidebar.css" />
+  <link rel="stylesheet" href="modules/stats-row.css" />
+  <link rel="stylesheet" href="modules/testimonial.css" />
+  <style>
+    * { margin: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .preview-nav { position: fixed; top: 0; left: 0; width: 14rem; height: 100dvh; overflow-y: auto; background: #1a1a2e; color: #e0e0e0; padding: 1rem 0; z-index: 200; font-size: 0.8125rem; }
+    .preview-nav__title { font-size: 0.875rem; font-weight: 700; padding: 0 1rem; margin-bottom: 1rem; color: #fff; }
+    .preview-nav__group { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; padding: 0.75rem 1rem 0.25rem; }
+    .preview-nav a { display: block; padding: 0.35rem 1rem; color: #ccc; text-decoration: none; transition: background 0.15s; }
+    .preview-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .preview-main { margin-left: 14rem; }
+    .preview-section { border-bottom: 1px solid #e0e0e0; padding: 2.5rem 2rem; }
+    .preview-section__title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-bottom: 1.5rem; }
+    .preview-section__content { display: flex; flex-direction: column; gap: 1.5rem; }
+    .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+    .demo-col { display: flex; flex-direction: column; gap: 0.75rem; }
+    .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+    .preview-section--full { padding: 0; }
+    .preview-section--full .preview-section__title { padding: 1.5rem 2rem 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+<nav class="preview-nav">
+  <div class="preview-nav__title">Design System</div>
+  <div class="preview-nav__group">Components</div>
+  <a href="#headline">Headline & Text</a>
+  <a href="#button">Button</a>
+  <a href="#link">Link</a>
+  <a href="#icon">Icon</a>
+  <a href="#badge">Badge</a>
+  <a href="#tag">Tag</a>
+  <a href="#avatar">Avatar</a>
+  <a href="#card">Card</a>
+  <a href="#input">Input</a>
+  <a href="#select">Select</a>
+  <a href="#textarea">Textarea</a>
+  <a href="#check">Checkbox & Radio</a>
+  <a href="#toggle">Toggle</a>
+  <a href="#accordion">Accordion</a>
+  <a href="#tabs">Tabs</a>
+  <a href="#table">Table</a>
+  <a href="#list">List</a>
+  <a href="#notification">Notification</a>
+  <a href="#modal">Modal</a>
+  <a href="#breadcrumb">Breadcrumb</a>
+  <a href="#pagination">Pagination</a>
+  <a href="#progress">Progress</a>
+  <a href="#divider">Divider</a>
+  <a href="#tooltip">Tooltip</a>
+  <a href="#section">Section</a>
+  <div class="preview-nav__group">Modules</div>
+  <a href="#header">Header</a>
+  <a href="#hero">Hero</a>
+  <a href="#feature-grid">Feature Grid</a>
+  <a href="#stats-row">Stats Row</a>
+  <a href="#testimonial">Testimonial</a>
+  <a href="#cta">CTA</a>
+  <a href="#form-section">Form Section</a>
+  <a href="#sidebar">Sidebar</a>
+  <a href="#footer">Footer</a>
+</nav>
+<main class="preview-main">
+
+<!-- HEADLINE -->
+<div class="preview-section" id="headline">
+  <div class="preview-section__title">Headline & Text</div>
+  <div class="preview-section__content">
+    <h1 class="adaptive headline" data-level="1">Heading Level 1</h1>
+    <h2 class="adaptive headline" data-level="2">Heading Level 2</h2>
+    <h3 class="adaptive headline" data-level="3">Heading Level 3</h3>
+    <h4 class="adaptive headline" data-level="4">Heading Level 4</h4>
+    <h5 class="adaptive headline" data-level="5">Heading Level 5</h5>
+    <h6 class="adaptive headline" data-level="6">Heading Level 6</h6>
+    <p class="adaptive text">Body text – default size.</p>
+    <p class="adaptive text text--small">Small text variant.</p>
+  </div>
+</div>
+
+<!-- BUTTON -->
+<div class="preview-section" id="button">
+  <div class="preview-section__title">Button</div>
+  <div class="preview-section__content">
+    <div class="demo-row">
+      <button class="adaptive button" data-interactive>Default</button>
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action">Primary</button>
+      <button class="adaptive button" data-interactive data-material="filled">Filled</button>
+      <button class="adaptive button" data-interactive data-material="vibrant">Vibrant</button>
+      <button class="adaptive button" data-interactive data-material="transparent">Transparent</button>
+    </div>
+    <div class="demo-row">
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="xs">XS</button>
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="sm">SM</button>
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action">MD</button>
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="lg">LG</button>
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action" data-size="xl">XL</button>
+    </div>
+    <div class="demo-row">
+      <button class="adaptive button" data-interactive data-material="origin" data-color="brand">Brand</button>
+      <button class="adaptive button" data-interactive data-material="vibrant" data-color="green">Green</button>
+      <button class="adaptive button" data-interactive data-material="vibrant" data-color="red">Red</button>
+      <button class="adaptive button" data-interactive data-material="vibrant" data-color="blue">Blue</button>
+    </div>
+    <div class="demo-row">
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <button class="adaptive button button--icon-only" data-interactive data-material="origin" data-color="action" aria-label="Add">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Item
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LINK -->
+<div class="preview-section" id="link">
+  <div class="preview-section__title">Link</div>
+  <div class="preview-section__content">
+    <div class="demo-row">
+      <a class="adaptive link" href="#">Default link</a>
+      <a class="adaptive link" href="#" data-color="action">Action link</a>
+      <a class="adaptive link" href="#" data-color="brand">Brand link</a>
+      <a class="adaptive link" href="#">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        Link with icon
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ICON -->
+<div class="preview-section" id="icon">
+  <div class="preview-section__title">Icon</div>
+  <div class="preview-section__content">
+    <div class="demo-row">
+      <span class="adaptive icon-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      </span>
+      <span class="adaptive icon-wrapper" data-color="action">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </span>
+      <span class="adaptive icon-wrapper" data-color="brand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      </span>
+    </div>
+    <div class="demo-row">
+      <span class="adaptive icon-wrapper" data-size="xs">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      </span>
+      <span class="adaptive icon-wrapper" data-size="sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      </span>
+      <span class="adaptive icon-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      </span>
+      <span class="adaptive icon-wrapper" data-size="lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- BADGE -->
+<div class="preview-section" id="badge">
+  <div class="preview-section__title">Badge</div>
+  <div class="preview-section__content">
+    <div class="demo-row">
+      <span class="adaptive badge" data-material="origin" data-color="brand">3</span>
+      <span class="adaptive badge" data-material="origin" data-color="action">12</span>
+      <span class="adaptive badge" data-material="vibrant" data-color="red">New</span>
+      <span class="adaptive badge" data-material="vibrant" data-color="green">Active</span>
+      <span class="adaptive badge" data-material="vibrant" data-color="blue">Info</span>
+    </div>
+  </div>
+</div>
+
+<!-- TAG -->
+<div class="preview-section" id="tag">
+  <div class="preview-section__title">Tag</div>
+  <div class="preview-section__content">
+    <div class="demo-row">
+      <span class="adaptive tag" data-material="vibrant">Default</span>
+      <span class="adaptive tag" data-material="vibrant" data-color="green">Success</span>
+      <span class="adaptive tag" data-material="vibrant" data-color="red">Error</span>
+      <span class="adaptive tag" data-material="vibrant" data-color="yellow">Warning</span>
+      <span class="adaptive tag" data-material="vibrant" data-color="blue">Info</span>
+      <span class="adaptive tag" data-material="vibrant" data-color="brand">Brand</span>
+    </div>
+    <div class="demo-row">
+      <span class="adaptive tag" data-material="vibrant" data-color="green" data-relation="smaller">+12.5%</span>
+      <span class="adaptive tag" data-material="vibrant" data-color="red" data-relation="smaller">-3.2%</span>
+    </div>
+  </div>
+</div>
+
+<!-- AVATAR -->
+<div class="preview-section" id="avatar">
+  <div class="preview-section__title">Avatar</div>
+  <div class="preview-section__content">
+    <div class="demo-row">
+      <span class="adaptive avatar" data-material="vibrant">AB</span>
+      <span class="adaptive avatar" data-material="vibrant" data-color="brand">CD</span>
+      <span class="adaptive avatar" data-material="vibrant" data-color="blue">EF</span>
+      <span class="adaptive avatar" data-material="vibrant" data-color="green">GH</span>
+      <span class="adaptive avatar" data-material="origin" data-color="brand">DB</span>
+    </div>
+    <div class="demo-row">
+      <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="xs">XS</span>
+      <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="sm">SM</span>
+      <span class="adaptive avatar" data-material="vibrant" data-color="brand">MD</span>
+      <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="lg">LG</span>
+      <span class="adaptive avatar" data-material="vibrant" data-color="brand" data-size="xl">XL</span>
+    </div>
+  </div>
+</div>
+
+<!-- CARD -->
+<div class="preview-section" id="card">
+  <div class="preview-section__title">Card</div>
+  <div class="preview-section__content">
+    <div class="demo-grid">
+      <article class="adaptive card" data-material="filled">
+        <img class="card__media" src="https://picsum.photos/seed/a/600/340" alt="Placeholder" />
+        <div class="card__content">
+          <h3 class="adaptive headline" data-level="3">Card Title</h3>
+          <p class="adaptive text">A short description of this card's content.</p>
+        </div>
+        <div class="card__actions">
+          <button class="adaptive button" data-interactive data-material="origin" data-color="action">Action</button>
+          <button class="adaptive button" data-interactive data-material="transparent">Secondary</button>
+        </div>
+      </article>
+      <article class="adaptive card" data-material="filled">
+        <div class="card__content">
+          <h3 class="adaptive headline" data-level="4">Content Only</h3>
+          <p class="adaptive text">This card has no image, just content.</p>
+        </div>
+      </article>
+      <article class="adaptive card" data-material="vibrant" data-color="brand">
+        <div class="card__content">
+          <h3 class="adaptive headline" data-level="4">Vibrant Card</h3>
+          <p class="adaptive text">Using vibrant material with brand color.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="preview-section" id="input">
+  <div class="preview-section__title">Input</div>
+  <div class="preview-section__content" style="max-width:28rem">
+    <label class="adaptive input">
+      <span class="adaptive input__label" data-relation="smaller-3">Full Name</span>
+      <input class="adaptive input__field" type="text" placeholder="Enter your name" data-material="filled-2" data-interactive />
+    </label>
+    <label class="adaptive input">
+      <span class="adaptive input__label" data-relation="smaller-3">Email</span>
+      <input class="adaptive input__field" type="email" placeholder="you@example.com" data-material="filled-2" data-interactive />
+      <span class="adaptive input__hint" data-relation="smaller-3">We'll never share your email.</span>
+    </label>
+  </div>
+</div>
+
+<!-- SELECT -->
+<div class="preview-section" id="select">
+  <div class="preview-section__title">Select</div>
+  <div class="preview-section__content" style="max-width:20rem">
+    <label class="adaptive input">
+      <span class="adaptive input__label" data-relation="smaller-3">Country</span>
+      <select class="adaptive select" data-material="filled-2" data-interactive>
+        <option>Germany</option><option>Austria</option><option>Switzerland</option>
+      </select>
+    </label>
+  </div>
+</div>
+
+<!-- TEXTAREA -->
+<div class="preview-section" id="textarea">
+  <div class="preview-section__title">Textarea</div>
+  <div class="preview-section__content" style="max-width:28rem">
+    <label class="adaptive input">
+      <span class="adaptive input__label" data-relation="smaller-3">Message</span>
+      <textarea class="adaptive textarea" data-material="filled-2" data-interactive placeholder="Write your message..."></textarea>
+      <span class="adaptive input__hint" data-relation="smaller-3">Max 500 characters.</span>
+    </label>
+  </div>
+</div>
+
+<!-- CHECK -->
+<div class="preview-section" id="check">
+  <div class="preview-section__title">Checkbox & Radio</div>
+  <div class="preview-section__content">
+    <div class="demo-row" style="gap:2rem;align-items:flex-start">
+      <div class="demo-col">
+        <label class="adaptive check" data-interactive><input class="check__input" type="checkbox" /><span class="adaptive check__box" data-material="filled-2"><svg class="check__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="check__label">Option A</span></label>
+        <label class="adaptive check" data-interactive><input class="check__input" type="checkbox" checked /><span class="adaptive check__box" data-material="filled-2"><svg class="check__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="check__label">Option B (checked)</span></label>
+        <label class="adaptive check" data-interactive><input class="check__input" type="checkbox" /><span class="adaptive check__box" data-material="filled-2"><svg class="check__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="check__label">Option C</span></label>
+      </div>
+      <div class="demo-col">
+        <label class="adaptive check" data-interactive><input class="check__input" type="radio" name="preview-radio" checked /><span class="adaptive check__radio" data-material="filled-2"></span><span class="check__label">Choice 1</span></label>
+        <label class="adaptive check" data-interactive><input class="check__input" type="radio" name="preview-radio" /><span class="adaptive check__radio" data-material="filled-2"></span><span class="check__label">Choice 2</span></label>
+        <label class="adaptive check" data-interactive><input class="check__input" type="radio" name="preview-radio" /><span class="adaptive check__radio" data-material="filled-2"></span><span class="check__label">Choice 3</span></label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOGGLE -->
+<div class="preview-section" id="toggle">
+  <div class="preview-section__title">Toggle</div>
+  <div class="preview-section__content">
+    <div class="demo-col">
+      <label class="adaptive toggle" data-interactive><input class="toggle__input" type="checkbox" /><span class="adaptive toggle__track" data-material="filled-2"></span><span class="toggle__label">Notifications</span></label>
+      <label class="adaptive toggle" data-interactive><input class="toggle__input" type="checkbox" checked /><span class="adaptive toggle__track" data-material="filled-2"></span><span class="toggle__label">Dark Mode (on)</span></label>
+    </div>
+  </div>
+</div>
+
+<!-- ACCORDION -->
+<div class="preview-section" id="accordion">
+  <div class="preview-section__title">Accordion</div>
+  <div class="preview-section__content" style="max-width:40rem">
+    <details class="adaptive accordion" data-material="filled" data-interactive>
+      <summary class="accordion__header"><span class="accordion__title">What is the Design System?</span><span class="accordion__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+      <div class="accordion__body" onclick="event.stopPropagation()"><p class="adaptive text">A pure CSS design system using data attributes for color, material, size, and emphasis.</p></div>
+    </details>
+    <details class="adaptive accordion" data-material="filled" data-interactive open>
+      <summary class="accordion__header"><span class="accordion__title">Open by default</span><span class="accordion__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+      <div class="accordion__body" onclick="event.stopPropagation()"><p class="adaptive text">This accordion starts open via the open attribute.</p></div>
+    </details>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="preview-section" id="tabs">
+  <div class="preview-section__title">Tabs</div>
+  <div class="preview-section__content" style="max-width:40rem">
+    <nav class="tabs" role="tablist">
+      <button class="adaptive list__item list__item--active" data-material="transparent" data-interactive role="tab" aria-selected="true">Overview</button>
+      <button class="adaptive list__item" data-material="transparent" data-interactive role="tab">Details</button>
+      <button class="adaptive list__item" data-material="transparent" data-interactive role="tab">Settings</button>
+    </nav>
+    <div class="tabs__panel" role="tabpanel"><p class="adaptive text">Tab panel content goes here.</p></div>
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="preview-section" id="table">
+  <div class="preview-section__title">Table</div>
+  <div class="preview-section__content">
+    <table class="adaptive table" data-material="filled">
+      <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Anna Schmidt</td><td>Engineer</td><td>Active</td></tr>
+        <tr><td>Max Müller</td><td>Designer</td><td>Active</td></tr>
+        <tr data-interactive><td>Lisa Weber</td><td>Manager</td><td>Inactive</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- LIST -->
+<div class="preview-section" id="list">
+  <div class="preview-section__title">List</div>
+  <div class="preview-section__content" style="max-width:28rem">
+    <ul class="list">
+      <li class="adaptive list__item" data-material="transparent">Static Item 1</li>
+      <li class="adaptive list__item" data-material="transparent">Static Item 2</li>
+      <li class="adaptive list__item list__item--active" data-material="transparent" data-interactive>Active Item 3</li>
+    </ul>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="preview-section" id="notification">
+  <div class="preview-section__title">Notification</div>
+  <div class="preview-section__content" style="max-width:40rem">
+    <div class="adaptive notification" data-color="green" role="alert">
+      <span class="notification__icon" data-content-contrast="min"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+      <div class="notification__content"><strong class="notification__title">Success</strong><p class="notification__message">Operation completed successfully.</p></div>
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="adaptive notification" data-color="red" role="alert">
+      <span class="notification__icon" data-content-contrast="min"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+      <div class="notification__content"><strong class="notification__title">Error</strong><p class="notification__message">Something went wrong. Please try again.</p></div>
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="adaptive notification" data-color="yellow" role="alert">
+      <span class="notification__icon" data-content-contrast="min"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+      <div class="notification__content"><strong class="notification__title">Warning</strong><p class="notification__message">Please review your input before continuing.</p></div>
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="adaptive notification" data-color="blue" role="alert">
+      <span class="notification__icon" data-content-contrast="min"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      <div class="notification__content"><strong class="notification__title">Info</strong><p class="notification__message">Here is some useful information.</p></div>
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="preview-section" id="modal">
+  <div class="preview-section__title">Modal</div>
+  <div class="preview-section__content">
+    <dialog class="adaptive modal" data-material="filled" open style="position:relative">
+      <div class="modal__header">
+        <h3 class="adaptive headline" data-level="4">Confirm Action</h3>
+        <button class="adaptive button button--icon-only" data-interactive data-material="transparent"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal__body"><p class="adaptive text">Are you sure you want to proceed? This action cannot be undone.</p></div>
+      <div class="modal__footer">
+        <button class="adaptive button" data-interactive data-material="transparent">Cancel</button>
+        <button class="adaptive button" data-interactive data-material="origin" data-color="action">Confirm</button>
+      </div>
+    </dialog>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="preview-section" id="breadcrumb">
+  <div class="preview-section__title">Breadcrumb</div>
+  <div class="preview-section__content">
+    <nav class="adaptive breadcrumb" aria-label="Breadcrumb">
+      <a class="adaptive link breadcrumb__item" href="#">Home</a>
+      <span class="breadcrumb__separator" aria-hidden="true">/</span>
+      <a class="adaptive link breadcrumb__item" href="#">Products</a>
+      <span class="breadcrumb__separator" aria-hidden="true">/</span>
+      <span class="breadcrumb__item breadcrumb__item--current" aria-current="page">Current Page</span>
+    </nav>
+  </div>
+</div>
+
+<!-- PAGINATION -->
+<div class="preview-section" id="pagination">
+  <div class="preview-section__title">Pagination</div>
+  <div class="preview-section__content">
+    <nav class="adaptive pagination" aria-label="Pagination">
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent" data-relation="smaller"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="adaptive button" data-interactive data-material="transparent" data-relation="smaller">1</button>
+      <button class="adaptive button" data-interactive data-material="semi-transparent" data-relation="smaller">2</button>
+      <button class="adaptive button" data-interactive data-material="transparent" data-relation="smaller">3</button>
+      <button class="adaptive button" data-interactive data-material="transparent" data-relation="smaller">4</button>
+      <button class="adaptive button button--icon-only" data-interactive data-material="transparent" data-relation="smaller"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </nav>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="preview-section" id="progress">
+  <div class="preview-section__title">Progress & Loader</div>
+  <div class="preview-section__content" style="max-width:28rem">
+    <div class="adaptive progress" data-material="filled-2"><div class="adaptive progress__bar" data-material="origin" data-color="action" style="width:60%"></div></div>
+    <div class="adaptive progress" data-material="filled-2"><div class="adaptive progress__bar" data-material="origin" data-color="green" style="width:100%"></div></div>
+    <div class="demo-row">
+      <span class="adaptive loader" data-color="action"></span>
+      <span class="adaptive loader" data-color="brand"></span>
+      <span class="adaptive loader" data-color="green"></span>
+    </div>
+  </div>
+</div>
+
+<!-- DIVIDER -->
+<div class="preview-section" id="divider">
+  <div class="preview-section__title">Divider</div>
+  <div class="preview-section__content" style="max-width:28rem">
+    <p class="adaptive text">Content above the divider.</p>
+    <hr class="adaptive divider" />
+    <p class="adaptive text">Content below the divider.</p>
+  </div>
+</div>
+
+<!-- TOOLTIP -->
+<div class="preview-section" id="tooltip">
+  <div class="preview-section__title">Tooltip</div>
+  <div class="preview-section__content">
+    <div class="demo-row">
+      <span class="tooltip-wrapper">
+        <button class="adaptive button" data-interactive>Hover me</button>
+        <span class="adaptive tooltip" data-material="inverted" data-container-contrast="max" role="tooltip">Tooltip text</span>
+      </span>
+      <span class="tooltip-wrapper">
+        <button class="adaptive button" data-interactive data-material="origin" data-color="action">Action</button>
+        <span class="adaptive tooltip" data-material="inverted" data-container-contrast="max" role="tooltip">Perform this action</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION -->
+<div class="preview-section preview-section--full" id="section">
+  <div class="preview-section__title">Section</div>
+  <section class="adaptive section"><div class="section__inner"><h2 class="adaptive headline" data-level="3">Default Section</h2><p class="adaptive text">Content is centered and max-width constrained.</p></div></section>
+  <section class="adaptive section" data-material="filled-2"><div class="section__inner"><h2 class="adaptive headline" data-level="3">Filled-2 Section</h2><p class="adaptive text">Subtle background contrast.</p></div></section>
+</div>
+
+<!-- ========== MODULES ========== -->
+
+<!-- HEADER -->
+<div class="preview-section preview-section--full" id="header">
+  <div class="preview-section__title">Header</div>
+  <header class="adaptive header" data-material="filled">
+    <div class="header__inner">
+      <a class="header__logo" href="#" aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span class="header__brand">Brand</span>
+      </a>
+      <nav class="header__nav" aria-label="Main navigation">
+        <a class="adaptive link header__nav-item" href="#">Features</a>
+        <a class="adaptive link header__nav-item" href="#">Pricing</a>
+        <a class="adaptive link header__nav-item" href="#">About</a>
+      </nav>
+      <div class="header__actions">
+        <button class="adaptive button" data-interactive data-material="transparent">Login</button>
+        <button class="adaptive button" data-interactive data-material="origin" data-color="action">Sign Up</button>
+      </div>
+    </div>
+  </header>
+</div>
+
+<!-- HERO -->
+<div class="preview-section preview-section--full" id="hero">
+  <div class="preview-section__title">Hero</div>
+  <section class="adaptive hero" data-material="origin" data-color="brand">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <h1 class="adaptive headline" data-level="1">Build something amazing</h1>
+        <p class="adaptive text">A powerful platform that helps you create, manage, and scale your projects with ease.</p>
+        <div class="hero__actions">
+          <button class="adaptive button" data-interactive data-material="origin" data-size="lg">Get Started</button>
+          <button class="adaptive button" data-interactive data-material="origin" data-size="lg">Learn More</button>
+        </div>
+      </div>
+      <div class="hero__media"><img src="https://picsum.photos/seed/hero/800/600" alt="Hero visual" /></div>
+    </div>
+  </section>
+</div>
+
+<!-- FEATURE GRID -->
+<div class="preview-section preview-section--full" id="feature-grid">
+  <div class="preview-section__title">Feature Grid</div>
+  <section class="adaptive section">
+    <div class="section__inner">
+      <h2 class="adaptive headline" data-level="2">Features</h2>
+      <div class="feature-grid">
+        <article class="adaptive card feature-grid__item" data-material="filled">
+          <div class="card__content">
+            <span class="adaptive icon-wrapper" data-color="action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </span>
+            <h3 class="adaptive headline" data-level="4">Lightning Fast</h3>
+            <p class="adaptive text">Optimized for speed and performance.</p>
+          </div>
+        </article>
+        <article class="adaptive card feature-grid__item" data-material="filled">
+          <div class="card__content">
+            <span class="adaptive icon-wrapper" data-color="action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+            <h3 class="adaptive headline" data-level="4">Secure by Default</h3>
+            <p class="adaptive text">Enterprise-grade security built in.</p>
+          </div>
+        </article>
+        <article class="adaptive card feature-grid__item" data-material="filled">
+          <div class="card__content">
+            <span class="adaptive icon-wrapper" data-color="action">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <h3 class="adaptive headline" data-level="4">Easy Integration</h3>
+            <p class="adaptive text">Connect with your existing tools.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- STATS ROW -->
+<div class="preview-section" id="stats-row">
+  <div class="preview-section__title">Stats Row</div>
+  <div class="preview-section__content">
+    <div class="stats-row">
+      <article class="adaptive card stats-row__item" data-material="filled">
+        <div class="card__content">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <p class="adaptive text text--small" data-emphasis="weak">Total Users</p>
+            <span class="adaptive badge" data-material="vibrant" data-color="green" data-relation="smaller">+12.5%</span>
+          </div>
+          <p class="adaptive headline" data-level="2">12,345</p>
+        </div>
+      </article>
+      <article class="adaptive card stats-row__item" data-material="filled">
+        <div class="card__content">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <p class="adaptive text text--small" data-emphasis="weak">Revenue</p>
+            <span class="adaptive badge" data-material="vibrant" data-color="green" data-relation="smaller">+8.3%</span>
+          </div>
+          <p class="adaptive headline" data-level="2">€84,200</p>
+        </div>
+      </article>
+      <article class="adaptive card stats-row__item" data-material="filled">
+        <div class="card__content">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <p class="adaptive text text--small" data-emphasis="weak">Active Sessions</p>
+            <span class="adaptive badge" data-material="vibrant" data-color="red" data-relation="smaller">-2.1%</span>
+          </div>
+          <p class="adaptive headline" data-level="2">1,892</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIAL -->
+<div class="preview-section preview-section--full" id="testimonial">
+  <div class="preview-section__title">Testimonial</div>
+  <section class="adaptive section">
+    <div class="section__inner">
+      <h2 class="adaptive headline" data-level="2">What our customers say</h2>
+      <div class="testimonial-grid">
+        <blockquote class="adaptive card testimonial" data-material="filled-2">
+          <div class="card__content">
+            <p class="adaptive text">"This platform has completely transformed how we work."</p>
+            <div class="testimonial__author">
+              <span class="adaptive avatar" data-material="origin" data-color="brand">JD</span>
+              <div><p class="adaptive text" style="font-weight:600">Jane Doe</p><p class="adaptive text text--small" data-emphasis="weak">CEO, TechCorp</p></div>
+            </div>
+          </div>
+        </blockquote>
+        <blockquote class="adaptive card testimonial" data-material="filled-2">
+          <div class="card__content">
+            <p class="adaptive text">"Easy to integrate, beautiful design."</p>
+            <div class="testimonial__author">
+              <span class="adaptive avatar" data-material="origin" data-color="blue">MS</span>
+              <div><p class="adaptive text" style="font-weight:600">Max Schmidt</p><p class="adaptive text text--small" data-emphasis="weak">CTO, StartupXYZ</p></div>
+            </div>
+          </div>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CTA -->
+<div class="preview-section preview-section--full" id="cta">
+  <div class="preview-section__title">CTA</div>
+  <section class="adaptive cta" data-material="origin" data-color="action">
+    <div class="cta__inner">
+      <h2 class="adaptive headline" data-level="2">Ready to get started?</h2>
+      <p class="adaptive text">Join thousands of users who are already building with our platform.</p>
+      <div class="cta__actions">
+        <button class="adaptive button" data-interactive data-material="origin" data-size="lg">Start Free Trial</button>
+        <button class="adaptive button" data-interactive data-material="origin" data-size="lg">Contact Sales</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FORM SECTION -->
+<div class="preview-section preview-section--full" id="form-section">
+  <div class="preview-section__title">Form Section</div>
+  <section class="adaptive section">
+    <div class="section__inner">
+      <h2 class="adaptive headline" data-level="2">Contact Us</h2>
+      <form class="form-section" onsubmit="return false">
+        <div class="form-section__row">
+          <label class="adaptive input"><span class="adaptive input__label" data-relation="smaller-3">First Name</span><input class="adaptive input__field" type="text" placeholder="Jane" data-material="filled-2" data-interactive /></label>
+          <label class="adaptive input"><span class="adaptive input__label" data-relation="smaller-3">Last Name</span><input class="adaptive input__field" type="text" placeholder="Doe" data-material="filled-2" data-interactive /></label>
+        </div>
+        <label class="adaptive input"><span class="adaptive input__label" data-relation="smaller-3">Email</span><input class="adaptive input__field" type="email" placeholder="jane@example.com" data-material="filled-2" data-interactive /></label>
+        <label class="adaptive input"><span class="adaptive input__label" data-relation="smaller-3">Subject</span><select class="adaptive select" data-material="filled-2" data-interactive><option>General Inquiry</option><option>Support</option><option>Sales</option></select></label>
+        <label class="adaptive input"><span class="adaptive input__label" data-relation="smaller-3">Message</span><textarea class="adaptive textarea" data-material="filled-2" data-interactive placeholder="Your message..."></textarea></label>
+        <div class="form-section__actions">
+          <button class="adaptive button" data-interactive data-material="origin" data-color="action">Send Message</button>
+          <button class="adaptive button" data-interactive data-material="transparent">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!-- SIDEBAR -->
+<div class="preview-section" id="sidebar">
+  <div class="preview-section__title">Sidebar</div>
+  <div class="preview-section__content">
+    <div style="display:flex;border:1px solid #e0e0e0;border-radius:0.5rem;overflow:hidden">
+      <aside class="adaptive sidebar" data-material="filled-2" style="min-height:16rem">
+        <nav class="sidebar__nav">
+          <a class="adaptive list__item list__item--active" data-material="transparent" data-interactive href="#">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="adaptive list__item" data-material="transparent" data-interactive href="#">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Analytics
+          </a>
+          <a class="adaptive list__item" data-material="transparent" data-interactive href="#">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
+          </a>
+        </nav>
+      </aside>
+      <div style="flex:1;padding:2rem"><p class="adaptive text">Main content area next to the sidebar.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="preview-section preview-section--full" id="footer">
+  <div class="preview-section__title">Footer</div>
+  <footer class="adaptive footer" data-material="filled-2">
+    <div class="footer__inner">
+      <div class="footer__columns">
+        <div class="footer__column"><h4 class="adaptive headline footer__heading" data-level="6">Company</h4><nav class="footer__links"><a class="adaptive link" href="#">About</a><a class="adaptive link" href="#">Careers</a><a class="adaptive link" href="#">Press</a></nav></div>
+        <div class="footer__column"><h4 class="adaptive headline footer__heading" data-level="6">Product</h4><nav class="footer__links"><a class="adaptive link" href="#">Features</a><a class="adaptive link" href="#">Pricing</a><a class="adaptive link" href="#">Docs</a></nav></div>
+        <div class="footer__column"><h4 class="adaptive headline footer__heading" data-level="6">Support</h4><nav class="footer__links"><a class="adaptive link" href="#">Help Center</a><a class="adaptive link" href="#">Contact</a><a class="adaptive link" href="#">Status</a></nav></div>
+        <div class="footer__column"><h4 class="adaptive headline footer__heading" data-level="6">Legal</h4><nav class="footer__links"><a class="adaptive link" href="#">Privacy</a><a class="adaptive link" href="#">Terms</a><a class="adaptive link" href="#">Imprint</a></nav></div>
+      </div>
+      <hr class="adaptive divider" />
+      <div class="footer__bottom"><p class="adaptive text text--small">© 2026 Company. All rights reserved.</p></div>
+    </div>
+  </footer>
+</div>
+
+</main>
+</body>
+</html>

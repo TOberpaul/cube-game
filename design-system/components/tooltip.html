@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tooltip – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="tooltip.css" />
+  <link rel="stylesheet" href="button.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 4rem 2rem; display: flex; flex-direction: column; gap: 2rem; align-items: flex-start; }
+    .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <div class="demo-row">
+    <span class="tooltip-wrapper">
+      <button class="adaptive button" data-interactive>Hover me</button>
+      <span class="adaptive tooltip" data-material="inverted" data-container-contrast="max" role="tooltip">Tooltip text</span>
+    </span>
+
+    <span class="tooltip-wrapper">
+      <button class="adaptive button" data-interactive data-material="origin" data-color="action">Action</button>
+      <span class="adaptive tooltip" data-material="inverted" data-container-contrast="max" role="tooltip">Perform this action</span>
+    </span>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Headline & Text – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="headline.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h1 class="adaptive headline" data-level="1">Heading Level 1</h1>
+  <h2 class="adaptive headline" data-level="2">Heading Level 2</h2>
+  <h3 class="adaptive headline" data-level="3">Heading Level 3</h3>
+  <h4 class="adaptive headline" data-level="4">Heading Level 4</h4>
+  <h5 class="adaptive headline" data-level="5">Heading Level 5</h5>
+  <h6 class="adaptive headline" data-level="6">Heading Level 6</h6>
+
+  <hr />
+
+  <p class="adaptive text">Body text – default size, using var(--body-size).</p>
+  <p class="adaptive text text--small">Small text – using var(--body-small-size).</p>
+
+  <hr />
+
+  <div data-size="lg">
+    <h2 class="adaptive headline" data-level="2">Heading in data-size="lg" context</h2>
+    <p class="adaptive text">Body text scales up automatically inside a larger size context.</p>
+  </div>
+
+</body>
+</html>

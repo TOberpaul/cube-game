@@ -1,0 +1,31 @@
+/* ========================================
+   ICON (Wrapper)
+   Usage:
+   <span class="adaptive icon-wrapper">
+     <svg>...</svg>
+   </span>
+   ======================================== */
+
+.icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-icon);
+  height: var(--size-icon);
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.icon-wrapper svg {
+  width: 100%;
+  height: 100%;
+  color: var(--db-visual);
+  fill: currentColor;
+  stroke: none;
+}
+
+.icon-wrapper svg[fill="none"] {
+  fill: none;
+  stroke: currentColor;
+}

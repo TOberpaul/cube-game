@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tag – Component Reference</title>
+  <link rel="stylesheet" href="../foundation.css" />
+  <link rel="stylesheet" href="tag.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+    .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+    h2 { margin: 0; }
+  </style>
+</head>
+<body class="adaptive" data-color="neutral">
+
+  <h2 class="adaptive">Tag Variants</h2>
+  <div class="demo-row">
+    <span class="adaptive tag" data-material="vibrant">Default</span>
+    <span class="adaptive tag" data-material="vibrant" data-color="green">Success</span>
+    <span class="adaptive tag" data-material="vibrant" data-color="red">Error</span>
+    <span class="adaptive tag" data-material="vibrant" data-color="yellow">Warning</span>
+    <span class="adaptive tag" data-material="vibrant" data-color="blue">Info</span>
+    <span class="adaptive tag" data-material="vibrant" data-color="brand">Brand</span>
+  </div>
+
+  <h2 class="adaptive">Smaller Tags (via data-relation)</h2>
+  <div class="demo-row">
+    <span class="adaptive tag" data-material="vibrant" data-color="green" data-relation="smaller">+12.5%</span>
+    <span class="adaptive tag" data-material="vibrant" data-color="red" data-relation="smaller">-3.2%</span>
+  </div>
+
+  <h2 class="adaptive">Interactive Tag</h2>
+  <div class="demo-row">
+    <button class="adaptive tag" data-interactive data-material="vibrant">
+      Removable
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+</body>
+</html>

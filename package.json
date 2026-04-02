@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.5",
+    "fast-check": "^4.6.0",
+    "jsdom": "^29.0.1",
+    "motion": "^12.38.0",
+    "vitest": "^4.1.2"
+  }
+}

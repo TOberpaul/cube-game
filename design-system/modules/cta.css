@@ -1,0 +1,35 @@
+/* ========================================
+   CTA SECTION
+   Usage:
+   <section class="adaptive cta" data-material="origin" data-color="action">
+     <div class="cta__inner">
+       <h2 class="adaptive headline" data-level="2">Ready to get started?</h2>
+       <p class="adaptive text">Description text.</p>
+       <div class="cta__actions">
+         <button class="adaptive button" data-interactive data-material="origin" data-size="lg">Get Started</button>
+       </div>
+     </div>
+   </section>
+   ======================================== */
+
+.cta {
+  padding: var(--layout-spacing-max) var(--layout-spacing);
+  background: var(--db-background);
+  color: var(--db-text);
+  text-align: center;
+}
+
+.cta__inner {
+  max-width: var(--size-768);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--layout-spacing-min);
+}
+
+.cta__actions {
+  display: flex;
+  gap: var(--layout-spacing-min);
+  padding-top: var(--layout-spacing-min);
+}
