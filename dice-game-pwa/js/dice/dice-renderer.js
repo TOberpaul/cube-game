@@ -36,63 +36,29 @@ async function loadDieModel() {
     loader.load(
       'assets/dice.glb',
       (gltf) => {
-        // The GLB contains 3 dice. Extract only the white one (Cube.002_4)
-        let dieNode = null;
-        gltf.scene.traverse((child) => {
-          if (child.name === 'Cube.002_4' || child.name === 'Cube_002_4') {
-            dieNode = child;
-          }
-        });
-
-        // Fallback: if not found by name, try the third die group
-        if (!dieNode) {
-          const root = gltf.scene.getObjectByName('GLTF_SceneRootNode');
-          if (root && root.children.length >= 3) {
-            dieNode = root.children[2]; // third die = white one
-          }
-        }
-
-        // Final fallback: just use the whole scene
-        if (!dieNode) {
-          dieNode = gltf.scene;
-        }
+        const model = gltf.scene;
 
         // Normalize size to unit cube
-        const box = new THREE.Box3().setFromObject(dieNode);
+        const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
         const scale = 1 / maxDim;
+        model.scale.setScalar(scale);
 
-        // Create a clean group with just this die
-        const wrapper = new THREE.Group();
-        const clone = dieNode.clone(true);
-        clone.scale.setScalar(scale);
+        // Center it
         const center = box.getCenter(new THREE.Vector3()).multiplyScalar(scale);
-        clone.position.sub(center);
+        model.position.sub(center);
 
-        // Override materials to white body + dark pips
-        clone.traverse((child) => {
-          if (child.isMesh && child.material) {
-            const mat = child.material.clone();
-            const baseColor = mat.color ? mat.color.getHex() : 0;
-            // Pips are the darker material, body is the lighter one
-            if (baseColor < 0x333333) {
-              // Dark material = pips → keep dark
-              mat.color.setHex(0x1a1a1e);
-              mat.roughness = 0.9;
-            } else {
-              // Light material = body → make warm white
-              mat.color.setHex(0xf0ece8);
-              mat.roughness = 0.3;
-              mat.metalness = 0.0;
-            }
-            child.material = mat;
+        // Enable shadows
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
           }
         });
 
-        wrapper.add(clone);
-        cachedGLTF = wrapper;
-        resolve(wrapper.clone(true));
+        cachedGLTF = model;
+        resolve(model.clone(true));
       },
       undefined,
       reject
