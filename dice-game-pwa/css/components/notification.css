@@ -1,0 +1,50 @@
+/* ========================================
+   NOTIFICATION / ALERT
+   Usage:
+   <div class="adaptive notification" data-color="green" role="alert">
+     <span class="notification__icon" data-content-contrast="min"><svg class="icon">...</svg></span>
+     <div class="notification__content">
+       <strong class="notification__title">Success</strong>
+       <p class="notification__message">Operation completed.</p>
+     </div>
+     <button class="adaptive button button--icon-only" data-interactive data-material="transparent">✕</button>
+   </div>
+   ======================================== */
+
+.notification {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--layout-spacing-min);
+}
+
+.notification__icon {
+  display: flex;
+  align-items: center;
+  height: var(--size-line-height);
+  flex-shrink: 0;
+}
+
+.notification__icon > .icon {
+  width: var(--size-icon);
+  height: var(--size-icon);
+  color: var(--db-visual);
+  fill: none;
+  stroke: currentColor;
+}
+
+.notification__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-gap);
+  flex: 1;
+}
+
+.notification__title {
+  font-weight: 700;
+}
+
+.notification__message {
+  font-size: var(--size-text-min);
+  line-height: var(--size-line-height-min);
+  margin: 0;
+}

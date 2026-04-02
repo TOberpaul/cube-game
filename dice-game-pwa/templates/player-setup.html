@@ -1,0 +1,27 @@
+<div class="dialog-backdrop">
+  <div class="adaptive modal dialog" data-material="filled" role="dialog" aria-modal="true" aria-label="{{home.playerSetup}}">
+    <div class="modal__header">
+      <button type="button" class="adaptive button button--icon-only" data-interactive data-material="transparent" aria-label="{{game.backToDice}}" id="setup-back-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      </button>
+      <span id="setup-title">{{home.playerSetup}}</span>
+      <button type="button" class="adaptive button button--icon-only" data-interactive data-material="transparent" aria-label="Schließen" id="setup-close-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="dialog__local-label">{{home.playerCount}}</p>
+      <div class="dice-count-picker" id="setup-player-count" role="radiogroup" aria-label="{{home.playerCount}}">
+        <button type="button" class="adaptive button dice-count-picker__btn dice-count-picker__btn--active" data-interactive data-material="inverted" data-value="2" aria-pressed="true">2</button>
+        <button type="button" class="adaptive button dice-count-picker__btn" data-interactive data-material="filled-2" data-value="3">3</button>
+        <button type="button" class="adaptive button dice-count-picker__btn" data-interactive data-material="filled-2" data-value="4">4</button>
+        <button type="button" class="adaptive button dice-count-picker__btn" data-interactive data-material="filled-2" data-value="5">5</button>
+        <button type="button" class="adaptive button dice-count-picker__btn" data-interactive data-material="filled-2" data-value="6">6</button>
+      </div>
+
+      <div class="dialog__player-names" id="setup-player-names"></div>
+
+      <button type="button" class="adaptive button button--full-width" data-interactive data-material="inverted" data-container-contrast="max" id="setup-start-btn">{{home.startLocal}}</button>
+    </div>
+  </div>
+</div>

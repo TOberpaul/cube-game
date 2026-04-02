@@ -3356,7 +3356,7 @@ Content Contrast MAX
 .adaptive {
   min-height: var(--size-container);
   min-width: var(--size-container);
-  padding: var(--size-padding) var(--size-padding-max);
+  padding: var(--size-padding) var(--size-padding);
   border-radius: var(--size-border-radius);
   font-size: var(--size-text);
   background: var(--db-background);

@@ -1,0 +1,17 @@
+<section class="home-screen" aria-label="{{home.title}}">
+  <h1>{{home.title}}</h1>
+  <p>{{home.subtitle}}</p>
+
+  <!-- Continue game button — shown if active game exists -->
+  <div class="home-screen__active-game" data-slot="active-game" hidden>
+    <button type="button" class="adaptive button button--full-width" data-interactive data-material="inverted" data-color="neutral" data-container-contrast="max" id="home-continue-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+      {{home.continueGame}}
+    </button>
+  </div>
+
+  <nav class="home-screen__modes" aria-label="{{home.selectMode}}">
+    <h3>{{home.selectMode}}</h3>
+    <div class="home-screen__mode-list" role="list" data-slot="mode-list"></div>
+  </nav>
+</section>

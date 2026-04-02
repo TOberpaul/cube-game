@@ -1,0 +1,31 @@
+<div class="dialog-backdrop">
+  <div class="adaptive modal dialog" data-material="filled" role="dialog" aria-modal="true" aria-label="{{home.play}}">
+    <div class="modal__header">
+      <span id="dialog-title"></span>
+      <button type="button" class="adaptive button button--icon-only" data-interactive data-material="transparent" aria-label="Schließen" id="dialog-close-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p id="dialog-description"></p>
+      <div class="dialog__options">
+        <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" id="dialog-solo-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>{{home.solo}}</span>
+        </button>
+        <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" id="dialog-local-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>{{home.localMultiplayer}}</span>
+        </button>
+        <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" id="dialog-online-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span>{{home.onlineMultiplayer}}</span>
+        </button>
+        <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" id="dialog-offline-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 16.686A2 2 0 1 0 14 20.014"/><path d="M7.172 12.172a8 8 0 0 1 10.656.828"/><path d="M2.757 7.757a16 16 0 0 1 18.486 0"/></svg>
+          <span>{{home.offlineMultiplayer}}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

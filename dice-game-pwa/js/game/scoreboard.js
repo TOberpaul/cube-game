@@ -95,52 +95,18 @@ export function createScoreboard() {
 
   /**
    * Renders a simple total-score display for free-roll and similar modes.
+   * Free roll has no meaningful score — hide the scoreboard entirely.
    * @param {object} state
    */
   function renderSimple(state) {
-    const heading = document.createElement('h2');
-    heading.className = 'scoreboard__title';
-    heading.textContent = t('scoreboard.title');
-    rootEl.appendChild(heading);
-
-    const list = document.createElement('ul');
-    list.className = 'scoreboard__list';
-    list.setAttribute('role', 'list');
-
-    for (let i = 0; i < state.players.length; i++) {
-      const player = state.players[i];
-      const sheet = state.scores[player.id];
-      const score = sheet ? sheet.totalScore : 0;
-      const isActive = i === state.currentPlayerIndex;
-
-      const li = document.createElement('li');
-      li.className = 'scoreboard__player' + (isActive ? ' scoreboard__player--active' : '');
-      li.setAttribute('aria-current', isActive ? 'true' : 'false');
-
-      const nameSpan = document.createElement('span');
-      nameSpan.className = 'scoreboard__player-name';
-      nameSpan.textContent = player.name;
-
-      const scoreSpan = document.createElement('span');
-      scoreSpan.className = 'scoreboard__player-score';
-      scoreSpan.textContent = String(score);
-
-      li.appendChild(nameSpan);
-      li.appendChild(scoreSpan);
-      list.appendChild(li);
+    // No scoreboard for free roll — just show the dice sum after rolling
+    if (state.rollsThisTurn > 0 && state.dice?.values) {
+      const sum = state.dice.values.reduce((a, b) => a + b, 0);
+      const sumEl = document.createElement('p');
+      sumEl.className = 'adaptive text scoreboard__round';
+      sumEl.textContent = t('game.diceSum', { sum });
+      rootEl.appendChild(sumEl);
     }
-
-    rootEl.appendChild(list);
-
-    // Round info
-    const roundEl = document.createElement('p');
-    roundEl.className = 'scoreboard__round';
-    if (state.maxRounds != null) {
-      roundEl.textContent = t('game.round', { current: state.currentRound, max: state.maxRounds });
-    } else {
-      roundEl.textContent = t('game.roundUnlimited', { current: state.currentRound });
-    }
-    rootEl.appendChild(roundEl);
   }
 
   /**
@@ -149,13 +115,14 @@ export function createScoreboard() {
    */
   function renderKniffel(state) {
     const heading = document.createElement('h2');
-    heading.className = 'scoreboard__title';
+    heading.className = 'adaptive headline scoreboard__title';
+    heading.setAttribute('data-level', '4');
     heading.textContent = t('scoreboard.title');
     rootEl.appendChild(heading);
 
     // Round info
     const roundEl = document.createElement('p');
-    roundEl.className = 'scoreboard__round';
+    roundEl.className = 'adaptive text text--small scoreboard__round';
     if (state.maxRounds != null) {
       roundEl.textContent = t('game.round', { current: state.currentRound, max: state.maxRounds });
     } else {
@@ -234,6 +201,8 @@ export function createScoreboard() {
     tr.appendChild(th);
 
     const currentPlayerId = state.players[state.currentPlayerIndex]?.id;
+    let rowIsClickable = false;
+    let rowScore = null;
 
     for (const player of state.players) {
       const td = document.createElement('td');
@@ -246,34 +215,32 @@ export function createScoreboard() {
         td.textContent = String(value);
         td.classList.add('scoreboard__cell--filled');
       } else if (player.id === currentPlayerId && state.rollsThisTurn > 0) {
-        // Show as clickable option for current player if they've rolled
         td.classList.add('scoreboard__cell--available');
-        const btn = document.createElement('button');
-        btn.className = 'scoreboard__select-btn';
-        btn.type = 'button';
-        btn.setAttribute('aria-label', t('kniffel.' + categoryId));
-
-        // Calculate potential score
         const score = calculatePotentialScore(categoryId, state);
-        btn.textContent = score != null ? String(score) : '–';
-
-        btn.addEventListener('click', () => {
-          if (categoryHandler) {
-            categoryHandler({
-              id: categoryId,
-              name: 'kniffel.' + categoryId,
-              score: score ?? 0,
-            });
-          }
-        });
-
-        td.appendChild(btn);
+        td.textContent = score != null ? String(score) : '–';
+        rowIsClickable = true;
+        rowScore = score ?? 0;
       } else {
         td.textContent = '–';
         td.classList.add('scoreboard__cell--empty');
       }
 
       tr.appendChild(td);
+    }
+
+    // Make entire row clickable
+    if (rowIsClickable) {
+      tr.classList.add('scoreboard__row--clickable');
+      tr.setAttribute('role', 'button');
+      tr.setAttribute('tabindex', '0');
+      tr.setAttribute('aria-label', `${t('kniffel.' + categoryId)}: ${rowScore}`);
+      const handler = () => {
+        if (categoryHandler) {
+          categoryHandler({ id: categoryId, name: 'kniffel.' + categoryId, score: rowScore });
+        }
+      };
+      tr.addEventListener('click', handler);
+      tr.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
     }
 
     return tr;

@@ -1,0 +1,11 @@
+<section class="result-screen" aria-label="{{result.title}}">
+  <h1 class="result-screen__title">{{result.title}}</h1>
+  <p class="result-screen__announcement" role="status" aria-live="polite" id="result-announcement"></p>
+
+  <ol class="list result-screen__rankings" aria-label="{{result.title}}" data-slot="rankings"></ol>
+
+  <div class="result-screen__actions" role="group" aria-label="{{result.backToHome}}">
+    <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" id="result-rematch-btn">{{result.rematch}}</button>
+    <button type="button" class="adaptive button button--full-width" data-interactive data-material="origin" data-color="action" data-container-contrast="max" id="result-new-game-btn">{{result.newGame}}</button>
+  </div>
+</section>

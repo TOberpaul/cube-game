@@ -1,0 +1,14 @@
+<section class="lobby-screen" aria-label="{{lobby.title}}">
+  <h1 class="lobby-screen__title">{{lobby.title}}</h1>
+  <p class="lobby-screen__player-count" id="lobby-player-count"></p>
+
+  <!-- Connection info — populated dynamically based on play type -->
+  <div data-slot="connection-info"></div>
+
+  <div class="lobby-screen__players" role="region" aria-label="{{lobby.players}}">
+    <h2 class="lobby-screen__players-heading">{{lobby.players}}</h2>
+    <ul class="list" role="list" id="lobby-player-list" data-slot="player-list"></ul>
+  </div>
+
+  <div class="lobby-screen__actions" data-slot="actions"></div>
+</section>

@@ -5,18 +5,14 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // Rotation targets: desired value faces +Y (up toward camera)
-// Must match the face layout of the GLB model.
-// Standard die: 1 opposite 6, 2 opposite 5, 3 opposite 4
-// We need to figure out which face points where in the model.
-// Default assumption: model has 1 on +Z, 2 on +Y, 3 on -X, 4 on +X, 5 on -Y, 6 on -Z
-// These rotations bring the desired value to face +Y (top).
+// Calibrated against the actual GLB model face layout.
 const VALUE_ROTATIONS = {
-  1: { x: -Math.PI / 2, y: 0, z: 0 },
-  2: { x: 0, y: 0, z: 0 },
-  3: { x: 0, y: 0, z: -Math.PI / 2 },
-  4: { x: 0, y: 0, z: Math.PI / 2 },
-  5: { x: Math.PI, y: 0, z: 0 },
-  6: { x: Math.PI / 2, y: 0, z: 0 },
+  1: { x: 0, y: 0, z: Math.PI / 2 },          // swapped with 5
+  2: { x: -Math.PI / 2, y: 0, z: 0 },         // correct
+  3: { x: 0, y: 0, z: 0 },                    // correct
+  4: { x: Math.PI, y: 0, z: 0 },              // correct
+  5: { x: Math.PI / 2, y: 0, z: 0 },          // swapped with 1
+  6: { x: 0, y: 0, z: -Math.PI / 2 },         // correct
 };
 
 function easeOutBack(t) {
@@ -70,7 +66,6 @@ export function createDiceRenderer() {
   let scene = null, camera = null, renderer = null, containerEl = null;
   let dieMeshes = [], currentValues = [], animationId = null, animations = [];
   let resizeObserver = null;
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   function setupScene(container) {
     containerEl = container;
@@ -80,54 +75,54 @@ export function createDiceRenderer() {
     const aspect = container.clientWidth / Math.max(container.clientHeight, 1);
     // Closer camera, slight angle — like looking at dice on a table
     camera = new THREE.PerspectiveCamera(30, aspect, 0.1, 100);
-    camera.position.set(0, 15, 5);
+    camera.position.set(0, 30, 5);
     camera.lookAt(0, 0, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.5;
+    renderer.shadowMap.type = THREE.VSMShadowMap;
+    renderer.toneMapping = THREE.NoToneMapping;
     container.appendChild(renderer.domElement);
 
-    // Soft ambient — not too bright, let directional lights do the work
-    scene.add(new THREE.AmbientLight(0xfff5ee, 0.5));
+    // Soft ambient — neutral white
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
 
-    // Key light — warm, from upper-right-front, soft shadows
-    const key = new THREE.DirectionalLight(0xfff0e0, 2.0);
-    key.position.set(3, 8, 4);
+    // Key light — neutral white, high up for soft shadows
+    const key = new THREE.DirectionalLight(0xffffff, 1.8);
+    key.position.set(2, 12, 3);
     key.castShadow = true;
     key.shadow.mapSize.width = 2048;
     key.shadow.mapSize.height = 2048;
-    key.shadow.camera.near = 0.5;
-    key.shadow.camera.far = 20;
-    key.shadow.camera.left = -5;
-    key.shadow.camera.right = 5;
-    key.shadow.camera.top = 5;
-    key.shadow.camera.bottom = -5;
-    key.shadow.radius = 8;
-    key.shadow.bias = -0.0003;
+    key.shadow.camera.near = 0.1;
+    key.shadow.camera.far = 50;
+    key.shadow.camera.left = -15;
+    key.shadow.camera.right = 15;
+    key.shadow.camera.top = 15;
+    key.shadow.camera.bottom = -15;
+    key.shadow.radius = 20;
+    key.shadow.blurSamples = 25;
+    key.shadow.bias = -0.0002;
     scene.add(key);
 
     // Fill light — cool, from left-back, softer
-    const fill = new THREE.DirectionalLight(0xd0d8ff, 0.6);
-    fill.position.set(-4, 3, -2);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.4);
+    fill.position.set(-4, 5, -2);
     scene.add(fill);
 
     // Rim/back light — subtle highlight on edges
-    const rim = new THREE.DirectionalLight(0xffffff, 0.3);
-    rim.position.set(0, 1, -5);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.2);
+    rim.position.set(0, 2, -5);
     scene.add(rim);
 
-    // Ground plane for contact shadows
+    // Ground plane for ultra-soft contact shadows
     const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(20, 20),
-      new THREE.ShadowMaterial({ opacity: 0.18 })
+      new THREE.PlaneGeometry(100, 100),
+      new THREE.ShadowMaterial({ opacity: 0.12 })
     );
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.55;
+    ground.position.y = -0.6;
     ground.receiveShadow = true;
     scene.add(ground);
 
@@ -142,8 +137,8 @@ export function createDiceRenderer() {
   }
 
   function layoutDice(count) {
-    // Circular layout with equal spacing, slight organic feel
-    const radius = count <= 2 ? 1.0 : 1.4;
+    // Circular layout — radius scales with die count so they never overlap
+    const radius = count <= 1 ? 0 : count <= 2 ? 1.8 : 0.75 + count * 0.3;
     for (let i = 0; i < dieMeshes.length; i++) {
       if (count === 1) {
         dieMeshes[i].position.set(0, 0, 0);
@@ -188,11 +183,12 @@ export function createDiceRenderer() {
       // Load GLB model for each die
       for (let i = 0; i < count; i++) {
         const model = await loadDieModel();
-        // Enable shadows on all meshes in the model
+        // Clone materials so each die has independent opacity/color
         model.traverse((child) => {
           if (child.isMesh) {
             child.castShadow = true;
             child.receiveShadow = true;
+            child.material = child.material.clone();
           }
         });
         model.userData.index = i;
@@ -249,14 +245,14 @@ export function createDiceRenderer() {
         const t = VALUE_ROTATIONS[values[i]];
         const yJitter = dieMeshes[i].userData.baseYRotation || 0;
         if (rolled.has(i) && dur > 0) {
-          const sx = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.floor(Math.random() * 3)) * Math.PI * 2;
-          const sy = (Math.random() > 0.5 ? 1 : -1) * (1 + Math.floor(Math.random() * 2)) * Math.PI * 2;
+          const sx = 3 * Math.PI * 2;
+          const sy = 2 * Math.PI * 2;
           animations.push({
             type: 'roll', mesh: dieMeshes[i],
-            startTime: performance.now() + i * 100,
-            duration: dur + Math.random() * 400,
+            startTime: performance.now(),
+            duration: dur,
             target: { x: t.x, y: t.y + yJitter, z: t.z },
-            spin: { x: t.x + sx, y: t.y + yJitter + sy, z: (Math.random() - 0.5) * Math.PI * 2 },
+            spin: { x: t.x + sx, y: t.y + yJitter + sy, z: 0 },
             baseY: 0,
           });
         } else {
@@ -271,23 +267,14 @@ export function createDiceRenderer() {
       const die = dieMeshes[index];
       if (!die) return;
       die.userData.held = held;
-      if (held) {
-        die.scale.setScalar(0.9);
-        die.traverse((child) => {
-          if (child.isMesh && child.material) {
-            child.material.emissive = new THREE.Color(isDark ? 0x1a3a6a : 0x1558c6);
-            child.material.emissiveIntensity = 0.25;
-          }
-        });
-      } else {
-        die.scale.setScalar(1);
-        die.traverse((child) => {
-          if (child.isMesh && child.material) {
-            child.material.emissive = new THREE.Color(0x000000);
-            child.material.emissiveIntensity = 0;
-          }
-        });
-      }
+      die.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material.transparent = true;
+          child.material.opacity = held ? 0.35 : 1.0;
+          child.material.emissive = new THREE.Color(0x000000);
+          child.material.emissiveIntensity = 0;
+        }
+      });
     },
 
     destroy() {

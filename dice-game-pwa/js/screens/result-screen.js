@@ -1,8 +1,9 @@
-// Result Screen — Ergebnisübersicht mit Endpunktzahlen und Platzierungen
-// Feature: dice-game-pwa, Anforderung: 6.3
+// Result Screen — Final scores, rankings, and replay options
+// Feature: dice-game-pwa, Requirement: 6.3
 
 import { t } from '../i18n.js';
 import { navigate, getParams } from '../app.js';
+import { loadTemplate } from '../template-loader.js';
 import { createGameStore } from '../store/game-store.js';
 import { createGameModeRegistry } from '../game/game-mode-registry.js';
 import { registerFreeRoll } from '../game/modes/free-roll.js';
@@ -10,7 +11,6 @@ import { registerKniffel } from '../game/modes/kniffel.js';
 
 /**
  * Factory for the Result Screen.
- * Shows final scores, placements, winner announcement, and options for new game / rematch.
  * @returns {{ mount(container: HTMLElement): void, unmount(): void }}
  */
 export function createResultScreen() {
@@ -25,7 +25,7 @@ export function createResultScreen() {
       const gameId = params.gameId;
 
       if (!gameId) {
-        renderError();
+        await renderError();
         return;
       }
 
@@ -34,7 +34,7 @@ export function createResultScreen() {
         const state = await store.load(gameId);
 
         if (!state) {
-          renderError();
+          await renderError();
           return;
         }
 
@@ -47,9 +47,9 @@ export function createResultScreen() {
           ? mode.scoring.getFinalScores(state)
           : buildFallbackScores(state);
 
-        render(scores, state.modeId);
+        await render(scores, state.modeId);
       } catch {
-        renderError();
+        await renderError();
       }
     },
 
@@ -63,9 +63,6 @@ export function createResultScreen() {
     },
   };
 
-  /**
-   * Builds fallback scores when mode is not found in registry.
-   */
   function buildFallbackScores(state) {
     return state.players.map((p, i) => ({
       playerId: p.id,
@@ -75,42 +72,24 @@ export function createResultScreen() {
     }));
   }
 
-  /**
-   * Renders the result screen UI.
-   */
-  function render(scores, modeId) {
+  async function render(scores, modeId) {
     if (!container) return;
 
-    const section = document.createElement('section');
-    section.className = 'result-screen';
-    section.setAttribute('aria-label', t('result.title'));
-
-    // Title
-    const heading = document.createElement('h1');
-    heading.className = 'result-screen__title';
-    heading.textContent = t('result.title');
-    section.appendChild(heading);
+    const fragment = await loadTemplate('templates/result.html', t);
 
     // Winner announcement
-    const announcement = document.createElement('p');
-    announcement.className = 'result-screen__announcement';
-    announcement.setAttribute('role', 'status');
-    announcement.setAttribute('aria-live', 'polite');
-
+    const announcement = fragment.querySelector('#result-announcement');
     const isDraw = scores.length > 1 && scores[0].rank === scores[1].rank;
     announcement.textContent = isDraw
       ? t('result.draw')
       : t('result.winner', { name: scores[0].name });
-    section.appendChild(announcement);
 
-    // Rankings list
-    const list = document.createElement('ol');
-    list.className = 'result-screen__rankings';
-    list.setAttribute('aria-label', t('result.title'));
-
+    // Rankings
+    const rankingsList = fragment.querySelector('[data-slot="rankings"]');
     for (const entry of scores) {
       const li = document.createElement('li');
-      li.className = 'result-screen__player';
+      li.className = 'adaptive result-screen__player';
+      li.setAttribute('data-material', 'filled');
       li.setAttribute('aria-label',
         `${t('result.placement', { rank: entry.rank })} — ${entry.name}: ${t('result.finalScore', { points: entry.totalScore })}`
       );
@@ -130,77 +109,35 @@ export function createResultScreen() {
       li.appendChild(rankSpan);
       li.appendChild(nameSpan);
       li.appendChild(scoreSpan);
-      list.appendChild(li);
+      rankingsList.appendChild(li);
     }
 
-    section.appendChild(list);
+    // Bind action buttons
+    const rematchBtn = fragment.querySelector('#result-rematch-btn');
+    const rematchHandler = (e) => { e.preventDefault(); navigate('game', { modeId }); };
+    rematchBtn.addEventListener('click', rematchHandler);
+    cleanupHandlers.push(() => rematchBtn.removeEventListener('click', rematchHandler));
 
-    // Action buttons
-    const actions = document.createElement('div');
-    actions.className = 'result-screen__actions';
-    actions.setAttribute('role', 'group');
-    actions.setAttribute('aria-label', t('result.backToHome'));
-
-    // Rematch button
-    const rematchBtn = createButton(t('result.rematch'), false, () => {
-      navigate('game', { modeId });
-    });
-    actions.appendChild(rematchBtn);
-
-    // New Game button (primary)
-    const newGameBtn = createButton(t('result.newGame'), true, () => {
-      navigate('home');
-    });
-    actions.appendChild(newGameBtn);
-
-    section.appendChild(actions);
+    const newGameBtn = fragment.querySelector('#result-new-game-btn');
+    const newGameHandler = (e) => { e.preventDefault(); navigate('home'); };
+    newGameBtn.addEventListener('click', newGameHandler);
+    cleanupHandlers.push(() => newGameBtn.removeEventListener('click', newGameHandler));
 
     container.innerHTML = '';
-    container.appendChild(section);
+    container.appendChild(fragment);
   }
 
-  /**
-   * Renders an error state when game cannot be loaded.
-   */
-  function renderError() {
+  async function renderError() {
     if (!container) return;
 
-    const section = document.createElement('section');
-    section.className = 'result-screen';
-    section.setAttribute('aria-label', t('result.title'));
+    const fragment = await loadTemplate('templates/result-error.html', t);
 
-    const msg = document.createElement('p');
-    msg.className = 'result-screen__error';
-    msg.textContent = t('error.gameNotFound');
-    section.appendChild(msg);
-
-    const homeBtn = createButton(t('result.backToHome'), true, () => {
-      navigate('home');
-    });
-    section.appendChild(homeBtn);
+    const homeBtn = fragment.querySelector('#result-home-btn');
+    const homeHandler = (e) => { e.preventDefault(); navigate('home'); };
+    homeBtn.addEventListener('click', homeHandler);
+    cleanupHandlers.push(() => homeBtn.removeEventListener('click', homeHandler));
 
     container.innerHTML = '';
-    container.appendChild(section);
-  }
-
-  /**
-   * Creates a styled button element.
-   */
-  function createButton(text, isPrimary, onClick) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = isPrimary
-      ? 'result-screen__btn result-screen__btn--primary'
-      : 'result-screen__btn';
-    btn.textContent = text;
-
-    const handler = (e) => {
-      e.preventDefault();
-      onClick();
-    };
-    btn.addEventListener('click', handler);
-    cleanupHandlers.push(() => btn.removeEventListener('click', handler));
-
-    return btn;
+    container.appendChild(fragment);
   }
 }

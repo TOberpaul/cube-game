@@ -1,12 +1,14 @@
-// Home Screen — Spielmodus-Auswahl mit Dialog für Spieltyp
-// Feature: dice-game-pwa, Anforderungen: 5.3, 6.5, 9.1
+// Home Screen — Game mode selection with play-type dialog
+// Feature: dice-game-pwa, Requirements: 5.3, 6.5, 9.1
 
 import { t } from '../i18n.js';
 import { navigate } from '../app.js';
+import { loadTemplate } from '../template-loader.js';
 import { createGameModeRegistry } from '../game/game-mode-registry.js';
 import { registerFreeRoll } from '../game/modes/free-roll.js';
 import { registerKniffel } from '../game/modes/kniffel.js';
 import { createGameStore } from '../store/game-store.js';
+import { getAvatar } from '../avatars.js';
 
 export function createHomeScreen() {
   let container = null;
@@ -28,7 +30,7 @@ export function createHomeScreen() {
         activeGames = await store.listActive();
       } catch { /* ignore */ }
 
-      render(modes, activeGames);
+      await render(modes, activeGames);
     },
 
     unmount() {
@@ -42,153 +44,216 @@ export function createHomeScreen() {
     },
   };
 
-  function render(modes, activeGames) {
+  async function render(modes, activeGames) {
     if (!container) return;
     const hasContinue = activeGames.length > 0;
 
-    const section = document.createElement('section');
-    section.className = 'home-screen';
-    section.setAttribute('aria-label', t('home.title'));
+    const fragment = await loadTemplate('templates/home.html', t);
+    const section = fragment.querySelector('.home-screen');
 
-    // Title
-    const heading = document.createElement('h1');
-    heading.className = 'home-screen__title';
-    heading.textContent = t('home.title');
-    section.appendChild(heading);
-
-    // Subtitle
-    const subtitle = document.createElement('p');
-    subtitle.className = 'home-screen__subtitle';
-    subtitle.textContent = t('home.subtitle');
-    section.appendChild(subtitle);
-
-    // Continue game button (only if active games exist)
+    // Active game section — show continue + end buttons if game exists
     if (hasContinue) {
-      const continueBtn = createButton(t('home.continueGame'), false, () => {
-        navigate('game', { gameId: activeGames[0].gameId });
-      });
-      section.appendChild(continueBtn);
+      const activeSlot = fragment.querySelector('[data-slot="active-game"]');
+      activeSlot.removeAttribute('hidden');
+
+      const continueBtn = fragment.querySelector('#home-continue-btn');
+      const continueHandler = (e) => { e.preventDefault(); navigate('game', { gameId: activeGames[0].gameId }); };
+      continueBtn.addEventListener('click', continueHandler);
+      cleanupHandlers.push(() => continueBtn.removeEventListener('click', continueHandler));
     }
 
-    // Game mode selection
-    const modeNav = document.createElement('nav');
-    modeNav.className = 'home-screen__modes';
-    modeNav.setAttribute('aria-label', t('home.selectMode'));
-
-    const modeHeading = document.createElement('h2');
-    modeHeading.className = 'home-screen__section-title';
-    modeHeading.textContent = t('home.selectMode');
-    modeNav.appendChild(modeHeading);
-
-    const modeList = document.createElement('ul');
-    modeList.className = 'home-screen__mode-list';
-    modeList.setAttribute('role', 'list');
+    // Populate mode list from card template
+    const modeList = fragment.querySelector('[data-slot="mode-list"]');
+    const cardTemplate = await loadTemplate('templates/mode-card.html', t);
 
     modes.forEach((mode) => {
-      const li = document.createElement('li');
-      li.className = 'home-screen__mode-item';
+      const card = cardTemplate.querySelector('article').cloneNode(true);
 
-      const modeBtn = createButton(t(mode.name), false, () => {
-        openPlayTypeDialog(mode);
-      });
+      card.querySelector('[data-bind="title"]').textContent = t(mode.name);
 
       const descKey = `${mode.name}.description`;
       const desc = t(descKey);
+      const descEl = card.querySelector('[data-bind="description"]');
       if (desc !== descKey) {
-        const descEl = document.createElement('span');
-        descEl.className = 'home-screen__mode-desc';
         descEl.textContent = desc;
-        modeBtn.appendChild(descEl);
+      } else {
+        descEl.remove();
       }
 
-      li.appendChild(modeBtn);
-      modeList.appendChild(li);
+      const handler = (e) => { e.preventDefault(); openPlayTypeDialog(mode); };
+      card.addEventListener('click', handler);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPlayTypeDialog(mode); } });
+      cleanupHandlers.push(() => card.removeEventListener('click', handler));
+
+      modeList.appendChild(card);
     });
 
-    modeNav.appendChild(modeList);
-    section.appendChild(modeNav);
-
     container.innerHTML = '';
-    container.appendChild(section);
+    container.appendChild(fragment);
+
+    // Carousel fade edges based on scroll position
+    const carouselList = container.querySelector('.home-screen__mode-list');
+    const modesNav = container.querySelector('.home-screen__modes');
+    if (carouselList && modesNav) {
+      const updateFades = () => {
+        const { scrollLeft, scrollWidth, clientWidth } = carouselList;
+        modesNav.classList.toggle('home-screen__modes--fade-left', scrollLeft > 4);
+        modesNav.classList.toggle('home-screen__modes--fade-right', scrollLeft < scrollWidth - clientWidth - 4);
+      };
+      carouselList.addEventListener('scroll', updateFades, { passive: true });
+      cleanupHandlers.push(() => carouselList.removeEventListener('scroll', updateFades));
+      requestAnimationFrame(updateFades);
+    }
   }
 
-  function openPlayTypeDialog(mode) {
+  async function openPlayTypeDialog(mode) {
     closeDialog();
 
-    // Backdrop
-    const backdrop = document.createElement('div');
-    backdrop.className = 'dialog-backdrop';
-    const backdropClick = () => closeDialog();
-    backdrop.addEventListener('click', backdropClick);
-    cleanupHandlers.push(() => backdrop.removeEventListener('click', backdropClick));
+    const fragment = await loadTemplate('templates/home-dialog.html', t);
 
-    // Dialog
-    const dialog = document.createElement('div');
-    dialog.className = 'dialog';
-    dialog.setAttribute('role', 'dialog');
-    dialog.setAttribute('aria-modal', 'true');
-    dialog.setAttribute('aria-label', t('home.play'));
-
-    // Header
-    const title = document.createElement('h2');
-    title.className = 'dialog__title';
+    // Set dynamic content
+    const title = fragment.querySelector('#dialog-title');
     title.textContent = t(mode.name);
-    dialog.appendChild(title);
 
-    const desc = t(`${mode.name}.description`);
-    if (desc !== `${mode.name}.description`) {
-      const descEl = document.createElement('p');
-      descEl.className = 'dialog__desc';
-      descEl.textContent = desc;
-      dialog.appendChild(descEl);
+    const desc = fragment.querySelector('#dialog-description');
+    const descKey = `${mode.name}.description`;
+    const descText = t(descKey);
+    if (descText !== descKey) {
+      desc.textContent = descText;
+    } else {
+      desc.remove();
     }
 
-    // Play type options
-    const options = document.createElement('div');
-    options.className = 'dialog__options';
+    // Get the backdrop (root element)
+    const backdrop = fragment.querySelector('.dialog-backdrop');
 
-    const playTypes = [
-      { key: 'home.solo', icon: '👤', action: () => { closeDialog(); navigate('game', { modeId: mode.id, playType: 'solo' }); } },
-      { key: 'home.onlineMultiplayer', icon: '🌐', action: () => { closeDialog(); navigate('lobby', { modeId: mode.id, playType: 'online' }); } },
-      { key: 'home.offlineMultiplayer', icon: '📡', action: () => { closeDialog(); navigate('lobby', { modeId: mode.id, playType: 'offline' }); } },
-    ];
-
-    for (const pt of playTypes) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'dialog__option';
-      btn.innerHTML = `<span class="dialog__option-icon">${pt.icon}</span><span class="dialog__option-label">${t(pt.key)}</span>`;
-      const handler = (e) => { e.preventDefault(); e.stopPropagation(); pt.action(); };
-      btn.addEventListener('click', handler);
-      cleanupHandlers.push(() => btn.removeEventListener('click', handler));
-      options.appendChild(btn);
-    }
-
-    dialog.appendChild(options);
-
-    // Close button
-    const closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.className = 'dialog__close';
-    closeBtn.setAttribute('aria-label', 'Schließen');
-    closeBtn.textContent = '✕';
+    // Bind close button
+    const closeBtn = fragment.querySelector('#dialog-close-btn');
     const closeHandler = (e) => { e.preventDefault(); closeDialog(); };
     closeBtn.addEventListener('click', closeHandler);
     cleanupHandlers.push(() => closeBtn.removeEventListener('click', closeHandler));
-    dialog.appendChild(closeBtn);
+
+    // Bind backdrop click
+    const backdropClick = (e) => { if (e.target === dialogEl) closeDialog(); };
+
+    // Bind play type buttons
+    const soloBtn = fragment.querySelector('#dialog-solo-btn');
+    const onlineBtn = fragment.querySelector('#dialog-online-btn');
+    const offlineBtn = fragment.querySelector('#dialog-offline-btn');
+
+    const bindOption = (btn, action) => {
+      const handler = (e) => { e.preventDefault(); e.stopPropagation(); closeDialog(); action(); };
+      btn.addEventListener('click', handler);
+      cleanupHandlers.push(() => btn.removeEventListener('click', handler));
+    };
+
+    bindOption(soloBtn, () => navigate('game', { modeId: mode.id, playType: 'solo' }));
+    bindOption(onlineBtn, () => navigate('lobby', { modeId: mode.id, playType: 'online' }));
+    bindOption(offlineBtn, () => navigate('lobby', { modeId: mode.id, playType: 'offline' }));
+
+    // Local multiplayer — open player setup dialog
+    const localBtn = fragment.querySelector('#dialog-local-btn');
+    localBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDialog();
+      openPlayerSetupDialog(mode);
+    });
 
     // Escape key
     const escHandler = (e) => { if (e.key === 'Escape') closeDialog(); };
     document.addEventListener('keydown', escHandler);
     cleanupHandlers.push(() => document.removeEventListener('keydown', escHandler));
 
-    backdrop.appendChild(dialog);
-    document.body.appendChild(backdrop);
-    dialogEl = backdrop;
+    document.body.appendChild(fragment);
+    dialogEl = document.body.querySelector('.dialog-backdrop:last-child');
+    dialogEl.addEventListener('click', backdropClick);
+    cleanupHandlers.push(() => { if (dialogEl) dialogEl.removeEventListener('click', backdropClick); });
 
     // Focus first option
-    const firstBtn = options.querySelector('button');
-    if (firstBtn) firstBtn.focus();
+    soloBtn.focus();
+  }
+
+  async function openPlayerSetupDialog(mode) {
+    closeDialog();
+
+    const fragment = await loadTemplate('templates/player-setup.html', t);
+    let playerCount = 2;
+
+    // Close & back buttons
+    const closeBtn = fragment.querySelector('#setup-close-btn');
+    closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeDialog(); });
+
+    const backBtn = fragment.querySelector('#setup-back-btn');
+    backBtn.addEventListener('click', (e) => { e.preventDefault(); closeDialog(); openPlayTypeDialog(mode); });
+
+    // Player count picker
+    const picker = fragment.querySelector('#setup-player-count');
+    const namesContainer = fragment.querySelector('#setup-player-names');
+
+    function renderNameInputs(count) {
+      namesContainer.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const label = document.createElement('label');
+        label.className = 'adaptive input';
+
+        const labelText = document.createElement('span');
+        labelText.className = 'input__label';
+        labelText.textContent = `${getAvatar(i)} ${t('scoreboard.player')} ${i + 1}`;
+        label.appendChild(labelText);
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'adaptive input__field';
+        input.setAttribute('data-material', 'filled-2');
+        input.setAttribute('data-interactive', '');
+        input.placeholder = `${t('scoreboard.player')} ${i + 1}`;
+        input.dataset.playerIndex = String(i);
+        label.appendChild(input);
+
+        namesContainer.appendChild(label);
+      }
+    }
+
+    renderNameInputs(playerCount);
+
+    picker.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-value]');
+      if (!btn) return;
+      playerCount = parseInt(btn.dataset.value, 10);
+      picker.querySelectorAll('.dice-count-picker__btn').forEach((b) => {
+        b.classList.remove('dice-count-picker__btn--active');
+        b.setAttribute('data-material', 'filled-2');
+        b.removeAttribute('aria-pressed');
+      });
+      btn.classList.add('dice-count-picker__btn--active');
+      btn.setAttribute('data-material', 'inverted');
+      btn.setAttribute('aria-pressed', 'true');
+      renderNameInputs(playerCount);
+    });
+
+    // Start button
+    const startBtn = fragment.querySelector('#setup-start-btn');
+    startBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Collect names from inputs
+      const names = [];
+      namesContainer.querySelectorAll('input').forEach((input, i) => {
+        names.push(input.value.trim() || `${t('scoreboard.player')} ${i + 1}`);
+      });
+      closeDialog();
+      navigate('game', { modeId: mode.id, playType: 'local', playerCount, playerNames: names.join(',') });
+    });
+
+    // Escape key
+    const escHandler = (e) => { if (e.key === 'Escape') closeDialog(); };
+    document.addEventListener('keydown', escHandler);
+    cleanupHandlers.push(() => document.removeEventListener('keydown', escHandler));
+
+    // Backdrop click
+    document.body.appendChild(fragment);
+    dialogEl = document.body.querySelector('.dialog-backdrop:last-child');
+    dialogEl.addEventListener('click', (e) => { if (e.target === dialogEl) closeDialog(); });
   }
 
   function closeDialog() {
@@ -196,16 +261,5 @@ export function createHomeScreen() {
       dialogEl.remove();
       dialogEl = null;
     }
-  }
-
-  function createButton(text, isPrimary, onClick) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = isPrimary ? 'home-screen__btn home-screen__btn--primary' : 'home-screen__btn';
-    btn.textContent = text;
-    const handler = (e) => { e.preventDefault(); onClick(); };
-    btn.addEventListener('click', handler);
-    cleanupHandlers.push(() => btn.removeEventListener('click', handler));
-    return btn;
   }
 }

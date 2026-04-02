@@ -77,7 +77,7 @@ function manageFocus(wrapper) {
     if (!target.getAttribute('tabindex') && !target.matches('button, [href], input, select, textarea')) {
       target.setAttribute('tabindex', '-1');
     }
-    target.focus({ preventScroll: false });
+    target.focus({ preventScroll: true });
   }
 }
 

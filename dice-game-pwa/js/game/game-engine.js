@@ -251,6 +251,24 @@ export function createGameEngine(registry, options = {}) {
     },
 
     /**
+     * Resets dice to a new count (for free-roll mode).
+     * @param {number} count
+     */
+    resetDice(count) {
+      if (!state || state.status !== 'playing') return;
+      if (count < 1 || count > 6) return;
+      diceEngine.reset(count);
+      state.dice = {
+        values: new Array(count).fill(0),
+        held: new Array(count).fill(false),
+        count,
+      };
+      state.rollsThisTurn = 0;
+      state.updatedAt = Date.now();
+      emit('stateChange', { ...state });
+    },
+
+    /**
      * Marks a player as disconnected.
      * @param {string} playerId
      */

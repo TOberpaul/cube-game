@@ -1,0 +1,44 @@
+<section class="game-screen" aria-label="{{game.title}}">
+  <div class="game-screen__pages" id="game-pages">
+
+    <!-- Page 1: Dice -->
+    <div class="game-screen__page game-screen__page--dice" id="game-page-dice">
+      <header class="game-screen__header">
+        <button type="button" class="adaptive button button--icon-only" data-interactive data-material="transparent" aria-label="{{result.backToHome}}" id="game-back-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        </button>
+        <div class="player-bar" id="game-player-bar"></div>
+      </header>
+
+      <div class="game-screen__dice-area" role="group" aria-label="{{a11y.diceArea}}" id="game-dice-area"></div>
+
+      <div class="game-screen__footer">
+        <!-- Free-roll controls — hidden for other modes -->
+        <div class="game-screen__controls" id="game-free-roll-controls" hidden>
+          <label class="adaptive input">
+            <span class="input__label">{{game.diceCount}}</span>
+            <select class="adaptive select" data-material="filled-2" data-interactive id="game-dice-count">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6" selected>6</option>
+            </select>
+            <span class="select-chevron" aria-hidden="true"></span>
+          </label>
+        </div>
+        <button type="button" class="adaptive button button--full-width" data-interactive data-material="inverted" data-container-contrast="max" id="game-roll-btn" aria-label="{{a11y.rollButton}}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 16 6 6"/><circle cx="16" cy="9" r="2.9"/><circle cx="6" cy="5" r="3"/></svg>
+          {{game.roll}}
+        </button>
+      </div>
+    </div>
+
+    <!-- Page 2: Scoreboard -->
+    <div class="game-screen__page game-screen__page--score" id="game-page-score">
+      <div class="game-screen__scoreboard" id="game-scoreboard-area"></div>
+    </div>
+
+  </div>
+</section>
