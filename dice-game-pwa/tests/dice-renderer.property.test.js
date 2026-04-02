@@ -11,11 +11,27 @@ vi.mock('three', () => {
     add(v) { this.x += v.x; this.y += v.y; this.z += v.z; return this; }
     crossVectors(a, b) { return this; }
     normalize() { return this; }
+    negate() { this.x = -this.x; this.y = -this.y; this.z = -this.z; return this; }
     copy(v) { this.x = v.x; this.y = v.y; this.z = v.z; return this; }
     set(x, y, z) { this.x = x; this.y = y; this.z = z; return this; }
+    fromBufferAttribute() { return this; }
   }
-  class MockGeometry { rotateX() {} dispose() {} }
-  class MockMaterial { dispose() {} constructor() { this.color = { getHex: () => 0, setHex() {} }; this.emissive = { setHex() {} }; this.emissiveIntensity = 0; } }
+  class MockGeometry {
+    constructor() {
+      this.attributes = {
+        position: {
+          count: 0,
+          fromBufferAttribute() { return { x: 0, y: 0, z: 0 }; },
+          setXYZ() {},
+        },
+      };
+    }
+    rotateX() {}
+    dispose() {}
+    computeVertexNormals() {}
+  }
+  class MockMaterial { dispose() {} constructor() { this.color = { getHex: () => 0, setHex() {} }; this.emissive = { setHex() {} }; this.emissiveIntensity = 0; this.side = 0; } }
+  class PhysicalMaterial extends MockMaterial { constructor(opts) { super(); if (opts?.sheenColor) this.sheenColor = opts.sheenColor; } }
   class Mesh {
     constructor() { this.position = new Vector3(); this.rotation = new Vector3(); this.scale = new Vector3(1,1,1); this.castShadow = false; this.receiveShadow = false; this.userData = {}; this.parent = null; this.children = []; }
     lookAt() {}
@@ -44,11 +60,13 @@ vi.mock('three', () => {
   class Raycaster { setFromCamera() {} intersectObjects() { return []; } }
   return {
     Scene, PerspectiveCamera, WebGLRenderer, Mesh, Group, Vector3,
-    BoxGeometry: MockGeometry, CylinderGeometry: MockGeometry, PlaneGeometry: MockGeometry,
-    MeshStandardMaterial: MockMaterial, ShadowMaterial: MockMaterial,
+    BoxGeometry: MockGeometry, CylinderGeometry: MockGeometry, PlaneGeometry: MockGeometry, SphereGeometry: MockGeometry,
+    MeshStandardMaterial: MockMaterial, MeshPhysicalMaterial: PhysicalMaterial, ShadowMaterial: MockMaterial,
     AmbientLight: Light, DirectionalLight: Light,
     Raycaster, Vector2: Vector3,
     PCFSoftShadowMap: 0, ACESFilmicToneMapping: 0,
+    Color: class { constructor() {} },
+    DoubleSide: 2,
   };
 });
 
