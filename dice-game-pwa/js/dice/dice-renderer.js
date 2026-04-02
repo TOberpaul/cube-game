@@ -142,13 +142,25 @@ export function createDiceRenderer() {
   }
 
   function layoutDice(count) {
-    const spacing = 1.8;
-    const cols = Math.min(count, 3);
-    const ox = ((cols - 1) * spacing) / 2;
-    const oz = ((Math.ceil(count / cols) - 1) * spacing) / 2;
+    // Organic scatter layout — dice look like they were tossed on a table
+    // Pre-computed positions for 1-6 dice that look natural but don't overlap
+    const layouts = {
+      1: [{ x: 0, z: 0 }],
+      2: [{ x: -0.9, z: 0.1 }, { x: 0.8, z: -0.15 }],
+      3: [{ x: -1.1, z: -0.3 }, { x: 0.2, z: 0.4 }, { x: 1.2, z: -0.2 }],
+      4: [{ x: -1.1, z: 0.5 }, { x: 0.3, z: 0.6 }, { x: -0.6, z: -0.7 }, { x: 1.0, z: -0.4 }],
+      5: [{ x: -1.3, z: 0.4 }, { x: 0.1, z: 0.7 }, { x: 1.4, z: 0.3 }, { x: -0.7, z: -0.6 }, { x: 0.8, z: -0.7 }],
+      6: [{ x: -1.4, z: 0.5 }, { x: 0, z: 0.8 }, { x: 1.3, z: 0.4 }, { x: -1.0, z: -0.6 }, { x: 0.4, z: -0.7 }, { x: 1.5, z: -0.5 }],
+    };
+    const positions = layouts[count] || layouts[5];
     for (let i = 0; i < dieMeshes.length; i++) {
-      const col = i % cols, row = Math.floor(i / cols);
-      dieMeshes[i].position.set(col * spacing - ox, 0, row * spacing - oz);
+      const p = positions[i] || { x: 0, z: 0 };
+      // Add small random jitter for each game
+      const jx = (Math.random() - 0.5) * 0.15;
+      const jz = (Math.random() - 0.5) * 0.15;
+      dieMeshes[i].position.set(p.x + jx, 0, p.z + jz);
+      // Slight random Y rotation so they don't all face the same way
+      dieMeshes[i].userData.baseYRotation = (Math.random() - 0.5) * 0.3;
     }
   }
 
@@ -199,7 +211,8 @@ export function createDiceRenderer() {
       layoutDice(count);
       for (const d of dieMeshes) {
         const r = VALUE_ROTATIONS[1];
-        d.rotation.set(r.x, r.y, r.z);
+        const yJitter = d.userData.baseYRotation || 0;
+        d.rotation.set(r.x, r.y + yJitter, r.z);
       }
       renderLoop();
 
@@ -241,6 +254,7 @@ export function createDiceRenderer() {
       for (let i = 0; i < dieMeshes.length && i < values.length; i++) {
         currentValues[i] = values[i];
         const t = VALUE_ROTATIONS[values[i]];
+        const yJitter = dieMeshes[i].userData.baseYRotation || 0;
         if (rolled.has(i) && dur > 0) {
           const sx = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.floor(Math.random() * 3)) * Math.PI * 2;
           const sy = (Math.random() > 0.5 ? 1 : -1) * (1 + Math.floor(Math.random() * 2)) * Math.PI * 2;
@@ -248,12 +262,12 @@ export function createDiceRenderer() {
             type: 'roll', mesh: dieMeshes[i],
             startTime: performance.now() + i * 100,
             duration: dur + Math.random() * 400,
-            target: { x: t.x, y: t.y, z: t.z },
-            spin: { x: t.x + sx, y: t.y + sy, z: (Math.random() - 0.5) * Math.PI * 2 },
+            target: { x: t.x, y: t.y + yJitter, z: t.z },
+            spin: { x: t.x + sx, y: t.y + yJitter + sy, z: (Math.random() - 0.5) * Math.PI * 2 },
             baseY: 0,
           });
         } else {
-          dieMeshes[i].rotation.set(t.x, t.y, t.z);
+          dieMeshes[i].rotation.set(t.x, t.y + yJitter, t.z);
           dieMeshes[i].position.y = 0;
         }
       }
