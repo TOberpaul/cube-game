@@ -42,7 +42,7 @@ async function loadDieModel() {
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 1 / maxDim;
+        const scale = 1.4 / maxDim;
         model.scale.setScalar(scale);
 
         // Center it
@@ -78,9 +78,10 @@ export function createDiceRenderer() {
     scene.background = null;
 
     const aspect = container.clientWidth / Math.max(container.clientHeight, 1);
-    camera = new THREE.PerspectiveCamera(30, aspect, 0.1, 100);
-    camera.position.set(0, 5.5, 5.5);
-    camera.lookAt(0, 0, 0);
+    // Closer camera, slight angle — like looking at dice on a table
+    camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 100);
+    camera.position.set(0, 3.2, 3.8);
+    camera.lookAt(0, -0.2, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -88,45 +89,45 @@ export function createDiceRenderer() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
+    renderer.toneMappingExposure = 1.5;
     container.appendChild(renderer.domElement);
 
-    // Soft ambient
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    // Soft ambient — not too bright, let directional lights do the work
+    scene.add(new THREE.AmbientLight(0xfff5ee, 0.5));
 
-    // Key light — warm, soft
-    const key = new THREE.DirectionalLight(0xfff8f0, 1.5);
-    key.position.set(4, 10, 6);
+    // Key light — warm, from upper-right-front, soft shadows
+    const key = new THREE.DirectionalLight(0xfff0e0, 2.0);
+    key.position.set(3, 8, 4);
     key.castShadow = true;
     key.shadow.mapSize.width = 2048;
     key.shadow.mapSize.height = 2048;
     key.shadow.camera.near = 0.5;
-    key.shadow.camera.far = 25;
-    key.shadow.camera.left = -6;
-    key.shadow.camera.right = 6;
-    key.shadow.camera.top = 6;
-    key.shadow.camera.bottom = -6;
-    key.shadow.radius = 6;
-    key.shadow.bias = -0.0005;
+    key.shadow.camera.far = 20;
+    key.shadow.camera.left = -5;
+    key.shadow.camera.right = 5;
+    key.shadow.camera.top = 5;
+    key.shadow.camera.bottom = -5;
+    key.shadow.radius = 8;
+    key.shadow.bias = -0.0003;
     scene.add(key);
 
-    // Fill light
-    const fill = new THREE.DirectionalLight(0xe8eeff, 0.5);
-    fill.position.set(-3, 4, -4);
+    // Fill light — cool, from left-back, softer
+    const fill = new THREE.DirectionalLight(0xd0d8ff, 0.6);
+    fill.position.set(-4, 3, -2);
     scene.add(fill);
 
-    // Rim light
-    const rim = new THREE.DirectionalLight(0xffffff, 0.25);
-    rim.position.set(0, 2, -6);
+    // Rim/back light — subtle highlight on edges
+    const rim = new THREE.DirectionalLight(0xffffff, 0.3);
+    rim.position.set(0, 1, -5);
     scene.add(rim);
 
-    // Ground for shadows
+    // Ground plane for contact shadows
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(20, 20),
-      new THREE.ShadowMaterial({ opacity: 0.12 })
+      new THREE.ShadowMaterial({ opacity: 0.18 })
     );
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.6;
+    ground.position.y = -0.55;
     ground.receiveShadow = true;
     scene.add(ground);
 
@@ -141,7 +142,7 @@ export function createDiceRenderer() {
   }
 
   function layoutDice(count) {
-    const spacing = 1.5;
+    const spacing = 1.8;
     const cols = Math.min(count, 3);
     const ox = ((cols - 1) * spacing) / 2;
     const oz = ((Math.ceil(count / cols) - 1) * spacing) / 2;
