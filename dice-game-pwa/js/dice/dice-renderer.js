@@ -79,9 +79,9 @@ export function createDiceRenderer() {
 
     const aspect = container.clientWidth / Math.max(container.clientHeight, 1);
     // Closer camera, slight angle — like looking at dice on a table
-    camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 100);
-    camera.position.set(0, 3.2, 3.8);
-    camera.lookAt(0, -0.2, 0);
+    camera = new THREE.PerspectiveCamera(30, aspect, 0.1, 100);
+    camera.position.set(0, 15, 5);
+    camera.lookAt(0, 0, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -142,24 +142,17 @@ export function createDiceRenderer() {
   }
 
   function layoutDice(count) {
-    // Organic scatter layout — dice look like they were tossed on a table
-    // Pre-computed positions for 1-6 dice that look natural but don't overlap
-    const layouts = {
-      1: [{ x: 0, z: 0 }],
-      2: [{ x: -0.9, z: 0.1 }, { x: 0.8, z: -0.15 }],
-      3: [{ x: -1.1, z: -0.3 }, { x: 0.2, z: 0.4 }, { x: 1.2, z: -0.2 }],
-      4: [{ x: -1.1, z: 0.5 }, { x: 0.3, z: 0.6 }, { x: -0.6, z: -0.7 }, { x: 1.0, z: -0.4 }],
-      5: [{ x: -1.3, z: 0.4 }, { x: 0.1, z: 0.7 }, { x: 1.4, z: 0.3 }, { x: -0.7, z: -0.6 }, { x: 0.8, z: -0.7 }],
-      6: [{ x: -1.4, z: 0.5 }, { x: 0, z: 0.8 }, { x: 1.3, z: 0.4 }, { x: -1.0, z: -0.6 }, { x: 0.4, z: -0.7 }, { x: 1.5, z: -0.5 }],
-    };
-    const positions = layouts[count] || layouts[5];
+    // Circular layout with equal spacing, slight organic feel
+    const radius = count <= 2 ? 1.0 : 1.4;
     for (let i = 0; i < dieMeshes.length; i++) {
-      const p = positions[i] || { x: 0, z: 0 };
-      // Add small random jitter for each game
-      const jx = (Math.random() - 0.5) * 0.15;
-      const jz = (Math.random() - 0.5) * 0.15;
-      dieMeshes[i].position.set(p.x + jx, 0, p.z + jz);
-      // Slight random Y rotation so they don't all face the same way
+      if (count === 1) {
+        dieMeshes[i].position.set(0, 0, 0);
+      } else {
+        const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+        dieMeshes[i].position.set(x, 0, z);
+      }
       dieMeshes[i].userData.baseYRotation = (Math.random() - 0.5) * 0.3;
     }
   }
