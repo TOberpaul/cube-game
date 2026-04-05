@@ -72,7 +72,8 @@ h1,h2,h3,h4,h5,h6,p {
 
 /* --- Screen Container & Transitions --- */
 #app {
-  height: 100%;
+  width: 100%;
+  min-height: 100%;
 }
 
 /* ========================================
@@ -83,8 +84,8 @@ h1,h2,h3,h4,h5,h6,p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem 1rem;
-  gap: 1.5rem;
+  padding: var(--layout-spacing-min);
+  gap: var(--layout-spacing-min);
   min-height: 100%;
   text-align: center;
   overflow-y: auto;
@@ -164,12 +165,32 @@ h1,h2,h3,h4,h5,h6,p {
 .lobby-screen {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 2rem 1.25rem;
+  justify-content: space-between;
+  gap: var(--layout-spacing-min);
+  padding: var(--layout-spacing-min);
   max-width: 560px;
   margin: 0 auto;
-  min-height: 100%;
+  min-height: 100dvh;
   overflow-y: auto;
+}
+
+.lobby-screen > [hidden],
+.lobby-screen > :empty:not(.lobby-screen__offline-section) {
+  display: none !important;
+}
+
+.lobby-screen [hidden] {
+  display: none !important;
+}
+
+.lobby-screen__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lobby-screen__title {
+  margin: 0;
 }
 
 /* --- Connection Info Layout --- */
@@ -195,17 +216,179 @@ h1,h2,h3,h4,h5,h6,p {
 /* --- Player List Layout --- */
 .lobby-screen__players {
   display: flex;
+  width: 100%;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-/* --- Lobby Actions Layout --- */
+.lobby-screen__player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .lobby-screen__actions {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--size-gap-min);
   margin-top: auto;
-  padding-top: 1rem;
+}
+
+/* --- Offline Lobby Sections --- */
+.lobby-screen__offline-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.lobby-screen__offline-section[hidden] {
+  display: none;
+}
+
+.lobby-screen__offline-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lobby-screen__offline-step[hidden] {
+  display: none;
+}
+
+.lobby-screen__offline-step-heading {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.lobby-screen__offline-step-desc {
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+/* --- QR Code Display --- */
+.lobby-screen__offline-qr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 12px;
+  min-height: 200px;
+}
+
+.lobby-screen__offline-qr img,
+.lobby-screen__offline-qr canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Scanner Overlay --- */
+.lobby-screen__offline-scanner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.lobby-screen__offline-scanner-overlay[hidden] {
+  display: none;
+}
+
+.lobby-screen__offline-scanner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.lobby-screen__offline-scanner-video {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #000;
+}
+
+/* --- Connection Status Indicator --- */
+.lobby-screen__offline-connection-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--db-border);
+  font-size: 0.875rem;
+}
+
+.lobby-screen__offline-connection-status[hidden] {
+  display: none;
+}
+
+.lobby-screen__offline-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--theme-red-8, #e53e3e);
+}
+
+.lobby-screen__offline-status-dot[data-status="connecting"] {
+  background: var(--theme-yellow-8, #d69e2e);
+  animation: offline-pulse 1.5s ease-in-out infinite;
+}
+
+.lobby-screen__offline-status-dot[data-status="connected"] {
+  background: var(--theme-green-8, #38a169);
+}
+
+/* --- Offline Loading Spinner --- */
+.lobby-screen__offline-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--db-border);
+  border-top-color: var(--db-text);
+  border-radius: 50%;
+  animation: offline-spin 0.8s linear infinite;
+  align-self: center;
+}
+
+.lobby-screen__offline-status-text {
+  text-align: center;
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+/* --- Offline Error --- */
+.lobby-screen__offline-error {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: rgba(229, 62, 62, 0.1);
+  border: 1px solid var(--theme-red-8, #e53e3e);
+  color: var(--theme-red-8, #e53e3e);
+  font-size: 0.875rem;
+}
+
+.lobby-screen__offline-error[hidden] {
+  display: none;
+}
+
+@keyframes offline-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes offline-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 /* ========================================
@@ -277,7 +460,7 @@ h1,h2,h3,h4,h5,h6,p {
 .dialog__options {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--size-gap-min);
 }
 
 .dialog__local-label {
@@ -299,6 +482,14 @@ h1,h2,h3,h4,h5,h6,p {
   .skip-link {
     transition: none;
   }
+
+  .lobby-screen__offline-spinner {
+    animation: none;
+  }
+
+  .lobby-screen__offline-status-dot[data-status="connecting"] {
+    animation: none;
+  }
 }
 
 
@@ -317,7 +508,7 @@ h1,h2,h3,h4,h5,h6,p {
 /* --- Game Screen: Full viewport, horizontal snap scroll --- */
 .game-screen {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -487,7 +678,7 @@ h1,h2,h3,h4,h5,h6,p {
 
 /* --- Score Page --- */
 .game-screen__page--score {
-  padding: 1rem;
+  padding: var(--layout-spacing-min);
 }
 
 .game-screen__scoreboard {
@@ -499,31 +690,36 @@ h1,h2,h3,h4,h5,h6,p {
 /* --- Scoreboard --- */
 .scoreboard {
   width: 100%;
-}
-
-.scoreboard__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8125rem;
-  font-variant-numeric: tabular-nums;
+  position: relative;
 }
 
 .scoreboard__table th,
 .scoreboard__table td {
-  padding: 0.5rem 0.625rem;
+  padding: var(--size-gap-max);
   text-align: center;
   border-bottom: 1px solid var(--db-border);
 }
 
-.scoreboard__table th {
-  font-weight: 500;
-  opacity: 0.6;
+.scoreboard__table th:not(.scoreboard__category):not(.scoreboard__category-header),
+.scoreboard__table td:not(.scoreboard__category):not(.scoreboard__category-header) {
+  min-width: 33dvw;
+}
+
+.scoreboard__category-header {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--db-background);
 }
 
 .scoreboard__category {
   text-align: left;
   font-weight: 500;
+  position: sticky;
+  left: 0;
+  z-index: 1;
   white-space: nowrap;
+  background: var(--db-background);
 }
 
 .scoreboard__player-header {
@@ -531,23 +727,63 @@ h1,h2,h3,h4,h5,h6,p {
   font-size: 0.8125rem;
 }
 
-.scoreboard__player--active {
-  color: var(--theme-blue-8, #638BFA);
+.scoreboard__avatar-cell {
+  font-size: 1.75rem;
+  line-height: 1;
+  padding-bottom: 0.25rem;
+}
+
+.scoreboard__col--inactive {
+  opacity: 0.5;
+}
+
+.scoreboard__scroll-wrapper {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scoreboard__scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.scoreboard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2rem;
+  background: linear-gradient(to left, var(--db-background), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.scoreboard__table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .scoreboard__cell { opacity: 0.6; }
-.scoreboard__cell--filled { opacity: 1; font-weight: 600; }
+.scoreboard__cell--filled {
+  opacity: 1;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.25rem;
+}
 .scoreboard__cell--available { padding: 0.25rem; }
-.scoreboard__cell--empty { opacity: 0.35; }
+.scoreboard__cell--empty { opacity: 0.25; }
 
 .scoreboard__select-btn {
   font-variant-numeric: tabular-nums;
-  color: var(--theme-blue-8, #638BFA);
 }
 
 .scoreboard__select-btn--selected {
-  background: var(--theme-blue-8, #638BFA);
-  color: #fff;
+  background: var(--db-text, #fff);
+  color: var(--db-background, #000);
   transform: scale(1.1);
   transition: all 0.15s ease;
 }
@@ -566,24 +802,14 @@ h1,h2,h3,h4,h5,h6,p {
 }
 
 .scoreboard__row--clickable:focus-visible {
-  outline: 2px solid var(--theme-blue-8, #638BFA);
+  outline: 2px solid var(--db-text, #fff);
   outline-offset: -2px;
 }
 
-.scoreboard__row--bonus .scoreboard__category,
-.scoreboard__row--section .scoreboard__category {
-  font-style: italic;
-  opacity: 0.5;
-}
-
-.scoreboard__row--section { border-top: 2px solid var(--db-border); }
-.scoreboard__row--section td { font-weight: 600; }
-.scoreboard__row--total { border-top: 2px solid var(--db-border); }
+.scoreboard__row--section td, 
 .scoreboard__row--total th,
 .scoreboard__row--total td {
-  font-weight: 700;
-  font-size: 0.9375rem;
-  padding-top: 0.75rem;
+  font-weight: bold;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -602,6 +828,49 @@ h1,h2,h3,h4,h5,h6,p {
 
 
 /* --- Full height chain for game screen --- */
-main, .screen {
+main {
   height: 100%;
+  overflow-y: auto;
+}
+
+.screen {
+  height: 100%;
+}
+
+/* --- Offline Multiplayer Banners --- */
+.game-screen__offline-banner {
+  text-align: center;
+  padding: 0.375rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.game-screen__offline-banner--your-turn {
+  background: var(--db-accent, #4caf50);
+  color: #fff;
+}
+
+.game-screen__offline-banner--waiting {
+  background: var(--db-surface-2, #e0e0e0);
+  color: var(--db-text, #333);
+  opacity: 0.8;
+}
+
+.game-screen__offline-connection-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.game-screen__offline-connection-banner--warning {
+  background: #ff9800;
+  color: #fff;
+}
+
+.game-screen__offline-connection-banner--error {
+  background: #f44336;
+  color: #fff;
 }

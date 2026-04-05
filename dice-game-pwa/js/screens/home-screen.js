@@ -60,9 +60,16 @@ export function createHomeScreen() {
         descEl.remove();
       }
 
-      const handler = (e) => { e.preventDefault(); openPlayTypeDialog(mode); };
+      const handler = (e) => {
+        e.preventDefault();
+        if (mode.id === 'free-roll') {
+          navigate('game', { modeId: mode.id, playType: 'solo' });
+        } else {
+          openPlayTypeDialog(mode);
+        }
+      };
       card.addEventListener('click', handler);
-      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPlayTypeDialog(mode); } });
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(e); } });
       cleanupHandlers.push(() => card.removeEventListener('click', handler));
 
       modeList.appendChild(card);
@@ -118,7 +125,6 @@ export function createHomeScreen() {
 
     // Bind play type buttons
     const soloBtn = fragment.querySelector('#dialog-solo-btn');
-    const onlineBtn = fragment.querySelector('#dialog-online-btn');
     const offlineBtn = fragment.querySelector('#dialog-offline-btn');
 
     const bindOption = (btn, action) => {
@@ -128,8 +134,11 @@ export function createHomeScreen() {
     };
 
     bindOption(soloBtn, () => navigate('game', { modeId: mode.id, playType: 'solo' }));
-    bindOption(onlineBtn, () => navigate('lobby', { modeId: mode.id, playType: 'online' }));
-    bindOption(offlineBtn, () => navigate('lobby', { modeId: mode.id, playType: 'offline' }));
+    bindOption(offlineBtn, () => navigate('lobby', { modeId: mode.id, playType: 'offline', role: 'host' }));
+
+    // Join game — client flow for offline multiplayer
+    const joinBtn = fragment.querySelector('#dialog-join-btn');
+    bindOption(joinBtn, () => navigate('lobby', { playType: 'offline', role: 'client' }));
 
     // Local multiplayer — open player setup dialog
     const localBtn = fragment.querySelector('#dialog-local-btn');

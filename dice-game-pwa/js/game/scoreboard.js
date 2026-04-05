@@ -2,6 +2,7 @@
 // Feature: dice-game-pwa, Anforderungen: 6.1, 6.2, 6.3
 
 import { t } from '../i18n.js';
+import { getAvatar } from '../avatars.js';
 
 /**
  * Upper block categories for Kniffel.
@@ -114,6 +115,13 @@ export function createScoreboard() {
    * @param {object} state
    */
   function renderKniffel(state) {
+    // Reorder: active player first
+    const activeIdx = state.currentPlayerIndex;
+    const orderedPlayers = [
+      ...state.players.slice(activeIdx),
+      ...state.players.slice(0, activeIdx),
+    ];
+
     const heading = document.createElement('h2');
     heading.className = 'adaptive headline scoreboard__title';
     heading.setAttribute('data-level', '4');
@@ -130,28 +138,47 @@ export function createScoreboard() {
     }
     rootEl.appendChild(roundEl);
 
+    // Scrollable table wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'scoreboard__scroll-wrapper';
+
     const table = document.createElement('table');
     table.className = 'scoreboard__table';
     table.setAttribute('role', 'table');
     table.setAttribute('aria-label', t('scoreboard.title'));
 
-    // Header row
+    // Avatar row
     const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
+    const avatarRow = document.createElement('tr');
+    avatarRow.className = 'scoreboard__avatar-row';
+    const avatarCorner = document.createElement('th');
+    avatarCorner.className = 'scoreboard__category-header';
+    avatarRow.appendChild(avatarCorner);
 
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
+      const th = document.createElement('th');
+      th.className = 'scoreboard__avatar-cell' + (isActive ? '' : ' scoreboard__col--inactive');
+      th.textContent = player.avatar || getAvatar(origIdx);
+      avatarRow.appendChild(th);
+    }
+    thead.appendChild(avatarRow);
+
+    // Name row
+    const headerRow = document.createElement('tr');
     const categoryTh = document.createElement('th');
     categoryTh.className = 'scoreboard__category-header';
     categoryTh.setAttribute('scope', 'col');
     categoryTh.textContent = '';
     headerRow.appendChild(categoryTh);
 
-    for (let i = 0; i < state.players.length; i++) {
-      const player = state.players[i];
-      const isActive = i === state.currentPlayerIndex;
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
       const th = document.createElement('th');
-      th.className = 'scoreboard__player-header' + (isActive ? ' scoreboard__player--active' : '');
+      th.className = 'scoreboard__player-header' + (isActive ? '' : ' scoreboard__col--inactive');
       th.setAttribute('scope', 'col');
-      th.setAttribute('aria-current', isActive ? 'true' : 'false');
       th.textContent = player.name;
       headerRow.appendChild(th);
     }
@@ -163,25 +190,26 @@ export function createScoreboard() {
 
     // Upper block
     for (const cat of UPPER_CATEGORIES) {
-      tbody.appendChild(createCategoryRow(cat, state));
+      tbody.appendChild(createCategoryRow(cat, state, orderedPlayers));
     }
 
     // Upper bonus row
-    tbody.appendChild(createBonusRow(state));
+    tbody.appendChild(createBonusRow(state, orderedPlayers));
 
     // Separator / upper total
-    tbody.appendChild(createSectionRow('scoreboard.upperTotal', state, UPPER_CATEGORIES));
+    tbody.appendChild(createSectionRow('scoreboard.upperTotal', state, UPPER_CATEGORIES, orderedPlayers));
 
     // Lower block
     for (const cat of LOWER_CATEGORIES) {
-      tbody.appendChild(createCategoryRow(cat, state));
+      tbody.appendChild(createCategoryRow(cat, state, orderedPlayers));
     }
 
     // Total row
-    tbody.appendChild(createTotalRow(state));
+    tbody.appendChild(createTotalRow(state, orderedPlayers));
 
     table.appendChild(tbody);
-    rootEl.appendChild(table);
+    wrapper.appendChild(table);
+    rootEl.appendChild(wrapper);
   }
 
   /**
@@ -190,7 +218,7 @@ export function createScoreboard() {
    * @param {object} state
    * @returns {HTMLTableRowElement}
    */
-  function createCategoryRow(categoryId, state) {
+  function createCategoryRow(categoryId, state, orderedPlayers) {
     const tr = document.createElement('tr');
     tr.className = 'scoreboard__row';
 
@@ -204,9 +232,11 @@ export function createScoreboard() {
     let rowIsClickable = false;
     let rowScore = null;
 
-    for (const player of state.players) {
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
       const td = document.createElement('td');
-      td.className = 'scoreboard__cell';
+      td.className = 'adaptive scoreboard__cell' + (isActive ? '' : ' scoreboard__col--inactive');
 
       const sheet = state.scores[player.id];
       const value = sheet?.categories?.[categoryId];
@@ -214,6 +244,8 @@ export function createScoreboard() {
       if (value != null) {
         td.textContent = String(value);
         td.classList.add('scoreboard__cell--filled');
+        td.setAttribute('data-material', 'inverted');
+        td.setAttribute('data-container-contrast', 'max');
       } else if (player.id === currentPlayerId && state.rollsThisTurn > 0) {
         td.classList.add('scoreboard__cell--available');
         const score = calculatePotentialScore(categoryId, state);
@@ -251,7 +283,7 @@ export function createScoreboard() {
    * @param {object} state
    * @returns {HTMLTableRowElement}
    */
-  function createBonusRow(state) {
+  function createBonusRow(state, orderedPlayers) {
     const tr = document.createElement('tr');
     tr.className = 'scoreboard__row scoreboard__row--bonus';
 
@@ -261,9 +293,11 @@ export function createScoreboard() {
     th.textContent = t('kniffel.upperBonus');
     tr.appendChild(th);
 
-    for (const player of state.players) {
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
       const td = document.createElement('td');
-      td.className = 'scoreboard__cell';
+      td.className = 'adaptive scoreboard__cell' + (isActive ? '' : ' scoreboard__col--inactive');
       const sheet = state.scores[player.id];
       const bonus = sheet?.categories?.upperBonus;
       td.textContent = bonus != null ? String(bonus) : '–';
@@ -280,7 +314,7 @@ export function createScoreboard() {
    * @param {string[]} categories - categories to sum
    * @returns {HTMLTableRowElement}
    */
-  function createSectionRow(labelKey, state, categories) {
+  function createSectionRow(labelKey, state, categories, orderedPlayers) {
     const tr = document.createElement('tr');
     tr.className = 'scoreboard__row scoreboard__row--section';
 
@@ -290,9 +324,11 @@ export function createScoreboard() {
     th.textContent = t(labelKey);
     tr.appendChild(th);
 
-    for (const player of state.players) {
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
       const td = document.createElement('td');
-      td.className = 'scoreboard__cell scoreboard__cell--section';
+      td.className = 'adaptive scoreboard__cell scoreboard__cell--section' + (isActive ? '' : ' scoreboard__col--inactive');
       const sheet = state.scores[player.id];
       let sum = 0;
       if (sheet?.categories) {
@@ -314,7 +350,7 @@ export function createScoreboard() {
    * @param {object} state
    * @returns {HTMLTableRowElement}
    */
-  function createTotalRow(state) {
+  function createTotalRow(state, orderedPlayers) {
     const tr = document.createElement('tr');
     tr.className = 'scoreboard__row scoreboard__row--total';
 
@@ -324,9 +360,11 @@ export function createScoreboard() {
     th.textContent = t('scoreboard.total');
     tr.appendChild(th);
 
-    for (const player of state.players) {
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
       const td = document.createElement('td');
-      td.className = 'scoreboard__cell scoreboard__cell--total';
+      td.className = 'adaptive scoreboard__cell scoreboard__cell--total' + (isActive ? '' : ' scoreboard__col--inactive');
       const sheet = state.scores[player.id];
       td.textContent = String(sheet?.totalScore ?? 0);
       tr.appendChild(td);

@@ -1,5 +1,6 @@
 // Game Screen — Dice area, scoreboard, and game controls
 // Feature: dice-game-pwa, Requirements: 3.3, 3.5, 4.3, 9.3, 9.4, 10.2
+// Feature: offline-multiplayer, Requirements: 5.1, 5.2, 5.3, 5.4, 6.3, 6.4
 
 import { t } from '../i18n.js';
 import { navigate, getParams } from '../app.js';
@@ -13,6 +14,8 @@ import { registerFreeRoll } from '../game/modes/free-roll.js';
 import { registerKniffel } from '../game/modes/kniffel.js';
 import { createGameStore } from '../store/game-store.js';
 import { getAvatar } from '../avatars.js';
+import { createOfflineGameController } from '../multiplayer/offline-game-controller.js';
+import { getOfflineSession, clearOfflineSession } from '../multiplayer/offline-session.js';
 
 /**
  * Factory for the Game Screen.
@@ -26,6 +29,11 @@ export function createGameScreen() {
   let store = null;
   let registry = null;
   let cleanupHandlers = [];
+
+  // Offline multiplayer state
+  let offlineController = null;
+  let isOfflineMode = false;
+  let offlineRole = null;
 
   return {
     async mount(el) {
@@ -44,9 +52,14 @@ export function createGameScreen() {
       }
 
       const params = getParams();
+      isOfflineMode = params.playType === 'offline';
+      offlineRole = params.role || null;
       engine = createGameEngine(registry);
 
-      if (params.gameId && store) {
+      if (isOfflineMode) {
+        // Offline multiplayer mode — use the offline game controller
+        await initOfflineGame(params);
+      } else if (params.gameId && store) {
         const saved = await store.load(params.gameId);
         if (saved) {
           const players = saved.players.map((p, i) => ({ ...p, avatar: p.avatar || getAvatar(i) }));
@@ -69,7 +82,13 @@ export function createGameScreen() {
       }
 
       await buildUI();
-      bindEngineEvents();
+
+      if (isOfflineMode) {
+        bindOfflineEvents();
+      } else {
+        bindEngineEvents();
+      }
+
       bindKeyboard();
       updateUI();
     },
@@ -77,6 +96,10 @@ export function createGameScreen() {
     unmount() {
       cleanupHandlers.forEach((fn) => fn());
       cleanupHandlers = [];
+      if (offlineController) {
+        offlineController.destroy();
+        offlineController = null;
+      }
       if (renderer) renderer.destroy();
       if (scoreboard) scoreboard.destroy();
       renderer = null;
@@ -84,6 +107,8 @@ export function createGameScreen() {
       engine = null;
       store = null;
       registry = null;
+      isOfflineMode = false;
+      offlineRole = null;
       if (container) {
         container.innerHTML = '';
         container = null;
@@ -183,13 +208,24 @@ export function createGameScreen() {
    * Renders or updates the player bar with current state.
    */
   function renderPlayerBar() {
-    if (!engine || !container) return;
-    const state = engine.getState();
+    if (!container) return;
+
+    // Get state from controller in offline mode, otherwise from engine
+    const state = (isOfflineMode && offlineController)
+      ? offlineController.getState()
+      : (engine ? engine.getState() : null);
     if (!state) return;
 
     const bar = container.querySelector('#game-player-bar');
     if (!bar) return;
 
+    // Hide player bar for free-roll mode
+    if (state.modeId === 'free-roll') {
+      bar.style.display = 'none';
+      return;
+    }
+
+    bar.style.display = '';
     bar.innerHTML = '';
 
     // Reorder: active player first, then the rest in order after them
@@ -254,10 +290,247 @@ export function createGameScreen() {
     requestAnimationFrame(updateBarFades);
   }
 
+  // =========================================================================
+  // Offline Multiplayer — Controller initialization and event wiring
+  // =========================================================================
+
+  /**
+   * Initializes the offline game: retrieves the peer from the session,
+   * creates the controller, and loads the game state.
+   * @param {object} params - URL parameters
+   */
+  async function initOfflineGame(params) {
+    const session = getOfflineSession();
+
+    if (!session.peer) {
+      // No peer available — fall back to a basic game
+      engine.startGame(params.modeId || 'free-roll', [
+        { id: 'player-1', name: t('scoreboard.player') + ' 1', avatar: getAvatar(0) },
+      ]);
+      isOfflineMode = false;
+      return;
+    }
+
+    const isHost = params.role === 'host';
+    const localPlayerId = session.playerId || (isHost ? 'local-1' : 'remote-1');
+
+    offlineController = createOfflineGameController({
+      peer: session.peer,
+      gameEngine: engine,
+      isHost,
+      playerId: localPlayerId,
+    });
+
+    // Load the saved game state
+    if (params.gameId && store) {
+      const saved = await store.load(params.gameId);
+      if (saved) {
+        // Start the engine with the saved state for both host and client
+        // This ensures engine.getState() works for buildUI
+        const players = saved.players.map((p, i) => ({ ...p, avatar: p.avatar || getAvatar(i) }));
+        engine.startGame(saved.modeId, players);
+      }
+    }
+
+    // If no saved state and host, start a default game
+    if (!engine.getState()) {
+      const fallbackModeId = params.modeId || 'free-roll';
+      if (isHost) {
+        engine.startGame(fallbackModeId, [
+          { id: 'local-1', name: t('scoreboard.player') + ' 1', avatar: getAvatar(0) },
+          { id: 'remote-1', name: t('scoreboard.player') + ' 2', avatar: getAvatar(1) },
+        ]);
+      } else {
+        // Client fallback — start with default players so UI can render
+        engine.startGame(fallbackModeId, [
+          { id: 'local-1', name: t('scoreboard.player') + ' 1', avatar: getAvatar(0) },
+          { id: 'remote-1', name: t('scoreboard.player') + ' 2', avatar: getAvatar(1) },
+        ]);
+      }
+    }
+  }
+
+  /**
+   * Binds offline controller events: state changes, game over, connection status.
+   */
+  function bindOfflineEvents() {
+    if (!offlineController) return;
+
+    // Also bind engine events for the host (engine emits events when host applies actions)
+    if (offlineController.getIsHost()) {
+      engine.on('stateChange', () => {
+        updateOfflineUI();
+        saveState();
+      });
+    }
+
+    // State changes from the controller (both host and client)
+    offlineController.onStateChange((state) => {
+      updateOfflineUI();
+      saveState();
+    });
+
+    // Game over — navigate to result screen
+    offlineController.onGameOver((state) => {
+      saveState();
+      navigate('result', { gameId: state.gameId });
+    });
+
+    // Connection status changes — show warnings
+    offlineController.onConnectionStatusChange((status) => {
+      showConnectionStatus(status);
+    });
+  }
+
+  /**
+   * Updates the UI based on the offline controller's state.
+   * Enables/disables controls based on isMyTurn().
+   */
+  function updateOfflineUI() {
+    if (!offlineController || !container) return;
+
+    const state = offlineController.getState();
+    if (!state) return;
+
+    // Update player bar
+    renderPlayerBar();
+
+    const rollBtn = container.querySelector('#game-roll-btn');
+    if (rollBtn) {
+      const mode = registry.get(state.modeId);
+      const myTurn = offlineController.isMyTurn();
+      const canRoll = myTurn && state.status === 'playing' &&
+        (mode.rollsPerTurn === null || state.rollsThisTurn < mode.rollsPerTurn);
+      rollBtn.disabled = !canRoll;
+
+      // Update button text with roll count
+      const btnTextNode = rollBtn.childNodes[rollBtn.childNodes.length - 1];
+      if (mode.rollsPerTurn !== null) {
+        const text = ` ${t('game.roll')} (${state.rollsThisTurn}/${mode.rollsPerTurn})`;
+        if (btnTextNode?.nodeType === 3) btnTextNode.textContent = text;
+      } else {
+        const text = ` ${t('game.roll')}`;
+        if (btnTextNode?.nodeType === 3) btnTextNode.textContent = text;
+      }
+    }
+
+    // Update dice display
+    if (renderer && state.dice) {
+      renderer.update(state.dice, false);
+      for (let i = 0; i < state.dice.held.length; i++) {
+        renderer.setHeld(i, state.dice.held[i]);
+      }
+    }
+
+    if (scoreboard) scoreboard.update(state);
+
+    // Show turn indicator
+    showTurnIndicator();
+  }
+
+  /**
+   * Shows a turn indicator banner for offline mode.
+   */
+  function showTurnIndicator() {
+    if (!offlineController || !container) return;
+
+    let banner = container.querySelector('[data-offline-turn-banner]');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.setAttribute('data-offline-turn-banner', '');
+      banner.className = 'game-screen__offline-banner';
+      banner.setAttribute('role', 'status');
+      banner.setAttribute('aria-live', 'polite');
+      const header = container.querySelector('.game-screen__header');
+      if (header) {
+        header.after(banner);
+      }
+    }
+
+    const state = offlineController.getState();
+    if (!state || state.status !== 'playing') {
+      banner.hidden = true;
+      return;
+    }
+
+    const myTurn = offlineController.isMyTurn();
+    if (myTurn) {
+      banner.textContent = t('game.yourTurn');
+      banner.className = 'game-screen__offline-banner game-screen__offline-banner--your-turn';
+    } else {
+      const currentPlayer = state.players[state.currentPlayerIndex];
+      const name = currentPlayer ? currentPlayer.name : '';
+      banner.textContent = t('game.waitingForPlayer', { name });
+      banner.className = 'game-screen__offline-banner game-screen__offline-banner--waiting';
+    }
+    banner.hidden = false;
+  }
+
+  /**
+   * Shows connection status warnings/errors for offline mode.
+   * @param {string} status - 'connected', 'disconnected', 'failed', 'connecting'
+   */
+  function showConnectionStatus(status) {
+    if (!container) return;
+
+    // Remove existing connection banner
+    const existing = container.querySelector('[data-offline-connection-banner]');
+    if (existing) existing.remove();
+
+    if (status === 'connected') return; // No banner needed
+
+    const banner = document.createElement('div');
+    banner.setAttribute('data-offline-connection-banner', '');
+    banner.setAttribute('role', 'alert');
+    banner.className = 'game-screen__offline-connection-banner';
+
+    if (status === 'disconnected') {
+      banner.className += ' game-screen__offline-connection-banner--warning';
+      banner.textContent = t('game.offlineDisconnected');
+    } else if (status === 'failed') {
+      banner.className += ' game-screen__offline-connection-banner--error';
+
+      const msg = document.createElement('span');
+      msg.textContent = t('game.offlineFailed');
+      banner.appendChild(msg);
+
+      const backBtn = document.createElement('button');
+      backBtn.type = 'button';
+      backBtn.className = 'adaptive button';
+      backBtn.setAttribute('data-interactive', '');
+      backBtn.setAttribute('data-material', 'filled');
+      backBtn.textContent = t('game.offlineBackHome');
+      backBtn.addEventListener('click', () => {
+        clearOfflineSession();
+        navigate('home');
+      });
+      banner.appendChild(backBtn);
+    }
+
+    // Insert at the top of the game screen
+    const gameScreen = container.querySelector('.game-screen');
+    if (gameScreen) {
+      gameScreen.prepend(banner);
+    } else {
+      container.prepend(banner);
+    }
+  }
+
+  // =========================================================================
+  // Standard game handlers
+  // =========================================================================
+
   function handleRoll() {
     if (!engine) return;
     const state = engine.getState();
     if (!state || state.status !== 'playing') return;
+
+    // In offline mode, use the controller for actions
+    if (isOfflineMode && offlineController) {
+      if (!offlineController.isMyTurn()) return;
+      offlineController.performAction('roll');
+      return;
+    }
 
     const mode = registry.get(state.modeId);
     if (mode.rollsPerTurn !== null && state.rollsThisTurn >= mode.rollsPerTurn) return;
@@ -285,6 +558,13 @@ export function createGameScreen() {
     if (!state || state.status !== 'playing') return;
     if (state.rollsThisTurn === 0) return;
 
+    // In offline mode, use the controller for actions
+    if (isOfflineMode && offlineController) {
+      if (!offlineController.isMyTurn()) return;
+      offlineController.performAction('hold', { dieIndex: index });
+      return;
+    }
+
     engine.toggleHold(index);
     const newState = engine.getState();
     if (renderer && newState) {
@@ -295,6 +575,19 @@ export function createGameScreen() {
 
   function handleCategorySelect(option) {
     if (!engine) return;
+
+    // In offline mode, use the controller for actions
+    if (isOfflineMode && offlineController) {
+      if (!offlineController.isMyTurn()) return;
+
+      const btn = container.querySelector(`.scoreboard__select-btn[aria-label="${option.name.replace('kniffel.', '').replace(/"/g, '')}"]`);
+      if (btn) btn.classList.add('scoreboard__select-btn--selected');
+
+      setTimeout(() => {
+        offlineController.performAction('score', option);
+      }, 200);
+      return;
+    }
 
     const btn = container.querySelector(`.scoreboard__select-btn[aria-label="${option.name.replace('kniffel.', '').replace(/"/g, '')}"]`);
     if (btn) btn.classList.add('scoreboard__select-btn--selected');
@@ -320,7 +613,15 @@ export function createGameScreen() {
   }
 
   function updateUI() {
-    if (!engine || !container) return;
+    if (!container) return;
+
+    // In offline mode, use the offline-specific UI update
+    if (isOfflineMode && offlineController) {
+      updateOfflineUI();
+      return;
+    }
+
+    if (!engine) return;
     const state = engine.getState();
     if (!state) return;
 
@@ -356,8 +657,17 @@ export function createGameScreen() {
 
   function bindKeyboard() {
     const keyHandler = (e) => {
-      if (!engine || !container) return;
-      const state = engine.getState();
+      if (!container) return;
+
+      // In offline mode, check turn before allowing actions
+      if (isOfflineMode && offlineController) {
+        if (!offlineController.isMyTurn()) return;
+      }
+
+      if (!engine) return;
+      const state = (isOfflineMode && offlineController)
+        ? offlineController.getState()
+        : engine.getState();
       if (!state || state.status !== 'playing') return;
 
       switch (e.key) {

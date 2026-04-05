@@ -3,7 +3,7 @@
  * Cache-First-Strategie für alle App-Assets.
  */
 
-const CACHE_NAME = 'dice-game-v1';
+const CACHE_NAME = 'dice-game-v3';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -25,6 +25,10 @@ const ASSETS_TO_CACHE = [
   './js/multiplayer/sync-protocol.js',
   './js/multiplayer/websocket-client.js',
   './js/multiplayer/webrtc-peer.js',
+  './js/multiplayer/sdp-payload.js',
+  './js/multiplayer/qr-code.js',
+  './js/multiplayer/offline-game-controller.js',
+  './js/multiplayer/offline-session.js',
   './js/store/game-store.js',
   './js/avatars.js',
   './js/screens/home-screen.js',
@@ -66,18 +70,37 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch — cache-first strategy
+// Fetch — network-first for navigation, stale-while-revalidate for assets
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
-        // Cache successful GET responses
-        if (event.request.method === 'GET' && response.status === 200) {
+  // Navigation requests (HTML pages): always try network first
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      });
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // All other assets: stale-while-revalidate
+  // Serve from cache immediately, but fetch fresh version in background
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      const fetchPromise = fetch(event.request)
+        .then((response) => {
+          if (event.request.method === 'GET' && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => cached);
+
+      return cached || fetchPromise;
     })
   );
 });

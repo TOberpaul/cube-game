@@ -35,6 +35,7 @@ const CATEGORY_NAMES = {
 
 const UPPER_BONUS_THRESHOLD = 63;
 const UPPER_BONUS_VALUE = 35;
+const KNIFFEL_BONUS_VALUE = 50;
 
 // --- Scoring helpers ---
 
@@ -189,8 +190,60 @@ const kniffelScoring = {
   calculateOptions(dice, state) {
     const playerId = state.players[state.currentPlayerIndex].id;
     const sheet = state.scores[playerId] || createEmptyScoreSheet(playerId);
-    const options = [];
+    const counts = countValues(dice);
+    const maxCount = Math.max(...counts.values());
+    const isKniffel = maxCount === 5;
+    const kniffelScoredWith50 = sheet.categories.kniffel === 50;
 
+    // Bonus Kniffel: rolled another Kniffel and first one was scored as 50
+    const bonusKniffel = isKniffel && kniffelScoredWith50;
+    const bonus = bonusKniffel ? KNIFFEL_BONUS_VALUE : 0;
+
+    if (bonusKniffel) {
+      const options = [];
+      const dieValue = dice[0];
+      const upperCat = UPPER_CATEGORIES[dieValue - 1];
+
+      // Prefer matching upper category
+      if (sheet.categories[upperCat] == null) {
+        options.push({
+          id: upperCat,
+          name: CATEGORY_NAMES[upperCat],
+          score: calculateCategoryScore(upperCat, dice) + bonus,
+        });
+        return options;
+      }
+
+      // Upper is filled → any open lower category (Joker: Full House/Straßen zählen voll)
+      for (const cat of LOWER_CATEGORIES) {
+        if (sheet.categories[cat] == null) {
+          let score;
+          if (cat === 'fullHouse') score = 25;
+          else if (cat === 'smallStraight') score = 30;
+          else if (cat === 'largeStraight') score = 40;
+          else score = calculateCategoryScore(cat, dice);
+          options.push({ id: cat, name: CATEGORY_NAMES[cat], score: score + bonus });
+        }
+      }
+
+      // All lower filled → any open upper category (score as 0 for non-matching)
+      if (options.length === 0) {
+        for (const cat of UPPER_CATEGORIES) {
+          if (sheet.categories[cat] == null) {
+            options.push({
+              id: cat,
+              name: CATEGORY_NAMES[cat],
+              score: calculateCategoryScore(cat, dice) + bonus,
+            });
+          }
+        }
+      }
+
+      return options;
+    }
+
+    // Normal scoring
+    const options = [];
     for (const cat of ALL_CATEGORIES) {
       if (sheet.categories[cat] == null) {
         options.push({
@@ -200,7 +253,6 @@ const kniffelScoring = {
         });
       }
     }
-
     return options;
   },
 

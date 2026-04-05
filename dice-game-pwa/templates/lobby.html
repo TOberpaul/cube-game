@@ -1,14 +1,53 @@
 <section class="lobby-screen" aria-label="{{lobby.title}}">
-  <h1 class="lobby-screen__title">{{lobby.title}}</h1>
-  <p class="lobby-screen__player-count" id="lobby-player-count"></p>
+  <div class="lobby-screen__header">
+    <button type="button" class="adaptive button button--icon-only" data-interactive data-material="transparent" id="lobby-back-btn" aria-label="Zurück">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <h1 class="lobby-screen__title">{{lobby.title}}</h1>
+  </div>
 
-  <!-- Connection info — populated dynamically based on play type -->
+  <p class="lobby-screen__player-count" id="lobby-player-count"></p>
   <div data-slot="connection-info"></div>
 
+  <!-- Connection Status -->
+  <div class="lobby-screen__offline-connection-status" data-offline-connection-status hidden role="status" aria-live="polite">
+    <span class="lobby-screen__offline-status-dot" data-offline-status-dot></span>
+    <span class="lobby-screen__offline-status-label" data-offline-status-label>Nicht verbunden</span>
+  </div>
+
+  <!-- QR Code area — used by both host (show offer) and client (show answer) -->
+  <div class="lobby-screen__offline-qr" data-offline-qr-display hidden role="img" aria-label="QR-Code"></div>
+  <div class="lobby-screen__offline-qr" data-offline-qr-display-answer hidden role="img" aria-label="QR-Code"></div>
+
+  <!-- Loading spinner -->
+  <div class="lobby-screen__offline-step" data-offline-loading hidden role="status" aria-live="polite">
+    <div class="lobby-screen__offline-spinner" aria-hidden="true"></div>
+    <p class="lobby-screen__offline-status-text" data-offline-loading-text>Verbindung wird vorbereitet…</p>
+  </div>
+
+  <!-- Error display -->
+  <div class="lobby-screen__offline-error" data-offline-error hidden role="alert" aria-live="assertive">
+    <p data-offline-error-text></p>
+  </div>
+
+  <!-- Player list (online mode only) -->
   <div class="lobby-screen__players" role="region" aria-label="{{lobby.players}}">
     <h2 class="lobby-screen__players-heading">{{lobby.players}}</h2>
     <ul class="list" role="list" id="lobby-player-list" data-slot="player-list"></ul>
   </div>
 
-  <div class="lobby-screen__actions" data-slot="actions"></div>
+  <!-- Actions at bottom -->
+  <div class="lobby-screen__actions">
+    <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" data-offline-scan-answer hidden aria-label="Antwort-Code scannen">Antwort-Code scannen</button>
+    <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" data-offline-scan-offer hidden aria-label="Host-Code scannen">Host-Code scannen</button>
+    <button type="button" class="adaptive button button--full-width" data-interactive data-material="inverted" data-container-contrast="max" id="lobby-start-btn" disabled aria-disabled="true" aria-label="{{lobby.startGame}}">{{lobby.startGame}}</button>
+  </div>
+
+  <!-- Camera Scanner Overlay -->
+  <div class="lobby-screen__offline-scanner-overlay" data-offline-scanner hidden>
+    <div class="lobby-screen__offline-scanner-content">
+      <video class="lobby-screen__offline-scanner-video" data-offline-scanner-video autoplay playsinline muted aria-label="Kamera-Vorschau"></video>
+      <button type="button" class="adaptive button" data-interactive data-material="filled" data-offline-scanner-close aria-label="Scanner schließen">Schließen</button>
+    </div>
+  </div>
 </section>
