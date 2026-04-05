@@ -191,13 +191,36 @@ export function createGameScreen() {
     if (!bar) return;
 
     bar.innerHTML = '';
-    state.players.forEach((player, index) => {
+
+    // Reorder: active player first, then the rest in order after them
+    const activeIdx = state.currentPlayerIndex;
+    const ordered = [
+      ...state.players.slice(activeIdx),
+      ...state.players.slice(0, activeIdx),
+    ];
+
+    ordered.forEach((player) => {
+      const index = state.players.indexOf(player);
       const el = document.createElement('div');
       el.className = 'player-bar__player' + (index === state.currentPlayerIndex ? ' player-bar__player--active' : '');
 
       const avatar = document.createElement('span');
       avatar.className = 'player-bar__avatar';
       avatar.textContent = player.avatar || getAvatar(index);
+
+      if (index === state.currentPlayerIndex) {
+        const badge = document.createElement('span');
+        badge.className = 'adaptive badge';
+        badge.setAttribute('data-material', 'inverted');
+        badge.setAttribute('data-color', 'neutral');
+        badge.setAttribute('data-size', 'xs');
+        badge.setAttribute('data-container-contrast', 'max');
+        badge.textContent = '🎲';
+        avatar.appendChild(badge);
+      }
+
+      const info = document.createElement('div');
+      info.className = 'player-bar__info';
 
       const name = document.createElement('span');
       name.className = 'player-bar__name';
@@ -208,11 +231,27 @@ export function createGameScreen() {
       const sheet = state.scores[player.id];
       score.textContent = sheet ? sheet.totalScore : 0;
 
+      info.appendChild(name);
+      info.appendChild(score);
       el.appendChild(avatar);
-      el.appendChild(name);
-      el.appendChild(score);
+      el.appendChild(info);
       bar.appendChild(el);
     });
+
+    // Scroll to start so active player is visible
+    bar.scrollLeft = 0;
+
+    // Fade edges on header based on bar scroll position
+    const header = bar.closest('.game-screen__header');
+    const updateBarFades = () => {
+      if (!header) return;
+      const { scrollLeft, scrollWidth, clientWidth } = bar;
+      header.classList.toggle('game-screen__header--fade-left', scrollLeft > 4);
+      header.classList.toggle('game-screen__header--fade-right', scrollLeft < scrollWidth - clientWidth - 4);
+    };
+    bar.addEventListener('scroll', updateBarFades, { passive: true });
+    cleanupHandlers.push(() => bar.removeEventListener('scroll', updateBarFades));
+    requestAnimationFrame(updateBarFades);
   }
 
   function handleRoll() {

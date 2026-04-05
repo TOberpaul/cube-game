@@ -83,7 +83,8 @@ h1,h2,h3,h4,h5,h6,p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--layout-spacing-min);
+  padding: 1.5rem 1rem;
+  gap: 1.5rem;
   min-height: 100%;
   text-align: center;
   overflow-y: auto;
@@ -103,7 +104,6 @@ h1,h2,h3,h4,h5,h6,p {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 400px;
   position: relative;
   gap: var(--layout-spacing-min);
 }
@@ -141,7 +141,6 @@ h1,h2,h3,h4,h5,h6,p {
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  padding: 0.25rem 0;
   margin: 0;
   list-style: none;
 }
@@ -274,50 +273,11 @@ h1,h2,h3,h4,h5,h6,p {
   margin-top: 0.5rem;
 }
 
-/* ========================================
-   DIALOG — Layout (backdrop + positioning)
-   Modal component styles come from design system modal.css
-   ======================================== */
-.dialog-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  animation: dialog-backdrop-in 0.2s ease;
-}
-
-@keyframes dialog-backdrop-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.dialog {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
-  animation: dialog-slide-up 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes dialog-slide-up {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
+/* --- Dialog content layout (app-specific, not DS) --- */
 .dialog__options {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.dialog__local-setup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
 }
 
 .dialog__local-label {
@@ -330,67 +290,6 @@ h1,h2,h3,h4,h5,h6,p {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-@media (min-width: 480px) {
-  .dialog-backdrop {
-    align-items: center;
-  }
-
-  .dialog {
-    max-width: 400px;
-  }
-
-  @keyframes dialog-slide-up {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-}
-
-/* ========================================
-   RESPONSIVE BREAKPOINTS
-   ======================================== */
-@media (min-width: 480px) {
-  .home-screen {
-    padding: 3rem 2rem;
-    gap: 2.5rem;
-  }
-
-  .lobby-screen {
-    padding: 2.5rem 2rem;
-  }
-
-  .result-screen {
-    padding: 3rem 2rem;
-    gap: 2rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .home-screen {
-    padding: 4rem 2rem;
-  }
-
-  .home-screen__modes {
-    max-width: 440px;
-  }
-
-  .home-screen__play-types {
-    max-width: 440px;
-  }
-
-  .lobby-screen {
-    padding: 3rem 2rem;
-  }
-
-  .result-screen__rankings {
-    max-width: 440px;
-  }
-
-  .result-screen__actions {
-    flex-direction: row;
-    max-width: 400px;
-  }
 }
 
 /* ========================================
@@ -453,24 +352,39 @@ h1,h2,h3,h4,h5,h6,p {
   overflow: visible;
 }
 
-.game-screen__header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  flex-shrink: 0;
-  overflow: visible;
-}
-
 /* --- Player Bar --- */
 .player-bar {
   display: flex;
   gap: 0.75rem;
   flex: 1;
   overflow-x: auto;
-  overflow: visible;
+  overflow-y: hidden;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+}
+
+.game-screen__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.game-screen__header--fade-right .player-bar {
+  mask-image: linear-gradient(to left, transparent, black 1.5rem);
+  -webkit-mask-image: linear-gradient(to left, transparent, black 1.5rem);
+}
+
+.game-screen__header--fade-left .player-bar {
+  mask-image: linear-gradient(to right, transparent, black 1.5rem);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 1.5rem);
+}
+
+.game-screen__header--fade-left.game-screen__header--fade-right .player-bar {
+  mask-image: linear-gradient(to right, transparent, black 1.5rem, black calc(100% - 1.5rem), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 1.5rem, black calc(100% - 1.5rem), transparent);
 }
 
 .player-bar::-webkit-scrollbar {
@@ -480,25 +394,39 @@ h1,h2,h3,h4,h5,h6,p {
 .player-bar__player {
   display: flex;
   flex-direction: column;
+  gap: var(--size-gap-min);
   align-items: center;
   text-align: center;
   min-width: 3.5rem;
   padding: 0.25rem;
   border-radius: 0.5rem;
-  opacity: 0.55;
+  opacity: 0.5;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .player-bar__player--active {
   opacity: 1;
-  transform: scale(1.08);
-  box-shadow: 0 0 0 2px var(--theme-blue-8, #638BFA);
-  border-radius: 0.75rem;
+  font-weight: bold;
 }
 
 .player-bar__avatar {
   font-size: 2.5rem;
   line-height: 1;
+  position: relative;
+}
+
+.player-bar__avatar > .badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translateX(25%) translateY(25%);
+  border: 2px solid var(--db-text);
+}
+
+.player-bar__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .player-bar__name {

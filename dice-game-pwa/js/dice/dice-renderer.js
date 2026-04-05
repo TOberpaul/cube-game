@@ -75,11 +75,11 @@ export function createDiceRenderer() {
     const aspect = container.clientWidth / Math.max(container.clientHeight, 1);
     // Closer camera, slight angle — like looking at dice on a table
     camera = new THREE.PerspectiveCamera(30, aspect, 0.1, 100);
-    camera.position.set(0, 30, 5);
+    camera.position.set(0, 25, 10);
     camera.lookAt(0, 0, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.VSMShadowMap;
@@ -87,10 +87,10 @@ export function createDiceRenderer() {
     container.appendChild(renderer.domElement);
 
     // Soft ambient — neutral white
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    scene.add(new THREE.AmbientLight(0xffffff, 2.0));
 
     // Key light — neutral white, high up for soft shadows
-    const key = new THREE.DirectionalLight(0xffffff, 1.8);
+    const key = new THREE.DirectionalLight(0xffffff, 3.0);
     key.position.set(2, 12, 3);
     key.castShadow = true;
     key.shadow.mapSize.width = 2048;
@@ -107,12 +107,12 @@ export function createDiceRenderer() {
     scene.add(key);
 
     // Fill light — cool, from left-back, softer
-    const fill = new THREE.DirectionalLight(0xffffff, 0.4);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.8);
     fill.position.set(-4, 5, -2);
     scene.add(fill);
 
     // Rim/back light — subtle highlight on edges
-    const rim = new THREE.DirectionalLight(0xffffff, 0.2);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.4);
     rim.position.set(0, 2, -5);
     scene.add(rim);
 
@@ -131,6 +131,7 @@ export function createDiceRenderer() {
       const w = containerEl.clientWidth, h = containerEl.clientHeight;
       camera.aspect = w / Math.max(h, 1);
       camera.updateProjectionMatrix();
+      renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(w, h);
     });
     resizeObserver.observe(container);
@@ -178,7 +179,7 @@ export function createDiceRenderer() {
       this.destroy();
       setupScene(container);
       dieMeshes = [];
-      currentValues = new Array(count).fill(1);
+      currentValues = Array.from({ length: count }, (_, i) => (i % 6) + 1);
 
       // Load GLB model for each die
       for (let i = 0; i < count; i++) {
@@ -198,10 +199,10 @@ export function createDiceRenderer() {
       }
 
       layoutDice(count);
-      for (const d of dieMeshes) {
-        const r = VALUE_ROTATIONS[1];
-        const yJitter = d.userData.baseYRotation || 0;
-        d.rotation.set(r.x, r.y + yJitter, r.z);
+      for (let i = 0; i < dieMeshes.length; i++) {
+        const r = VALUE_ROTATIONS[currentValues[i]];
+        const yJitter = dieMeshes[i].userData.baseYRotation || 0;
+        dieMeshes[i].rotation.set(r.x, r.y + yJitter, r.z);
       }
       renderLoop();
 

@@ -7,7 +7,6 @@ import { loadTemplate } from '../template-loader.js';
 import { createGameModeRegistry } from '../game/game-mode-registry.js';
 import { registerFreeRoll } from '../game/modes/free-roll.js';
 import { registerKniffel } from '../game/modes/kniffel.js';
-import { createGameStore } from '../store/game-store.js';
 import { getAvatar } from '../avatars.js';
 
 export function createHomeScreen() {
@@ -24,13 +23,7 @@ export function createHomeScreen() {
       registerKniffel(registry);
       const modes = registry.getAll();
 
-      let activeGames = [];
-      try {
-        const store = await createGameStore();
-        activeGames = await store.listActive();
-      } catch { /* ignore */ }
-
-      await render(modes, activeGames);
+      await render(modes);
     },
 
     unmount() {
@@ -44,23 +37,10 @@ export function createHomeScreen() {
     },
   };
 
-  async function render(modes, activeGames) {
+  async function render(modes) {
     if (!container) return;
-    const hasContinue = activeGames.length > 0;
 
     const fragment = await loadTemplate('templates/home.html', t);
-    const section = fragment.querySelector('.home-screen');
-
-    // Active game section — show continue + end buttons if game exists
-    if (hasContinue) {
-      const activeSlot = fragment.querySelector('[data-slot="active-game"]');
-      activeSlot.removeAttribute('hidden');
-
-      const continueBtn = fragment.querySelector('#home-continue-btn');
-      const continueHandler = (e) => { e.preventDefault(); navigate('game', { gameId: activeGames[0].gameId }); };
-      continueBtn.addEventListener('click', continueHandler);
-      cleanupHandlers.push(() => continueBtn.removeEventListener('click', continueHandler));
-    }
 
     // Populate mode list from card template
     const modeList = fragment.querySelector('[data-slot="mode-list"]');
@@ -125,7 +105,7 @@ export function createHomeScreen() {
     }
 
     // Get the backdrop (root element)
-    const backdrop = fragment.querySelector('.dialog-backdrop');
+    const backdrop = fragment.querySelector('.modal-backdrop');
 
     // Bind close button
     const closeBtn = fragment.querySelector('#dialog-close-btn');
@@ -166,7 +146,7 @@ export function createHomeScreen() {
     cleanupHandlers.push(() => document.removeEventListener('keydown', escHandler));
 
     document.body.appendChild(fragment);
-    dialogEl = document.body.querySelector('.dialog-backdrop:last-child');
+    dialogEl = document.body.querySelector('.modal-backdrop:last-child');
     dialogEl.addEventListener('click', backdropClick);
     cleanupHandlers.push(() => { if (dialogEl) dialogEl.removeEventListener('click', backdropClick); });
 
@@ -252,7 +232,7 @@ export function createHomeScreen() {
 
     // Backdrop click
     document.body.appendChild(fragment);
-    dialogEl = document.body.querySelector('.dialog-backdrop:last-child');
+    dialogEl = document.body.querySelector('.modal-backdrop:last-child');
     dialogEl.addEventListener('click', (e) => { if (e.target === dialogEl) closeDialog(); });
   }
 
