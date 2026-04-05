@@ -78,15 +78,33 @@ export function createHomeScreen() {
     container.innerHTML = '';
     container.appendChild(fragment);
 
-    // Show app version from SW cache name
+    // Show app version from SW cache name — tap to clear cache and reload
     const versionEl = container.querySelector('#app-version');
-    if (versionEl && navigator.serviceWorker && navigator.serviceWorker.controller) {
-      // Extract version from SW script URL cache or use a message channel
-      const channel = new MessageChannel();
-      channel.port1.onmessage = (e) => {
-        if (e.data && e.data.version) versionEl.textContent = e.data.version;
+    if (versionEl) {
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        const channel = new MessageChannel();
+        channel.port1.onmessage = (e) => {
+          if (e.data && e.data.version) versionEl.textContent = e.data.version;
+        };
+        navigator.serviceWorker.controller.postMessage({ type: 'getVersion' }, [channel.port2]);
+      } else {
+        versionEl.textContent = 'no SW';
+      }
+
+      const versionHandler = async () => {
+        versionEl.textContent = 'Cache wird gelöscht…';
+        try {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+          if (navigator.serviceWorker) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+          }
+        } catch { /* ignore */ }
+        window.location.reload();
       };
-      navigator.serviceWorker.controller.postMessage({ type: 'getVersion' }, [channel.port2]);
+      versionEl.addEventListener('click', versionHandler);
+      cleanupHandlers.push(() => versionEl.removeEventListener('click', versionHandler));
     }
 
     // Carousel fade edges based on scroll position
