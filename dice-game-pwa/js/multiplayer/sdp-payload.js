@@ -1,7 +1,7 @@
 /**
  * SDP-Payload Serializer — Offline P2P Multiplayer
- * Compact serialization for QR code transfer. SDP string is passed
- * through untouched to avoid WebRTC parsing issues.
+ * Compact serialization for QR code transfer and deep-link sharing.
+ * SDP string is passed through untouched to avoid WebRTC parsing issues.
  */
 
 const VALID_TYPES = ['offer', 'answer'];
@@ -57,4 +57,40 @@ export function deserializeSdpPayload(json) {
     };
   }
   return parsed;
+}
+
+// --- Deep-link compression (deflate-raw + base64url) ---
+
+export async function compressForUrl(jsonString) {
+  const bytes = new TextEncoder().encode(jsonString);
+  const cs = new CompressionStream('deflate-raw');
+  const writer = cs.writable.getWriter();
+  writer.write(bytes);
+  writer.close();
+  const compressed = await new Response(cs.readable).arrayBuffer();
+  return uint8ToBase64Url(new Uint8Array(compressed));
+}
+
+export async function decompressFromUrl(base64url) {
+  const bytes = base64UrlToUint8(base64url);
+  const ds = new DecompressionStream('deflate-raw');
+  const writer = ds.writable.getWriter();
+  writer.write(bytes);
+  writer.close();
+  const decompressed = await new Response(ds.readable).arrayBuffer();
+  return new TextDecoder().decode(decompressed);
+}
+
+function uint8ToBase64Url(bytes) {
+  let binary = '';
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function base64UrlToUint8(str) {
+  const padded = str.replace(/-/g, '+').replace(/_/g, '/');
+  const binary = atob(padded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
 }

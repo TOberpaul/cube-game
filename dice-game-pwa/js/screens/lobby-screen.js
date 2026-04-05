@@ -9,7 +9,7 @@ import { createGameModeRegistry } from '../game/game-mode-registry.js';
 import { registerFreeRoll } from '../game/modes/free-roll.js';
 import { registerKniffel } from '../game/modes/kniffel.js';
 import { createWebRTCPeer } from '../multiplayer/webrtc-peer.js';
-import { serializeSdpPayload, deserializeSdpPayload, validateSdpPayload } from '../multiplayer/sdp-payload.js';
+import { serializeSdpPayload, deserializeSdpPayload, validateSdpPayload, compressForUrl, decompressFromUrl } from '../multiplayer/sdp-payload.js';
 import { generateQrCode, scanQrCode, stopScanner } from '../multiplayer/qr-code.js';
 import { createGameEngine } from '../game/game-engine.js';
 import { createOfflineGameController } from '../multiplayer/offline-game-controller.js';
@@ -34,6 +34,8 @@ export function createLobbyScreen() {
   let peer = null;
   let connectionStatus = 'disconnected'; // 'disconnected' | 'connecting' | 'connected'
   let startBtn = null;
+  let _deepLinkSdp = null;     // Client: compressed offer from deep-link
+  let _deepLinkAnswer = null;  // Host: compressed answer from deep-link
 
   return {
     mount(el) {
@@ -43,6 +45,10 @@ export function createLobbyScreen() {
       modeId = params.modeId || 'free-roll';
       playType = params.playType || 'online';
       offlineRole = params.role || null;
+      const deepLinkSdp = params.sdp || null;       // Client: offer from deep-link
+      const deepLinkAnswer = params.answerSdp || null; // Host: answer from deep-link
+      _deepLinkSdp = deepLinkSdp;
+      _deepLinkAnswer = deepLinkAnswer;
 
       const registry = createGameModeRegistry();
       registerFreeRoll(registry);
@@ -297,6 +303,18 @@ export function createLobbyScreen() {
       const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
       if (pasteOfferBtn) pasteOfferBtn.hidden = false;
       setupClientFlow();
+
+      // Auto-process offer from deep-link if present
+      if (_deepLinkSdp) {
+        (async () => {
+          try {
+            const json = await decompressFromUrl(_deepLinkSdp);
+            await processClientOffer(json);
+          } catch (err) {
+            showOfflineError(err.message || 'Ungültiger Einladungslink.');
+          }
+        })();
+      }
     }
 
     updateConnectionStatusUI();
@@ -369,6 +387,21 @@ export function createLobbyScreen() {
     if (!container) return;
     const errorEl = container.querySelector('[data-offline-error]');
     if (errorEl) errorEl.hidden = true;
+  }
+
+  /**
+   * Extracts SDP JSON from text — handles raw JSON, deep-link URLs, or compressed payloads.
+   */
+  async function extractSdpFromText(text) {
+    // If it's a URL with sdp= param, extract and decompress
+    if (text.includes('#join?') || text.includes('#answer?')) {
+      const match = text.match(/[?&]sdp=([^&]+)/);
+      if (match) {
+        return decompressFromUrl(match[1]);
+      }
+    }
+    // Otherwise treat as raw JSON
+    return text;
   }
 
   /**
@@ -451,14 +484,17 @@ export function createLobbyScreen() {
       const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
       if (pasteAnswerBtn) pasteAnswerBtn.hidden = false;
 
-      // Show share offer button
+      // Show share offer button — shares a deep-link URL
       const shareOfferBtn = container.querySelector('[data-offline-share-offer]');
       if (shareOfferBtn) {
         shareOfferBtn.hidden = false;
         const shareHandler = async () => {
           try {
-            await navigator.share({ title: 'Dice Game Offer', text: serialized });
-          } catch { /* user cancelled or share not supported */ }
+            const compressed = await compressForUrl(serialized);
+            const baseUrl = window.location.origin + window.location.pathname;
+            const url = `${baseUrl}#join?sdp=${compressed}&modeId=${modeId}`;
+            await navigator.share({ title: 'Dice Game — Spiel beitreten', url });
+          } catch { /* user cancelled */ }
         };
         shareOfferBtn.addEventListener('click', shareHandler);
         cleanupHandlers.push(() => shareOfferBtn.removeEventListener('click', shareHandler));
@@ -500,20 +536,18 @@ export function createLobbyScreen() {
       cleanupHandlers.push(() => scanAnswerBtn.removeEventListener('click', scanHandler));
     }
 
-    // Paste answer from clipboard
+    // Paste answer from clipboard (accepts raw JSON or deep-link URL)
     const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
     if (pasteAnswerBtn) {
       const pasteHandler = async () => {
         hideOfflineError();
         try {
-          const text = await navigator.clipboard.readText();
-          if (text && text.trim()) {
-            await processHostAnswer(text.trim());
-          } else {
-            showOfflineError('Zwischenablage ist leer.');
-          }
-        } catch {
-          showOfflineError('Zugriff auf Zwischenablage nicht möglich.');
+          const text = (await navigator.clipboard.readText() || '').trim();
+          if (!text) { showOfflineError('Zwischenablage ist leer.'); return; }
+          const sdpJson = await extractSdpFromText(text);
+          await processHostAnswer(sdpJson);
+        } catch (err) {
+          showOfflineError(err.message || 'Zugriff auf Zwischenablage nicht möglich.');
         }
       };
       pasteAnswerBtn.addEventListener('click', pasteHandler);
@@ -573,20 +607,18 @@ export function createLobbyScreen() {
       cleanupHandlers.push(() => scanOfferBtn.removeEventListener('click', scanHandler));
     }
 
-    // Paste offer from clipboard
+    // Paste offer from clipboard (accepts raw JSON or deep-link URL)
     const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
     if (pasteOfferBtn) {
       const pasteHandler = async () => {
         hideOfflineError();
         try {
-          const text = await navigator.clipboard.readText();
-          if (text && text.trim()) {
-            await processClientOffer(text.trim());
-          } else {
-            showOfflineError('Zwischenablage ist leer.');
-          }
-        } catch {
-          showOfflineError('Zugriff auf Zwischenablage nicht möglich.');
+          const text = (await navigator.clipboard.readText() || '').trim();
+          if (!text) { showOfflineError('Zwischenablage ist leer.'); return; }
+          const sdpJson = await extractSdpFromText(text);
+          await processClientOffer(sdpJson);
+        } catch (err) {
+          showOfflineError(err.message || 'Zugriff auf Zwischenablage nicht möglich.');
         }
       };
       pasteOfferBtn.addEventListener('click', pasteHandler);
@@ -642,13 +674,16 @@ export function createLobbyScreen() {
         qrContainer.appendChild(img);
       }
 
-      // Show share answer button
+      // Show share answer button — shares a deep-link URL back to host
       const shareAnswerBtn = container.querySelector('[data-offline-share-answer]');
       if (shareAnswerBtn) {
         shareAnswerBtn.hidden = false;
         const shareHandler = async () => {
           try {
-            await navigator.share({ title: 'Dice Game Answer', text: serialized });
+            const compressed = await compressForUrl(serialized);
+            const baseUrl = window.location.origin + window.location.pathname;
+            const url = `${baseUrl}#answer?sdp=${compressed}`;
+            await navigator.share({ title: 'Dice Game — Antwort', url });
           } catch { /* user cancelled */ }
         };
         shareAnswerBtn.addEventListener('click', shareHandler);

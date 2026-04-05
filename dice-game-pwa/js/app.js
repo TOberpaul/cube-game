@@ -95,6 +95,15 @@ async function onRouteChange() {
 
   const factory = SCREEN_FACTORIES[route];
   if (!factory) {
+    // Deep-link routes: join (client receives offer) and answer (host receives answer)
+    if (route === 'join' && params.sdp) {
+      navigate('lobby', { playType: 'offline', role: 'client', sdp: params.sdp, modeId: params.modeId || 'free-roll' });
+      return;
+    }
+    if (route === 'answer' && params.sdp) {
+      navigate('lobby', { playType: 'offline', role: 'host', answerSdp: params.sdp });
+      return;
+    }
     // Unknown route — fall back to home
     navigate(DEFAULT_ROUTE);
     return;
