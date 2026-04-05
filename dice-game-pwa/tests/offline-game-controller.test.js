@@ -677,7 +677,8 @@ describe('Offline Game Controller — Unit Tests', () => {
       controller.destroy();
     });
 
-    it('should emit "failed" when peer reports "disconnected"', () => {
+    it('should emit "disconnected" then "failed" after timeout when peer reports "disconnected"', async () => {
+      vi.useFakeTimers();
       const { peer, triggerConnectionChange } = createMockPeer();
       const { engine } = createMockGameEngine();
 
@@ -693,10 +694,17 @@ describe('Offline Game Controller — Unit Tests', () => {
 
       triggerConnectionChange('disconnected');
 
-      expect(statusChanges).toEqual(['failed']);
+      // Immediately shows disconnected (warning), not failed
+      expect(statusChanges).toEqual(['disconnected']);
+      expect(controller.getConnectionStatus()).toBe('disconnected');
+
+      // After 10s timeout, becomes failed
+      vi.advanceTimersByTime(10000);
+      expect(statusChanges).toEqual(['disconnected', 'failed']);
       expect(controller.getConnectionStatus()).toBe('failed');
 
       controller.destroy();
+      vi.useRealTimers();
     });
 
     it('should preserve game state locally during disconnection (Req 7.3)', () => {

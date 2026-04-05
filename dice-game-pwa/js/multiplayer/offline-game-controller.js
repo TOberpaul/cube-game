@@ -101,23 +101,35 @@ export function createOfflineGameController({ peer, gameEngine, isHost, playerId
    * - 'connected' after disconnect → 'connected' (controller) — host sends resync
    * @param {string} peerStatus
    */
+  let _disconnectTimer = null;
+
   function handleConnectionChange(peerStatus) {
     previousConnectionStatus = connectionStatus;
 
+    // Clear any pending disconnect timer
+    if (_disconnectTimer) {
+      clearTimeout(_disconnectTimer);
+      _disconnectTimer = null;
+    }
+
     switch (peerStatus) {
       case 'reconnecting':
+      case 'disconnected':
+        // Both are temporary — show warning, wait before declaring failed
         connectionStatus = 'disconnected';
         emitConnectionStatusChange('disconnected');
-        break;
-      case 'disconnected':
-        connectionStatus = 'failed';
-        emitConnectionStatusChange('failed');
+        // After 10s without reconnection, declare failed
+        _disconnectTimer = setTimeout(() => {
+          if (connectionStatus === 'disconnected') {
+            connectionStatus = 'failed';
+            emitConnectionStatusChange('failed');
+          }
+        }, 10000);
         break;
       case 'connected':
         connectionStatus = 'connected';
         emitConnectionStatusChange('connected');
 
-        // If reconnecting after a disconnect, host sends GameState resync
         if (
           isHost &&
           (previousConnectionStatus === 'disconnected' || previousConnectionStatus === 'failed')
@@ -364,6 +376,10 @@ export function createOfflineGameController({ peer, gameEngine, isHost, playerId
      * Cleans up event listeners and references.
      */
     destroy() {
+      if (_disconnectTimer) {
+        clearTimeout(_disconnectTimer);
+        _disconnectTimer = null;
+      }
       stateChangeHandlers.length = 0;
       gameOverHandlers.length = 0;
       connectionStatusChangeHandlers.length = 0;
