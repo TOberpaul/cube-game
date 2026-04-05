@@ -158,14 +158,68 @@ async function _scanWithBarcodeDetector(videoElement) {
 // ---------------------------------------------------------------------------
 
 async function _scanWithCanvasFallback(videoElement) {
-  // Without jsQR or BarcodeDetector, we cannot decode QR codes.
-  // This fallback captures frames and attempts to use any available decoder.
-  // In practice, modern browsers support BarcodeDetector.
-  // If neither is available, we throw a helpful error.
-  throw new QrScanError(
-    'QR code scanning is not supported in this browser. Please use the text input instead.',
-    'NotSupportedError'
-  );
+  // Load jsQR for Safari/iOS which lacks BarcodeDetector
+  const jsQR = await _loadJsQR();
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  return new Promise((resolve, reject) => {
+    const tick = () => {
+      if (!_scannerRunning) {
+        reject(new Error('Scanner stopped'));
+        return;
+      }
+
+      if (videoElement.readyState >= videoElement.HAVE_ENOUGH_DATA) {
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: 'dontInvert',
+        });
+
+        if (code && code.data) {
+          stopScanner();
+          resolve(code.data);
+          return;
+        }
+      }
+
+      _scannerAnimationId = requestAnimationFrame(tick);
+    };
+
+    _scannerAnimationId = requestAnimationFrame(tick);
+  });
+}
+
+/** Loads jsQR library on demand (cached after first load) */
+let _jsQRPromise = null;
+function _loadJsQR() {
+  if (typeof globalThis.jsQR === 'function') {
+    return Promise.resolve(globalThis.jsQR);
+  }
+  if (!_jsQRPromise) {
+    _jsQRPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
+      script.onload = () => {
+        if (typeof globalThis.jsQR === 'function') {
+          resolve(globalThis.jsQR);
+        } else {
+          reject(new QrScanError('Failed to load QR scanner.', 'NotSupportedError'));
+        }
+      };
+      script.onerror = () => {
+        _jsQRPromise = null;
+        reject(new QrScanError('Failed to load QR scanner.', 'NotSupportedError'));
+      };
+      document.head.appendChild(script);
+    });
+  }
+  return _jsQRPromise;
 }
 
 // ---------------------------------------------------------------------------

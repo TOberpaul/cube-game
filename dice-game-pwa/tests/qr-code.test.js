@@ -92,42 +92,41 @@ describe('generateQrCode', () => {
 
 describe('stopScanner', () => {
   it('releases camera stream by stopping all tracks', async () => {
+    // Directly test that stopScanner stops tracks after a scan starts the stream.
+    // We mock getUserMedia, start a scan, then immediately stop it.
     const mockStream = createMockStream();
-
-    // Start a scan to populate the module-level _scannerStream
     const mockVideo = document.createElement('video');
-    // Make it look like an HTMLVideoElement for the instanceof check
     Object.defineProperty(mockVideo, 'play', { value: vi.fn(() => Promise.resolve()) });
     Object.defineProperty(mockVideo, 'srcObject', { value: null, writable: true });
 
-    // Mock getUserMedia to return our mock stream
     const origMediaDevices = navigator.mediaDevices;
     Object.defineProperty(navigator, 'mediaDevices', {
-      value: {
-        getUserMedia: vi.fn(() => Promise.resolve(mockStream)),
-      },
+      value: { getUserMedia: vi.fn(() => Promise.resolve(mockStream)) },
       configurable: true,
     });
 
-    // We need BarcodeDetector to not exist so it falls through to the fallback
-    // which throws — but the stream is already assigned by then.
-    // Instead, let's start scanQrCode and catch the error, then call stopScanner.
-    try {
-      await scanQrCode(mockVideo);
-    } catch {
-      // Expected — the fallback scanner throws QrScanError
-    }
+    // Make BarcodeDetector.detect hang forever so we can stop mid-scan
+    globalThis.BarcodeDetector = class {
+      constructor() {}
+      detect() { return new Promise(() => {}); }
+    };
 
-    // Now call stopScanner — it should stop the tracks
+    // Mock RAF to be a no-op (prevents infinite loop)
+    const origRAF = globalThis.requestAnimationFrame;
+    globalThis.requestAnimationFrame = () => 1;
+    globalThis.cancelAnimationFrame = () => {};
+
+    // Start scan (will hang at first RAF tick)
+    scanQrCode(mockVideo).catch(() => {});
+    await new Promise((r) => setTimeout(r, 0));
+
+    // Stop — should release the stream
     stopScanner();
-
     expect(mockStream._track.stop).toHaveBeenCalled();
 
-    // Restore
-    Object.defineProperty(navigator, 'mediaDevices', {
-      value: origMediaDevices,
-      configurable: true,
-    });
+    delete globalThis.BarcodeDetector;
+    globalThis.requestAnimationFrame = origRAF;
+    Object.defineProperty(navigator, 'mediaDevices', { value: origMediaDevices, configurable: true });
   });
 
   it('is safe to call when no scanner is running', () => {
