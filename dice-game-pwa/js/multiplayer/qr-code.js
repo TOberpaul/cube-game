@@ -52,7 +52,7 @@ export async function scanQrCode(videoElement) {
   let stream;
   try {
     stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment' },
+      video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } },
     });
   } catch (err) {
     if (err.name === 'NotAllowedError') {
@@ -158,11 +158,22 @@ async function _scanWithBarcodeDetector(videoElement) {
 // ---------------------------------------------------------------------------
 
 async function _scanWithCanvasFallback(videoElement) {
-  // Load jsQR for Safari/iOS which lacks BarcodeDetector
   const jsQR = await _loadJsQR();
 
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
+
+  // Wait until video has actual dimensions
+  await new Promise((resolve) => {
+    const check = () => {
+      if (videoElement.videoWidth > 0 && videoElement.videoHeight > 0) {
+        resolve();
+      } else {
+        requestAnimationFrame(check);
+      }
+    };
+    check();
+  });
 
   return new Promise((resolve, reject) => {
     const tick = () => {
@@ -171,21 +182,23 @@ async function _scanWithCanvasFallback(videoElement) {
         return;
       }
 
-      if (videoElement.readyState >= videoElement.HAVE_ENOUGH_DATA) {
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-          inversionAttempts: 'dontInvert',
-        });
-
-        if (code && code.data) {
-          stopScanner();
-          resolve(code.data);
-          return;
+      try {
+        const w = videoElement.videoWidth;
+        const h = videoElement.videoHeight;
+        if (w > 0 && h > 0) {
+          canvas.width = w;
+          canvas.height = h;
+          ctx.drawImage(videoElement, 0, 0, w, h);
+          const imageData = ctx.getImageData(0, 0, w, h);
+          const code = jsQR(imageData.data, w, h, { inversionAttempts: 'dontInvert' });
+          if (code && code.data) {
+            stopScanner();
+            resolve(code.data);
+            return;
+          }
         }
+      } catch {
+        // Frame capture can fail — keep trying
       }
 
       _scannerAnimationId = requestAnimationFrame(tick);
@@ -205,16 +218,24 @@ function _loadJsQR() {
     _jsQRPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
+      script.crossOrigin = 'anonymous';
+      const timeout = setTimeout(() => {
+        _jsQRPromise = null;
+        reject(new QrScanError('QR scanner library failed to load.', 'NotSupportedError'));
+      }, 10000);
       script.onload = () => {
+        clearTimeout(timeout);
         if (typeof globalThis.jsQR === 'function') {
           resolve(globalThis.jsQR);
         } else {
-          reject(new QrScanError('Failed to load QR scanner.', 'NotSupportedError'));
+          _jsQRPromise = null;
+          reject(new QrScanError('QR scanner library failed to load.', 'NotSupportedError'));
         }
       };
       script.onerror = () => {
+        clearTimeout(timeout);
         _jsQRPromise = null;
-        reject(new QrScanError('Failed to load QR scanner.', 'NotSupportedError'));
+        reject(new QrScanError('QR scanner library failed to load.', 'NotSupportedError'));
       };
       document.head.appendChild(script);
     });
