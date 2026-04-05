@@ -275,16 +275,27 @@ export function createLobbyScreen() {
     if (playersSection) playersSection.remove();
 
     if (offlineRole === 'host') {
-      // Host: hide client scan button, show loading then QR
+      // Host: remove client-only buttons
       const clientScanBtn = container.querySelector('[data-offline-scan-offer]');
       if (clientScanBtn) clientScanBtn.remove();
+      const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
+      if (pasteOfferBtn) pasteOfferBtn.remove();
+      const shareAnswerBtn = container.querySelector('[data-offline-share-answer]');
+      if (shareAnswerBtn) shareAnswerBtn.remove();
       startHostFlow();
     } else if (offlineRole === 'client') {
-      // Client: show scan button, hide host answer button
-      const scanOfferBtn = container.querySelector('[data-offline-scan-offer]');
-      if (scanOfferBtn) scanOfferBtn.hidden = false;
+      // Client: remove host-only buttons
       const hostScanBtn = container.querySelector('[data-offline-scan-answer]');
       if (hostScanBtn) hostScanBtn.remove();
+      const shareOfferBtn = container.querySelector('[data-offline-share-offer]');
+      if (shareOfferBtn) shareOfferBtn.remove();
+      const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
+      if (pasteAnswerBtn) pasteAnswerBtn.remove();
+      // Show client buttons
+      const scanOfferBtn = container.querySelector('[data-offline-scan-offer]');
+      if (scanOfferBtn) scanOfferBtn.hidden = false;
+      const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
+      if (pasteOfferBtn) pasteOfferBtn.hidden = false;
       setupClientFlow();
     }
 
@@ -434,11 +445,26 @@ export function createLobbyScreen() {
         qrContainer.appendChild(img);
       }
 
-      // Show the answer scan button
+      // Show the answer scan and paste buttons
       const scanAnswerBtn = container.querySelector('[data-offline-scan-answer]');
       if (scanAnswerBtn) scanAnswerBtn.hidden = false;
+      const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
+      if (pasteAnswerBtn) pasteAnswerBtn.hidden = false;
 
-      setupHostAnswerInput();
+      // Show share offer button
+      const shareOfferBtn = container.querySelector('[data-offline-share-offer]');
+      if (shareOfferBtn) {
+        shareOfferBtn.hidden = false;
+        const shareHandler = async () => {
+          try {
+            await navigator.share({ title: 'Dice Game Offer', text: serialized });
+          } catch { /* user cancelled or share not supported */ }
+        };
+        shareOfferBtn.addEventListener('click', shareHandler);
+        cleanupHandlers.push(() => shareOfferBtn.removeEventListener('click', shareHandler));
+      }
+
+      setupHostAnswerInput(serialized);
     } catch (err) {
       if (loadingEl) loadingEl.hidden = true;
       showOfflineError(err.message || t('error.generic'));
@@ -448,9 +474,10 @@ export function createLobbyScreen() {
   /**
    * Sets up the host's answer input (scanner + text field).
    */
-  function setupHostAnswerInput() {
+  function setupHostAnswerInput(offerPayload) {
     if (!container) return;
 
+    // Scan answer QR
     const scanAnswerBtn = container.querySelector('[data-offline-scan-answer]');
     if (scanAnswerBtn) {
       const scanHandler = async () => {
@@ -471,6 +498,26 @@ export function createLobbyScreen() {
       };
       scanAnswerBtn.addEventListener('click', scanHandler);
       cleanupHandlers.push(() => scanAnswerBtn.removeEventListener('click', scanHandler));
+    }
+
+    // Paste answer from clipboard
+    const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
+    if (pasteAnswerBtn) {
+      const pasteHandler = async () => {
+        hideOfflineError();
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text && text.trim()) {
+            await processHostAnswer(text.trim());
+          } else {
+            showOfflineError('Zwischenablage ist leer.');
+          }
+        } catch {
+          showOfflineError('Zugriff auf Zwischenablage nicht möglich.');
+        }
+      };
+      pasteAnswerBtn.addEventListener('click', pasteHandler);
+      cleanupHandlers.push(() => pasteAnswerBtn.removeEventListener('click', pasteHandler));
     }
   }
 
@@ -503,6 +550,7 @@ export function createLobbyScreen() {
   function setupClientFlow() {
     if (!container) return;
 
+    // Scan offer QR
     const scanOfferBtn = container.querySelector('[data-offline-scan-offer]');
     if (scanOfferBtn) {
       const scanHandler = async () => {
@@ -523,6 +571,26 @@ export function createLobbyScreen() {
       };
       scanOfferBtn.addEventListener('click', scanHandler);
       cleanupHandlers.push(() => scanOfferBtn.removeEventListener('click', scanHandler));
+    }
+
+    // Paste offer from clipboard
+    const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
+    if (pasteOfferBtn) {
+      const pasteHandler = async () => {
+        hideOfflineError();
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text && text.trim()) {
+            await processClientOffer(text.trim());
+          } else {
+            showOfflineError('Zwischenablage ist leer.');
+          }
+        } catch {
+          showOfflineError('Zugriff auf Zwischenablage nicht möglich.');
+        }
+      };
+      pasteOfferBtn.addEventListener('click', pasteHandler);
+      cleanupHandlers.push(() => pasteOfferBtn.removeEventListener('click', pasteHandler));
     }
   }
 
@@ -556,9 +624,11 @@ export function createLobbyScreen() {
         candidates: answer.candidates,
       });
 
-      // Show answer QR code, hide scan button
+      // Show answer QR code, hide scan/paste buttons
       const scanOfferBtn = container.querySelector('[data-offline-scan-offer]');
       if (scanOfferBtn) scanOfferBtn.hidden = true;
+      const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
+      if (pasteOfferBtn) pasteOfferBtn.hidden = true;
 
       const qrContainer = container.querySelector('[data-offline-qr-display-answer]');
       if (qrContainer) {
@@ -570,6 +640,19 @@ export function createLobbyScreen() {
         img.className = 'lobby-screen__offline-qr-img';
         qrContainer.innerHTML = '';
         qrContainer.appendChild(img);
+      }
+
+      // Show share answer button
+      const shareAnswerBtn = container.querySelector('[data-offline-share-answer]');
+      if (shareAnswerBtn) {
+        shareAnswerBtn.hidden = false;
+        const shareHandler = async () => {
+          try {
+            await navigator.share({ title: 'Dice Game Answer', text: serialized });
+          } catch { /* user cancelled */ }
+        };
+        shareAnswerBtn.addEventListener('click', shareHandler);
+        cleanupHandlers.push(() => shareAnswerBtn.removeEventListener('click', shareHandler));
       }
 
       // Connection status will be updated via the peer connection handler

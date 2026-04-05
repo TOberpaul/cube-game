@@ -3,7 +3,7 @@
  * Cache-First-Strategie für alle App-Assets.
  */
 
-const CACHE_NAME = 'dice-game-v12';
+const CACHE_NAME = 'dice-game-v13';
 
 // Respond to version queries from the app
 self.addEventListener('message', (event) => {
