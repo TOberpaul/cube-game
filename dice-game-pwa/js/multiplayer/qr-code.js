@@ -217,14 +217,8 @@ function _loadJsQR() {
   if (!_jsQRPromise) {
     _jsQRPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
-      script.crossOrigin = 'anonymous';
-      const timeout = setTimeout(() => {
-        _jsQRPromise = null;
-        reject(new QrScanError('QR scanner library failed to load.', 'NotSupportedError'));
-      }, 10000);
+      script.src = './js/lib/jsQR.min.js';
       script.onload = () => {
-        clearTimeout(timeout);
         if (typeof globalThis.jsQR === 'function') {
           resolve(globalThis.jsQR);
         } else {
@@ -233,7 +227,6 @@ function _loadJsQR() {
         }
       };
       script.onerror = () => {
-        clearTimeout(timeout);
         _jsQRPromise = null;
         reject(new QrScanError('QR scanner library failed to load.', 'NotSupportedError'));
       };
