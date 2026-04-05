@@ -78,6 +78,17 @@ export function createHomeScreen() {
     container.innerHTML = '';
     container.appendChild(fragment);
 
+    // Show app version from SW cache name
+    const versionEl = container.querySelector('#app-version');
+    if (versionEl && navigator.serviceWorker && navigator.serviceWorker.controller) {
+      // Extract version from SW script URL cache or use a message channel
+      const channel = new MessageChannel();
+      channel.port1.onmessage = (e) => {
+        if (e.data && e.data.version) versionEl.textContent = e.data.version;
+      };
+      navigator.serviceWorker.controller.postMessage({ type: 'getVersion' }, [channel.port2]);
+    }
+
     // Carousel fade edges based on scroll position
     const carouselList = container.querySelector('.home-screen__mode-list');
     const modesNav = container.querySelector('.home-screen__modes');

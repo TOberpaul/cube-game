@@ -5,6 +5,13 @@
 
 const CACHE_NAME = 'dice-game-v5';
 
+// Respond to version queries from the app
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'getVersion') {
+    event.ports[0].postMessage({ version: CACHE_NAME });
+  }
+});
+
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

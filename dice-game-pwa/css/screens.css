@@ -159,6 +159,12 @@ h1,h2,h3,h4,h5,h6,p {
   display: block;
 }
 
+.home-screen__version {
+  font-size: 0.625rem;
+  opacity: 0.3;
+  margin: 0;
+}
+
 /* ========================================
    LOBBY SCREEN — Layout
    ======================================== */
