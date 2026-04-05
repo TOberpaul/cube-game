@@ -10,7 +10,6 @@ import { registerFreeRoll } from '../game/modes/free-roll.js';
 import { registerKniffel } from '../game/modes/kniffel.js';
 import { createWebRTCPeer } from '../multiplayer/webrtc-peer.js';
 import { serializeSdpPayload, deserializeSdpPayload, validateSdpPayload, compressForUrl, decompressFromUrl } from '../multiplayer/sdp-payload.js';
-import { generateQrCode, scanQrCode, stopScanner } from '../multiplayer/qr-code.js';
 import { createGameEngine } from '../game/game-engine.js';
 import { createOfflineGameController } from '../multiplayer/offline-game-controller.js';
 import { setOfflineSession } from '../multiplayer/offline-session.js';
@@ -71,7 +70,6 @@ export function createLobbyScreen() {
     },
 
     unmount() {
-      stopScanner();
       if (peer) {
         peer.disconnect();
         peer = null;
@@ -282,8 +280,6 @@ export function createLobbyScreen() {
 
     if (offlineRole === 'host') {
       // Host: remove client-only buttons
-      const clientScanBtn = container.querySelector('[data-offline-scan-offer]');
-      if (clientScanBtn) clientScanBtn.remove();
       const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
       if (pasteOfferBtn) pasteOfferBtn.remove();
       const shareAnswerBtn = container.querySelector('[data-offline-share-answer]');
@@ -291,15 +287,11 @@ export function createLobbyScreen() {
       startHostFlow();
     } else if (offlineRole === 'client') {
       // Client: remove host-only buttons
-      const hostScanBtn = container.querySelector('[data-offline-scan-answer]');
-      if (hostScanBtn) hostScanBtn.remove();
       const shareOfferBtn = container.querySelector('[data-offline-share-offer]');
       if (shareOfferBtn) shareOfferBtn.remove();
       const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
       if (pasteAnswerBtn) pasteAnswerBtn.remove();
       // Show client buttons
-      const scanOfferBtn = container.querySelector('[data-offline-scan-offer]');
-      if (scanOfferBtn) scanOfferBtn.hidden = false;
       const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
       if (pasteOfferBtn) pasteOfferBtn.hidden = false;
       setupClientFlow();
@@ -318,18 +310,6 @@ export function createLobbyScreen() {
     }
 
     updateConnectionStatusUI();
-
-    // Scanner close button
-    const scannerCloseBtn = container.querySelector('[data-offline-scanner-close]');
-    if (scannerCloseBtn) {
-      const closeHandler = () => {
-        stopScanner();
-        const scannerOverlay = container.querySelector('[data-offline-scanner]');
-        if (scannerOverlay) scannerOverlay.hidden = true;
-      };
-      scannerCloseBtn.addEventListener('click', closeHandler);
-      cleanupHandlers.push(() => scannerCloseBtn.removeEventListener('click', closeHandler));
-    }
   }
 
   /**
@@ -463,28 +443,13 @@ export function createLobbyScreen() {
         candidates: offer.candidates,
       });
 
-      // Hide loading, show QR
+      // Hide loading
       if (loadingEl) loadingEl.hidden = true;
 
-      const qrContainer = container.querySelector('[data-offline-qr-display]');
-      if (qrContainer) {
-        qrContainer.hidden = false;
-        const qrDataUrl = await generateQrCode(serialized);
-        const img = document.createElement('img');
-        img.src = qrDataUrl;
-        img.alt = 'SDP-Offer QR-Code';
-        img.className = 'lobby-screen__offline-qr-img';
-        qrContainer.innerHTML = '';
-        qrContainer.appendChild(img);
-      }
-
-      // Show the answer scan and paste buttons
-      const scanAnswerBtn = container.querySelector('[data-offline-scan-answer]');
-      if (scanAnswerBtn) scanAnswerBtn.hidden = false;
+      // Show share + paste buttons
       const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
       if (pasteAnswerBtn) pasteAnswerBtn.hidden = false;
 
-      // Show share offer button — shares a deep-link URL
       const shareOfferBtn = container.querySelector('[data-offline-share-offer]');
       if (shareOfferBtn) {
         shareOfferBtn.hidden = false;
@@ -512,29 +477,6 @@ export function createLobbyScreen() {
    */
   function setupHostAnswerInput(offerPayload) {
     if (!container) return;
-
-    // Scan answer QR
-    const scanAnswerBtn = container.querySelector('[data-offline-scan-answer]');
-    if (scanAnswerBtn) {
-      const scanHandler = async () => {
-        hideOfflineError();
-        const scannerOverlay = container.querySelector('[data-offline-scanner]');
-        const videoEl = container.querySelector('[data-offline-scanner-video]');
-        if (scannerOverlay && videoEl) {
-          scannerOverlay.hidden = false;
-          try {
-            const scannedData = await scanQrCode(videoEl);
-            scannerOverlay.hidden = true;
-            await processHostAnswer(scannedData);
-          } catch (err) {
-            scannerOverlay.hidden = true;
-            showOfflineError(err.message || t('error.generic'));
-          }
-        }
-      };
-      scanAnswerBtn.addEventListener('click', scanHandler);
-      cleanupHandlers.push(() => scanAnswerBtn.removeEventListener('click', scanHandler));
-    }
 
     // Paste answer from clipboard (accepts raw JSON or deep-link URL)
     const pasteAnswerBtn = container.querySelector('[data-offline-paste-answer]');
@@ -583,29 +525,6 @@ export function createLobbyScreen() {
    */
   function setupClientFlow() {
     if (!container) return;
-
-    // Scan offer QR
-    const scanOfferBtn = container.querySelector('[data-offline-scan-offer]');
-    if (scanOfferBtn) {
-      const scanHandler = async () => {
-        hideOfflineError();
-        const scannerOverlay = container.querySelector('[data-offline-scanner]');
-        const videoEl = container.querySelector('[data-offline-scanner-video]');
-        if (scannerOverlay && videoEl) {
-          scannerOverlay.hidden = false;
-          try {
-            const scannedData = await scanQrCode(videoEl);
-            scannerOverlay.hidden = true;
-            await processClientOffer(scannedData);
-          } catch (err) {
-            scannerOverlay.hidden = true;
-            showOfflineError(err.message || t('error.generic'));
-          }
-        }
-      };
-      scanOfferBtn.addEventListener('click', scanHandler);
-      cleanupHandlers.push(() => scanOfferBtn.removeEventListener('click', scanHandler));
-    }
 
     // Paste offer from clipboard (accepts raw JSON or deep-link URL)
     const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
@@ -656,25 +575,11 @@ export function createLobbyScreen() {
         candidates: answer.candidates,
       });
 
-      // Show answer QR code, hide scan/paste buttons
-      const scanOfferBtn = container.querySelector('[data-offline-scan-offer]');
-      if (scanOfferBtn) scanOfferBtn.hidden = true;
+      // Hide paste button, show share answer
       const pasteOfferBtn = container.querySelector('[data-offline-paste-offer]');
       if (pasteOfferBtn) pasteOfferBtn.hidden = true;
 
-      const qrContainer = container.querySelector('[data-offline-qr-display-answer]');
-      if (qrContainer) {
-        qrContainer.hidden = false;
-        const qrDataUrl = await generateQrCode(serialized);
-        const img = document.createElement('img');
-        img.src = qrDataUrl;
-        img.alt = 'SDP-Answer QR-Code';
-        img.className = 'lobby-screen__offline-qr-img';
-        qrContainer.innerHTML = '';
-        qrContainer.appendChild(img);
-      }
-
-      // Show share answer button — shares a deep-link URL back to host
+      // Show share answer button
       const shareAnswerBtn = container.querySelector('[data-offline-share-answer]');
       if (shareAnswerBtn) {
         shareAnswerBtn.hidden = false;
@@ -815,8 +720,6 @@ export function createLobbyScreen() {
             if (loadingText) loadingText.textContent = t('lobby.offlineClientWaiting');
           }
           // Hide answer QR
-          const answerQr = container.querySelector('[data-offline-qr-display-answer]');
-          if (answerQr) answerQr.hidden = true;
           setupClientGameStartListener();
         }
       } else if (status === 'connecting' || status === 'reconnecting') {

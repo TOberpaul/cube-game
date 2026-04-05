@@ -15,10 +15,6 @@
     <span class="lobby-screen__offline-status-label" data-offline-status-label>Nicht verbunden</span>
   </div>
 
-  <!-- QR Code area — used by both host (show offer) and client (show answer) -->
-  <div class="lobby-screen__offline-qr" data-offline-qr-display hidden role="img" aria-label="QR-Code"></div>
-  <div class="lobby-screen__offline-qr" data-offline-qr-display-answer hidden role="img" aria-label="QR-Code"></div>
-
   <!-- Loading spinner -->
   <div class="lobby-screen__offline-step" data-offline-loading hidden role="status" aria-live="polite">
     <div class="lobby-screen__offline-spinner" aria-hidden="true"></div>
@@ -42,16 +38,6 @@
     <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" data-offline-paste-offer hidden aria-label="Einladung einfügen">Einladung einfügen</button>
     <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" data-offline-share-answer hidden aria-label="Antwort teilen">Antwort teilen</button>
     <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" data-offline-paste-answer hidden aria-label="Antwort einfügen">Antwort einfügen</button>
-    <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" data-offline-scan-answer hidden aria-label="Antwort-Code scannen">Antwort-Code scannen</button>
-    <button type="button" class="adaptive button button--full-width" data-interactive data-material="filled" data-offline-scan-offer hidden aria-label="Host-Code scannen">Host-Code scannen</button>
     <button type="button" class="adaptive button button--full-width" data-interactive data-material="inverted" data-container-contrast="max" id="lobby-start-btn" disabled aria-disabled="true" aria-label="{{lobby.startGame}}">{{lobby.startGame}}</button>
-  </div>
-
-  <!-- Camera Scanner Overlay -->
-  <div class="lobby-screen__offline-scanner-overlay" data-offline-scanner hidden>
-    <div class="lobby-screen__offline-scanner-content">
-      <video class="lobby-screen__offline-scanner-video" data-offline-scanner-video autoplay playsinline muted aria-label="Kamera-Vorschau"></video>
-      <button type="button" class="adaptive button" data-interactive data-material="filled" data-offline-scanner-close aria-label="Scanner schließen">Schließen</button>
-    </div>
   </div>
 </section>

@@ -3,7 +3,7 @@
  * Cache-First-Strategie für alle App-Assets.
  */
 
-const CACHE_NAME = 'dice-game-v15';
+const CACHE_NAME = 'dice-game-v16';
 
 // Respond to version queries from the app
 self.addEventListener('message', (event) => {
@@ -36,7 +36,6 @@ const ASSETS_TO_CACHE = [
   './js/multiplayer/qr-code.js',
   './js/multiplayer/offline-game-controller.js',
   './js/multiplayer/offline-session.js',
-  './js/lib/jsQR.min.js',
   './js/lib/three.module.js',
   './js/lib/three.core.js',
   './js/lib/three-addons/loaders/GLTFLoader.js',

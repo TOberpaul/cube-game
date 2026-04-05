@@ -75,12 +75,6 @@ vi.mock('../js/multiplayer/sdp-payload.js', () => ({
   }),
 }));
 
-vi.mock('../js/multiplayer/qr-code.js', () => ({
-  generateQrCode: vi.fn(() => Promise.resolve('data:image/png;base64,MOCK_QR')),
-  scanQrCode: vi.fn(() => Promise.resolve('{}')),
-  stopScanner: vi.fn(),
-}));
-
 vi.mock('../js/game/game-mode-registry.js', () => ({
   createGameModeRegistry: vi.fn(() => ({
     register: vi.fn(),
@@ -182,39 +176,24 @@ describe('Offline-Lobby Unit Tests', () => {
   });
 
   describe('Error handling', () => {
-    it('shows error when client scan fails', async () => {
-      const { scanQrCode: mockScan } = await import('../js/multiplayer/qr-code.js');
-      mockScan.mockRejectedValueOnce(new Error('Scan failed'));
-
-      const { container } = await mountLobby({ playType: 'offline', role: 'client', modeId: 'free-roll' });
-
-      const scanBtn = container.querySelector('[data-offline-scan-offer]');
-      if (!scanBtn) return;
-      scanBtn.click();
-
-      await vi.waitFor(() => {
-        const errorEl = container.querySelector('[data-offline-error]');
-        if (!errorEl || errorEl.hidden) throw new Error('error not shown');
-      });
-
-      expect(container.querySelector('[data-offline-error]').hidden).toBe(false);
-    });
-
-    it('shows error when host scan fails', async () => {
+    it('shows error when host paste fails with empty clipboard', async () => {
       mockPeer.connect.mockResolvedValue();
       mockPeer.getOffer.mockResolvedValue({ type: 'offer', sdp: 'v=0\r\n', candidates: [] });
 
       const { container } = await mountLobby({ playType: 'offline', role: 'host', modeId: 'free-roll' });
 
       await vi.waitFor(() => {
-        const btn = container.querySelector('[data-offline-scan-answer]');
+        const btn = container.querySelector('[data-offline-paste-answer]');
         if (!btn || btn.hidden) throw new Error('not ready');
       });
 
-      const { scanQrCode: mockScan } = await import('../js/multiplayer/qr-code.js');
-      mockScan.mockRejectedValueOnce(new Error('Camera failed'));
+      // Mock empty clipboard
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { readText: vi.fn(() => Promise.resolve('')) },
+        configurable: true,
+      });
 
-      container.querySelector('[data-offline-scan-answer]').click();
+      container.querySelector('[data-offline-paste-answer]').click();
 
       await vi.waitFor(() => {
         const errorEl = container.querySelector('[data-offline-error]');

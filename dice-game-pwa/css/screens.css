@@ -274,59 +274,6 @@ h1,h2,h3,h4,h5,h6,p {
   opacity: 0.7;
 }
 
-/* --- QR Code Display --- */
-.lobby-screen__offline-qr {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  min-height: 200px;
-}
-
-.lobby-screen__offline-qr img,
-.lobby-screen__offline-qr canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-/* --- Scanner Overlay --- */
-.lobby-screen__offline-scanner-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.lobby-screen__offline-scanner-overlay[hidden] {
-  display: none;
-}
-
-.lobby-screen__offline-scanner-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  max-width: 400px;
-}
-
-.lobby-screen__offline-scanner-video {
-  width: 100%;
-  max-width: 400px;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 12px;
-  background: #000;
-}
-
 /* --- Connection Status Indicator --- */
 .lobby-screen__offline-connection-status {
   display: flex;
