@@ -39,7 +39,6 @@ const STRIP_PREFIXES = [
   'a=msid-semantic', 'a=group:', 'a=extmap:', 'a=rtcp-mux',
   'a=rtcp-rsize', 'a=sctpmap:', 'a=max-message-size', 'b=',
   'a=ssrc:', 'a=rtpmap:', 'a=fmtp:', 'a=rtcp-fb:', 'a=rtcp:',
-  's=', 't=',
 ];
 
 function minifySdp(sdp) {
