@@ -3,7 +3,7 @@
  * Cache-First-Strategie für alle App-Assets.
  */
 
-const CACHE_NAME = 'dice-game-v3';
+const CACHE_NAME = 'dice-game-v4';
 
 const ASSETS_TO_CACHE = [
   './',

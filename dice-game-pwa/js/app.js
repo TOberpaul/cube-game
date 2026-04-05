@@ -139,13 +139,28 @@ async function onRouteChange() {
  * Registers the service worker for offline support.
  */
 async function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    try {
-      await navigator.serviceWorker.register('./sw.js');
-    } catch (err) {
-      // SW registration failed — app still works, just no offline support
-      console.warn('Service Worker registration failed:', err);
-    }
+  if (!('serviceWorker' in navigator)) return;
+
+  try {
+    const reg = await navigator.serviceWorker.register('./sw.js');
+
+    // Check for updates on every app start
+    reg.update();
+
+    // When a new SW is found and installed, reload to activate it
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      if (!newWorker) return;
+
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+          // New version active — reload to get fresh assets
+          window.location.reload();
+        }
+      });
+    });
+  } catch (err) {
+    console.warn('Service Worker registration failed:', err);
   }
 }
 
