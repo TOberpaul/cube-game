@@ -432,46 +432,6 @@ export function createGameScreen() {
 
     if (scoreboard) scoreboard.update(state);
 
-    // Show turn indicator
-    showTurnIndicator();
-  }
-
-  /**
-   * Shows a turn indicator banner for offline mode.
-   */
-  function showTurnIndicator() {
-    if (!offlineController || !container) return;
-
-    let banner = container.querySelector('[data-offline-turn-banner]');
-    if (!banner) {
-      banner = document.createElement('div');
-      banner.setAttribute('data-offline-turn-banner', '');
-      banner.className = 'game-screen__offline-banner';
-      banner.setAttribute('role', 'status');
-      banner.setAttribute('aria-live', 'polite');
-      const header = container.querySelector('.game-screen__header');
-      if (header) {
-        header.after(banner);
-      }
-    }
-
-    const state = offlineController.getState();
-    if (!state || state.status !== 'playing') {
-      banner.hidden = true;
-      return;
-    }
-
-    const myTurn = offlineController.isMyTurn();
-    if (myTurn) {
-      banner.textContent = t('game.yourTurn');
-      banner.className = 'game-screen__offline-banner game-screen__offline-banner--your-turn';
-    } else {
-      const currentPlayer = state.players[state.currentPlayerIndex];
-      const name = currentPlayer ? currentPlayer.name : '';
-      banner.textContent = t('game.waitingForPlayer', { name });
-      banner.className = 'game-screen__offline-banner game-screen__offline-banner--waiting';
-    }
-    banner.hidden = false;
   }
 
   /**

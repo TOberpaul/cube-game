@@ -828,25 +828,7 @@ main {
   height: 100%;
 }
 
-/* --- Offline Multiplayer Banners --- */
-.game-screen__offline-banner {
-  text-align: center;
-  padding: 0.375rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.game-screen__offline-banner--your-turn {
-  background: var(--db-accent, #4caf50);
-  color: #fff;
-}
-
-.game-screen__offline-banner--waiting {
-  background: var(--db-surface-2, #e0e0e0);
-  color: var(--db-text, #333);
-  opacity: 0.8;
-}
-
+/* --- Offline Multiplayer Connection Banners --- */
 .game-screen__offline-connection-banner {
   display: flex;
   align-items: center;
