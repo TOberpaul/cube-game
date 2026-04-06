@@ -432,6 +432,12 @@ export function createGameScreen() {
 
     if (scoreboard) scoreboard.update(state);
 
+    // Auto-navigate to scoreboard after last roll (same as normal mode)
+    const mode = registry.get(state.modeId);
+    if (mode && mode.rollsPerTurn !== null && state.rollsThisTurn >= mode.rollsPerTurn && offlineController.isMyTurn()) {
+      setTimeout(() => showPage('score'), 1400);
+    }
+
   }
 
   /**
