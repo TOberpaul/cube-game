@@ -509,9 +509,6 @@ export function createGameScreen() {
     if (!engine) return;
     const state = engine.getState();
     if (!state || state.status !== 'playing') return;
-      offlineController.performAction('roll');
-      return;
-    }
 
     const mode = registry.get(state.modeId);
     if (mode.rollsPerTurn !== null && state.rollsThisTurn >= mode.rollsPerTurn) return;
