@@ -8,6 +8,7 @@ import { createGameModeRegistry } from '../game/game-mode-registry.js';
 import { registerFreeRoll } from '../game/modes/free-roll.js';
 import { registerKniffel } from '../game/modes/kniffel.js';
 import { getAvatar } from '../avatars.js';
+import { createGameStore } from '../store/game-store.js';
 
 export function createHomeScreen() {
   let container = null;
@@ -77,6 +78,9 @@ export function createHomeScreen() {
 
     container.innerHTML = '';
     container.appendChild(fragment);
+
+    // Load and display highscores
+    loadHighscores();
 
     // Show app version from SW cache name — tap to clear cache and reload
     const versionEl = container.querySelector('#app-version');
@@ -278,6 +282,57 @@ export function createHomeScreen() {
     if (dialogEl) {
       dialogEl.remove();
       dialogEl = null;
+    }
+  }
+
+  async function loadHighscores() {
+    if (!container) return;
+    const listEl = container.querySelector('[data-slot="highscores"]');
+    const wrapperEl = container.querySelector('#highscore-list');
+    if (!listEl || !wrapperEl) return;
+
+    try {
+      const store = await createGameStore();
+      const finished = await store.listFinished();
+      if (!finished.length) return;
+
+      // Extract best scores per player across all finished Kniffel games
+      const scores = [];
+      for (const game of finished) {
+        if (!game.scores || !game.players) continue;
+        for (const player of game.players) {
+          const sheet = game.scores[player.id];
+          if (sheet && typeof sheet.totalScore === 'number') {
+            scores.push({
+              name: player.name,
+              avatar: player.avatar || '',
+              score: sheet.totalScore,
+              mode: game.modeId,
+              date: game.updatedAt,
+            });
+          }
+        }
+      }
+
+      if (!scores.length) return;
+
+      // Sort by score descending, take top 5
+      scores.sort((a, b) => b.score - a.score);
+      const top = scores.slice(0, 5);
+
+      listEl.innerHTML = '';
+      for (const entry of top) {
+        const li = document.createElement('li');
+        li.className = 'home-screen__highscore-item';
+        li.innerHTML = `<span class="home-screen__highscore-avatar">${entry.avatar}</span>`
+          + `<span class="home-screen__highscore-name">${entry.name}</span>`
+          + `<span class="home-screen__highscore-score">${entry.score}</span>`;
+        listEl.appendChild(li);
+      }
+
+      wrapperEl.hidden = false;
+    } catch {
+      // Silently fail — highscores are optional
     }
   }
 }

@@ -83,6 +83,20 @@ function createIndexedDBStore(db) {
       });
     },
 
+    async listFinished() {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.getAll();
+        request.onsuccess = () => {
+          const all = request.result || [];
+          resolve(all.filter((g) => g.status === 'finished')
+            .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)));
+        };
+        request.onerror = () => reject(request.error);
+      });
+    },
+
     async delete(gameId) {
       return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -140,6 +154,13 @@ function createLocalStorageStore() {
       const data = getLS();
       return Object.values(data)
         .filter((g) => g.status !== 'finished')
+        .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    },
+
+    async listFinished() {
+      const data = getLS();
+      return Object.values(data)
+        .filter((g) => g.status === 'finished')
         .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
     },
 
