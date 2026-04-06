@@ -70,10 +70,11 @@ export function createLobbyScreen() {
     },
 
     unmount() {
-      if (peer) {
+      // Don't disconnect peer if it was handed off to the game screen
+      if (peer && !peer._handedOff) {
         peer.disconnect();
-        peer = null;
       }
+      peer = null;
       cleanupHandlers.forEach((fn) => fn());
       cleanupHandlers = [];
       if (container) {
@@ -622,6 +623,7 @@ export function createLobbyScreen() {
       const localPlayerId = 'local-1';
 
       // Store the session for the game screen to pick up
+      peer._handedOff = true;
       setOfflineSession({ peer, role: offlineRole, playerId: localPlayerId });
 
       // Create game engine and controller
@@ -676,6 +678,7 @@ export function createLobbyScreen() {
         const gameState = action.payload.gameState;
 
         // Store the session for the game screen
+        peer._handedOff = true;
         setOfflineSession({ peer, role: 'client', playerId: 'remote-1' });
 
         // Save state to store so result screen can load it
