@@ -168,12 +168,7 @@ export function createHomeScreen() {
       cleanupHandlers.push(() => btn.removeEventListener('click', handler));
     };
 
-    bindOption(soloBtn, () => {
-      const savedName = localStorage.getItem('dice-player-name') || '';
-      const name = prompt(t('home.playerName', { index: '' }).trim(), savedName) || savedName || t('scoreboard.player');
-      localStorage.setItem('dice-player-name', name);
-      navigate('game', { modeId: mode.id, playType: 'solo', playerNames: name });
-    });
+    bindOption(soloBtn, () => openPlayerSetupDialog(mode, true));
     bindOption(offlineBtn, () => navigate('lobby', { modeId: mode.id, playType: 'offline', role: 'host' }));
 
     // Join game — client flow for offline multiplayer
@@ -203,21 +198,26 @@ export function createHomeScreen() {
     soloBtn.focus();
   }
 
-  async function openPlayerSetupDialog(mode) {
+  async function openPlayerSetupDialog(mode, isSolo = false) {
     closeDialog();
 
     const fragment = await loadTemplate('templates/player-setup.html', t);
-    let playerCount = 2;
+    let playerCount = isSolo ? 1 : 2;
 
     // Close & back buttons
     const closeBtn = fragment.querySelector('#setup-close-btn');
     closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeDialog(); });
 
     const backBtn = fragment.querySelector('#setup-back-btn');
-    backBtn.addEventListener('click', (e) => { e.preventDefault(); closeDialog(); openPlayTypeDialog(mode); });
+    backBtn.addEventListener('click', (e) => { e.preventDefault(); closeDialog(); if (!isSolo) openPlayTypeDialog(mode); });
 
-    // Player count picker
+    // Player count picker — hide for solo
     const picker = fragment.querySelector('#setup-player-count');
+    const countLabel = fragment.querySelector('.dialog__local-label');
+    if (isSolo) {
+      if (picker) picker.hidden = true;
+      if (countLabel) countLabel.hidden = true;
+    }
     const namesContainer = fragment.querySelector('#setup-player-names');
 
     function renderNameInputs(count) {
@@ -238,6 +238,10 @@ export function createHomeScreen() {
         input.setAttribute('data-interactive', '');
         input.placeholder = `${t('scoreboard.player')} ${i + 1}`;
         input.dataset.playerIndex = String(i);
+        // Pre-fill with saved name for solo
+        if (isSolo) {
+          input.value = localStorage.getItem('dice-player-name') || '';
+        }
         label.appendChild(input);
 
         namesContainer.appendChild(label);
@@ -246,32 +250,38 @@ export function createHomeScreen() {
 
     renderNameInputs(playerCount);
 
-    picker.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-value]');
-      if (!btn) return;
-      playerCount = parseInt(btn.dataset.value, 10);
-      picker.querySelectorAll('.dice-count-picker__btn').forEach((b) => {
-        b.classList.remove('dice-count-picker__btn--active');
-        b.setAttribute('data-material', 'filled-2');
-        b.removeAttribute('aria-pressed');
+    if (!isSolo) {
+      picker.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-value]');
+        if (!btn) return;
+        playerCount = parseInt(btn.dataset.value, 10);
+        picker.querySelectorAll('.dice-count-picker__btn').forEach((b) => {
+          b.classList.remove('dice-count-picker__btn--active');
+          b.setAttribute('data-material', 'filled-2');
+          b.removeAttribute('aria-pressed');
+        });
+        btn.classList.add('dice-count-picker__btn--active');
+        btn.setAttribute('data-material', 'inverted');
+        btn.setAttribute('aria-pressed', 'true');
+        renderNameInputs(playerCount);
       });
-      btn.classList.add('dice-count-picker__btn--active');
-      btn.setAttribute('data-material', 'inverted');
-      btn.setAttribute('aria-pressed', 'true');
-      renderNameInputs(playerCount);
-    });
+    }
 
     // Start button
     const startBtn = fragment.querySelector('#setup-start-btn');
     startBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      // Collect names from inputs
       const names = [];
       namesContainer.querySelectorAll('input').forEach((input, i) => {
         names.push(input.value.trim() || `${t('scoreboard.player')} ${i + 1}`);
       });
+      // Save solo name for next time
+      if (isSolo && names[0]) {
+        localStorage.setItem('dice-player-name', names[0]);
+      }
       closeDialog();
-      navigate('game', { modeId: mode.id, playType: 'local', playerCount, playerNames: names.join(',') });
+      const playType = isSolo ? 'solo' : 'local';
+      navigate('game', { modeId: mode.id, playType, playerCount, playerNames: names.join(',') });
     });
 
     // Escape key
