@@ -226,8 +226,8 @@ export function createGameScreen() {
     const bar = container.querySelector('#game-player-bar');
     if (!bar) return;
 
-    // Hide player bar for solo or free-roll mode
-    if (state.modeId === 'free-roll' || state.players.length <= 1) {
+    // Hide player bar for free-roll mode (solo kniffel keeps it)
+    if (state.modeId === 'free-roll') {
       bar.style.display = 'none';
       return;
     }
