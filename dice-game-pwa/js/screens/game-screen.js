@@ -278,9 +278,9 @@ export function createGameScreen() {
     // Scroll to start so active player is visible
     bar.scrollLeft = 0;
 
-    // Fade edges on header based on bar scroll position (only for 3+ players)
+    // Fade edges on header based on bar scroll position (only for 2+ players)
     const header = bar.closest('.game-screen__header');
-    if (state.players.length > 2) {
+    if (state.players.length >= 2) {
       const updateBarFades = () => {
         if (!header) return;
         const { scrollLeft, scrollWidth, clientWidth } = bar;
