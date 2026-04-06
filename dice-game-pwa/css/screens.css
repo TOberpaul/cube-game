@@ -240,7 +240,6 @@ h1,h2,h3,h4,h5,h6,p {
   display: flex;
   flex-direction: column;
   gap: var(--size-gap-min);
-  margin-top: auto;
 }
 
 /* --- Offline Lobby Sections --- */
@@ -278,11 +277,8 @@ h1,h2,h3,h4,h5,h6,p {
 .lobby-screen__offline-connection-status {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--db-border);
-  font-size: 0.875rem;
+  justify-content: center;
+  gap: var(--size-gap-min);
 }
 
 .lobby-screen__offline-connection-status[hidden] {
