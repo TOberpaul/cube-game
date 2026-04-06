@@ -760,12 +760,9 @@ h1,h2,h3,h4,h5,h6,p {
   font-variant-numeric: tabular-nums;
 }
 
-.scoreboard__cell { opacity: 0.6; }
+.scoreboard__cell { opacity: 0.5; }
 .scoreboard__cell--filled {
   opacity: 1;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 0.25rem;
 }
 .scoreboard__cell--available { padding: 0.25rem; }
 .scoreboard__cell--empty { opacity: 0.25; }

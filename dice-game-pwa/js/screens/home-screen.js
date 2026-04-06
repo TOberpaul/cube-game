@@ -64,7 +64,9 @@ export function createHomeScreen() {
       const handler = (e) => {
         e.preventDefault();
         if (mode.id === 'free-roll') {
-          navigate('game', { modeId: mode.id, playType: 'solo' });
+          const savedName = localStorage.getItem('dice-player-name') || '';
+          const name = savedName || t('scoreboard.player');
+          navigate('game', { modeId: mode.id, playType: 'solo', playerNames: name });
         } else {
           openPlayTypeDialog(mode);
         }
@@ -166,7 +168,12 @@ export function createHomeScreen() {
       cleanupHandlers.push(() => btn.removeEventListener('click', handler));
     };
 
-    bindOption(soloBtn, () => navigate('game', { modeId: mode.id, playType: 'solo' }));
+    bindOption(soloBtn, () => {
+      const savedName = localStorage.getItem('dice-player-name') || '';
+      const name = prompt(t('home.playerName', { index: '' }).trim(), savedName) || savedName || t('scoreboard.player');
+      localStorage.setItem('dice-player-name', name);
+      navigate('game', { modeId: mode.id, playType: 'solo', playerNames: name });
+    });
     bindOption(offlineBtn, () => navigate('lobby', { modeId: mode.id, playType: 'offline', role: 'host' }));
 
     // Join game — client flow for offline multiplayer
@@ -324,7 +331,8 @@ export function createHomeScreen() {
       for (const entry of top) {
         const li = document.createElement('li');
         li.className = 'home-screen__highscore-item';
-        li.innerHTML = `<span class="home-screen__highscore-avatar">${entry.avatar}</span>`
+        const avatarHtml = entry.avatar ? `<span class="home-screen__highscore-avatar">${entry.avatar}</span>` : '';
+        li.innerHTML = avatarHtml
           + `<span class="home-screen__highscore-name">${entry.name}</span>`
           + `<span class="home-screen__highscore-score">${entry.score}</span>`;
         listEl.appendChild(li);
