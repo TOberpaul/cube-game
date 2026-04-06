@@ -169,12 +169,9 @@ h1,h2,h3,h4,h5,h6,p {
 
 .home-screen__highscores {
   width: 100%;
-  max-width: 400px;
-}
-
-.home-screen__highscores-title {
-  font-size: 1rem;
-  margin: 0 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-gap-max);
 }
 
 .home-screen__highscores-list {
@@ -183,7 +180,7 @@ h1,h2,h3,h4,h5,h6,p {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: var(--size-gap-min);
 }
 
 .home-screen__highscore-item {
@@ -704,6 +701,7 @@ h1,h2,h3,h4,h5,h6,p {
   left: 0;
   z-index: 1;
   background: var(--db-background);
+  box-shadow: 1px 0 0 var(--db-border);
 }
 
 .scoreboard__category {
@@ -714,6 +712,7 @@ h1,h2,h3,h4,h5,h6,p {
   z-index: 1;
   white-space: nowrap;
   background: var(--db-background);
+  box-shadow: 1px 0 0 var(--db-border);
 }
 
 .scoreboard__player-header {
