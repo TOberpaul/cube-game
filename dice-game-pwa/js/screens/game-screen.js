@@ -278,17 +278,19 @@ export function createGameScreen() {
     // Scroll to start so active player is visible
     bar.scrollLeft = 0;
 
-    // Fade edges on header based on bar scroll position
+    // Fade edges on header based on bar scroll position (only for 3+ players)
     const header = bar.closest('.game-screen__header');
-    const updateBarFades = () => {
-      if (!header) return;
-      const { scrollLeft, scrollWidth, clientWidth } = bar;
-      header.classList.toggle('game-screen__header--fade-left', scrollLeft > 4);
-      header.classList.toggle('game-screen__header--fade-right', scrollLeft < scrollWidth - clientWidth - 4);
-    };
-    bar.addEventListener('scroll', updateBarFades, { passive: true });
-    cleanupHandlers.push(() => bar.removeEventListener('scroll', updateBarFades));
-    requestAnimationFrame(updateBarFades);
+    if (state.players.length > 2) {
+      const updateBarFades = () => {
+        if (!header) return;
+        const { scrollLeft, scrollWidth, clientWidth } = bar;
+        header.classList.toggle('game-screen__header--fade-left', scrollLeft > 4);
+        header.classList.toggle('game-screen__header--fade-right', scrollLeft < scrollWidth - clientWidth - 4);
+      };
+      bar.addEventListener('scroll', updateBarFades, { passive: true });
+      cleanupHandlers.push(() => bar.removeEventListener('scroll', updateBarFades));
+      requestAnimationFrame(updateBarFades);
+    }
   }
 
   // =========================================================================
