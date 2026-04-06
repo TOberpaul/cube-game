@@ -34,6 +34,7 @@ export function createGameScreen() {
   let offlineController = null;
   let isOfflineMode = false;
   let offlineRole = null;
+  let _prevRollsThisTurn = 0;
 
   return {
     async mount(el) {
@@ -414,12 +415,19 @@ export function createGameScreen() {
       }
     }
 
-    // Update dice display
+    // Update dice display — animate if a roll just happened
     if (renderer && state.dice) {
-      renderer.update(state.dice, false);
+      const justRolled = state.rollsThisTurn > _prevRollsThisTurn || 
+        (state.rollsThisTurn === 0 && _prevRollsThisTurn > 0); // turn changed, reset
+      renderer.update(state.dice, justRolled);
+      if (justRolled) {
+        announceDiceResult(state.dice.values);
+        triggerHaptic();
+      }
       for (let i = 0; i < state.dice.held.length; i++) {
         renderer.setHeld(i, state.dice.held[i]);
       }
+      _prevRollsThisTurn = state.rollsThisTurn;
     }
 
     if (scoreboard) scoreboard.update(state);
