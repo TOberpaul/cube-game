@@ -766,6 +766,11 @@ h1,h2,h3,h4,h5,h6,p {
   font-variant-numeric: tabular-nums;
 }
 
+.scoreboard__table td:last-child,
+.scoreboard__table th:last-child {
+  border-right: none !important;
+}
+
 .scoreboard__cell { opacity: 0.5; }
 .scoreboard__cell--filled {
   opacity: 1;
