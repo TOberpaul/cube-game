@@ -340,7 +340,8 @@ export function createHomeScreen() {
       listEl.innerHTML = '';
       for (const entry of top) {
         const li = document.createElement('li');
-        li.className = 'home-screen__highscore-item';
+        li.className = 'adaptive home-screen__highscore-item';
+        li.setAttribute('data-material', 'filled');
         const avatarHtml = entry.avatar ? `<span class="home-screen__highscore-avatar">${entry.avatar}</span>` : '';
         li.innerHTML = avatarHtml
           + `<span class="home-screen__highscore-name">${entry.name}</span>`
