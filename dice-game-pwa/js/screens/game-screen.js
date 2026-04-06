@@ -220,8 +220,8 @@ export function createGameScreen() {
     const bar = container.querySelector('#game-player-bar');
     if (!bar) return;
 
-    // Hide player bar for free-roll mode
-    if (state.modeId === 'free-roll') {
+    // Hide player bar for solo or free-roll mode
+    if (state.modeId === 'free-roll' || state.players.length <= 1) {
       bar.style.display = 'none';
       return;
     }

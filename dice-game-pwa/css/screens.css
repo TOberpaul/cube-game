@@ -770,15 +770,15 @@ h1,h2,h3,h4,h5,h6,p {
 
 .scoreboard__select-btn {
   font-variant-numeric: tabular-nums;
-  border-radius: 0;
-  border-color: transparent;
+  border-radius: 0 !important;
+  border-color: transparent !important;
 }
 
 .scoreboard__select-btn--selected {
   background: var(--db-text, #fff);
   color: var(--db-background, #000);
-  border-radius: 0;
-  border-color: transparent;
+  border-radius: 0 !important;
+  border-color: transparent !important;
 }
 
 .scoreboard__row--clickable {
