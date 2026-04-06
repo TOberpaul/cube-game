@@ -489,13 +489,18 @@ export function createGameScreen() {
   // =========================================================================
 
   function handleRoll() {
+    // In offline mode, use controller state and actions
+    if (isOfflineMode && offlineController) {
+      if (!offlineController.isMyTurn()) return;
+      const state = offlineController.getState();
+      if (!state || state.status !== 'playing') return;
+      offlineController.performAction('roll');
+      return;
+    }
+
     if (!engine) return;
     const state = engine.getState();
     if (!state || state.status !== 'playing') return;
-
-    // In offline mode, use the controller for actions
-    if (isOfflineMode && offlineController) {
-      if (!offlineController.isMyTurn()) return;
       offlineController.performAction('roll');
       return;
     }
@@ -521,17 +526,20 @@ export function createGameScreen() {
   }
 
   function handleToggleHold(index) {
+    // In offline mode, use controller state and actions
+    if (isOfflineMode && offlineController) {
+      if (!offlineController.isMyTurn()) return;
+      const state = offlineController.getState();
+      if (!state || state.status !== 'playing') return;
+      if (state.rollsThisTurn === 0) return;
+      offlineController.performAction('hold', { dieIndex: index });
+      return;
+    }
+
     if (!engine) return;
     const state = engine.getState();
     if (!state || state.status !== 'playing') return;
     if (state.rollsThisTurn === 0) return;
-
-    // In offline mode, use the controller for actions
-    if (isOfflineMode && offlineController) {
-      if (!offlineController.isMyTurn()) return;
-      offlineController.performAction('hold', { dieIndex: index });
-      return;
-    }
 
     engine.toggleHold(index);
     const newState = engine.getState();
