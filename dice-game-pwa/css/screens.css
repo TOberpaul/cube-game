@@ -692,6 +692,7 @@ h1,h2,h3,h4,h5,h6,p {
   padding: var(--size-gap-max);
   text-align: center;
   border-bottom: 1px solid var(--db-border);
+  border-radius: 0;
 }
 
 .scoreboard__table th:not(.scoreboard__category):not(.scoreboard__category-header),
@@ -751,6 +752,10 @@ h1,h2,h3,h4,h5,h6,p {
   background: linear-gradient(to left, var(--db-background), transparent);
   pointer-events: none;
   z-index: 2;
+}
+
+.scoreboard--solo::after {
+  display: none;
 }
 
 .scoreboard__table {

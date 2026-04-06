@@ -178,6 +178,12 @@ export function createGameScreen() {
     scoreboard.mount(scoreArea, state);
     scoreboard.onCategorySelect(handleCategorySelect);
 
+    // Hide scoreboard fade for solo
+    if (state.players.length <= 1) {
+      const scoreboardEl = scoreArea.querySelector('.scoreboard');
+      if (scoreboardEl) scoreboardEl.classList.add('scoreboard--solo');
+    }
+
     // Reset scroll to dice page AFTER everything is mounted
     const pages = container.querySelector('#game-pages');
     if (pages) {
