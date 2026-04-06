@@ -376,12 +376,16 @@ export function createLobbyScreen() {
     // If it's a URL with sdp= param, extract and decompress
     if (text.includes('#join?') || text.includes('#answer?')) {
       const match = text.match(/[?&]sdp=([^&]+)/);
-      if (match) {
-        return decompressFromUrl(match[1]);
-      }
+      if (match) return decompressFromUrl(match[1]);
     }
-    // Otherwise treat as raw JSON
-    return text;
+    // If it starts with { it's raw JSON
+    if (text.startsWith('{')) return text;
+    // Otherwise try to decompress (compressed base64url text from share)
+    try {
+      return await decompressFromUrl(text);
+    } catch {
+      return text;
+    }
   }
 
   /**
@@ -456,9 +460,7 @@ export function createLobbyScreen() {
         const shareHandler = async () => {
           try {
             const compressed = await compressForUrl(serialized);
-            const baseUrl = window.location.origin + window.location.pathname;
-            const url = `${baseUrl}#join?sdp=${compressed}&modeId=${modeId}`;
-            await navigator.share({ title: 'Dice Game — Spiel beitreten', url });
+            await navigator.share({ text: compressed });
           } catch { /* user cancelled */ }
         };
         shareOfferBtn.addEventListener('click', shareHandler);
@@ -586,9 +588,7 @@ export function createLobbyScreen() {
         const shareHandler = async () => {
           try {
             const compressed = await compressForUrl(serialized);
-            const baseUrl = window.location.origin + window.location.pathname;
-            const url = `${baseUrl}#answer?sdp=${compressed}`;
-            await navigator.share({ title: 'Dice Game — Antwort', url });
+            await navigator.share({ text: compressed });
           } catch { /* user cancelled */ }
         };
         shareAnswerBtn.addEventListener('click', shareHandler);
