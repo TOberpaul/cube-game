@@ -749,6 +749,9 @@ h1,h2,h3,h4,h5,h6,p {
   flex: 1;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  position: relative;
+  mask-image: linear-gradient(to left, transparent, black 2rem);
+  -webkit-mask-image: linear-gradient(to left, transparent, black 2rem);
 }
 
 .scoreboard__table--values {
