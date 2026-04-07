@@ -733,8 +733,22 @@ h1,h2,h3,h4,h5,h6,p {
   width: 100%;
 }
 
+.scoreboard__table--labels,
+.scoreboard__table--values {
+  border-collapse: collapse;
+}
+
 .scoreboard__table--labels {
   flex-shrink: 0;
+}
+
+/* Sync row heights between the two tables */
+.scoreboard__split tr {
+  height: 2.5rem;
+}
+
+.scoreboard__split .scoreboard__avatar-row {
+  height: 2.75rem;
 }
 
 .scoreboard__scroll-wrapper {
