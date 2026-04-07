@@ -115,7 +115,6 @@ export function createScoreboard() {
    * @param {object} state
    */
   function renderKniffel(state) {
-    // Reorder: active player first
     const activeIdx = state.currentPlayerIndex;
     const orderedPlayers = [
       ...state.players.slice(activeIdx),
@@ -128,7 +127,6 @@ export function createScoreboard() {
     heading.textContent = t('scoreboard.title');
     rootEl.appendChild(heading);
 
-    // Round info
     const roundEl = document.createElement('p');
     roundEl.className = 'adaptive text text--small scoreboard__round';
     if (state.maxRounds != null) {
@@ -138,19 +136,55 @@ export function createScoreboard() {
     }
     rootEl.appendChild(roundEl);
 
-    const table = document.createElement('table');
-    table.className = 'scoreboard__table';
-    table.setAttribute('role', 'table');
-    table.setAttribute('aria-label', t('scoreboard.title'));
+    // All category rows in order
+    const allRows = [];
+    for (const cat of UPPER_CATEGORIES) allRows.push({ type: 'cat', id: cat });
+    allRows.push({ type: 'bonus' });
+    allRows.push({ type: 'section', key: 'scoreboard.upperTotal', cats: UPPER_CATEGORIES });
+    for (const cat of LOWER_CATEGORIES) allRows.push({ type: 'cat', id: cat });
+    allRows.push({ type: 'total' });
 
+    // --- Split layout: fixed labels left, scrollable values right ---
+    const layout = document.createElement('div');
+    layout.className = 'scoreboard__split';
+
+    // Left: category labels table
+    const leftTable = document.createElement('table');
+    leftTable.className = 'scoreboard__table scoreboard__table--labels';
+    const leftHead = document.createElement('thead');
+    // Empty header rows to match avatar + name rows on the right
+    leftHead.appendChild(createEmptyRow('scoreboard__avatar-row'));
+    leftHead.appendChild(createEmptyRow(''));
+    leftTable.appendChild(leftHead);
+    const leftBody = document.createElement('tbody');
+    for (const row of allRows) {
+      const tr = document.createElement('tr');
+      tr.className = 'scoreboard__row';
+      const th = document.createElement('th');
+      th.className = 'scoreboard__category';
+      th.setAttribute('scope', 'row');
+      if (row.type === 'cat') th.textContent = t('kniffel.' + row.id);
+      else if (row.type === 'bonus') { th.textContent = t('kniffel.upperBonus'); tr.className += ' scoreboard__row--bonus'; }
+      else if (row.type === 'section') { th.textContent = t(row.key); th.className += ' scoreboard__category--section'; tr.className += ' scoreboard__row--section'; }
+      else if (row.type === 'total') { th.textContent = t('scoreboard.total'); th.className += ' scoreboard__category--total'; tr.className += ' scoreboard__row--total'; }
+      tr.appendChild(th);
+      leftBody.appendChild(tr);
+    }
+    leftTable.appendChild(leftBody);
+    layout.appendChild(leftTable);
+
+    // Right: scrollable player values
+    const rightWrapper = document.createElement('div');
+    rightWrapper.className = 'scoreboard__scroll-wrapper';
+    const rightTable = document.createElement('table');
+    rightTable.className = 'scoreboard__table scoreboard__table--values';
+    rightTable.setAttribute('role', 'table');
+    rightTable.setAttribute('aria-label', t('scoreboard.title'));
+
+    const rightHead = document.createElement('thead');
     // Avatar row
-    const thead = document.createElement('thead');
     const avatarRow = document.createElement('tr');
     avatarRow.className = 'scoreboard__avatar-row';
-    const avatarCorner = document.createElement('th');
-    avatarCorner.className = 'scoreboard__category-header';
-    avatarRow.appendChild(avatarCorner);
-
     for (const player of orderedPlayers) {
       const origIdx = state.players.indexOf(player);
       const isActive = origIdx === state.currentPlayerIndex;
@@ -159,16 +193,9 @@ export function createScoreboard() {
       th.textContent = player.avatar || getAvatar(origIdx);
       avatarRow.appendChild(th);
     }
-    thead.appendChild(avatarRow);
-
+    rightHead.appendChild(avatarRow);
     // Name row
-    const headerRow = document.createElement('tr');
-    const categoryTh = document.createElement('th');
-    categoryTh.className = 'scoreboard__category-header';
-    categoryTh.setAttribute('scope', 'col');
-    categoryTh.textContent = '';
-    headerRow.appendChild(categoryTh);
-
+    const nameRow = document.createElement('tr');
     for (const player of orderedPlayers) {
       const origIdx = state.players.indexOf(player);
       const isActive = origIdx === state.currentPlayerIndex;
@@ -176,35 +203,129 @@ export function createScoreboard() {
       th.className = 'scoreboard__player-header' + (isActive ? '' : ' scoreboard__col--inactive');
       th.setAttribute('scope', 'col');
       th.textContent = player.name;
-      headerRow.appendChild(th);
+      nameRow.appendChild(th);
+    }
+    rightHead.appendChild(nameRow);
+    rightTable.appendChild(rightHead);
+
+    const rightBody = document.createElement('tbody');
+    for (const row of allRows) {
+      if (row.type === 'cat') rightBody.appendChild(createValueRow(row.id, state, orderedPlayers));
+      else if (row.type === 'bonus') rightBody.appendChild(createBonusValueRow(state, orderedPlayers));
+      else if (row.type === 'section') rightBody.appendChild(createSectionValueRow(state, row.cats, orderedPlayers));
+      else if (row.type === 'total') rightBody.appendChild(createTotalValueRow(state, orderedPlayers));
+    }
+    rightTable.appendChild(rightBody);
+    rightWrapper.appendChild(rightTable);
+    layout.appendChild(rightWrapper);
+
+    rootEl.appendChild(layout);
+  }
+
+  function createEmptyRow(className) {
+    const tr = document.createElement('tr');
+    if (className) tr.className = className;
+    const td = document.createElement('th');
+    td.innerHTML = '&nbsp;';
+    tr.appendChild(td);
+    return tr;
+  }
+
+  function createValueRow(categoryId, state, orderedPlayers) {
+    const tr = document.createElement('tr');
+    tr.className = 'scoreboard__row';
+    const currentPlayerId = state.players[state.currentPlayerIndex]?.id;
+    let rowIsClickable = false;
+    let rowScore = null;
+
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
+      const td = document.createElement('td');
+      td.className = 'adaptive scoreboard__cell' + (isActive ? '' : ' scoreboard__col--inactive');
+      const sheet = state.scores[player.id];
+      const value = sheet?.categories?.[categoryId];
+      if (value != null) {
+        td.textContent = String(value);
+        td.classList.add('scoreboard__cell--filled');
+        td.setAttribute('data-material', 'inverted');
+        td.setAttribute('data-container-contrast', 'max');
+      } else if (player.id === currentPlayerId && state.rollsThisTurn > 0) {
+        td.classList.add('scoreboard__cell--available');
+        const score = calculatePotentialScore(categoryId, state);
+        td.textContent = score != null ? String(score) : '–';
+        rowIsClickable = true;
+        rowScore = score ?? 0;
+      } else {
+        td.textContent = '–';
+        td.classList.add('scoreboard__cell--empty');
+      }
+      tr.appendChild(td);
     }
 
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-
-    const tbody = document.createElement('tbody');
-
-    // Upper block
-    for (const cat of UPPER_CATEGORIES) {
-      tbody.appendChild(createCategoryRow(cat, state, orderedPlayers));
+    if (rowIsClickable) {
+      tr.classList.add('scoreboard__row--clickable');
+      tr.setAttribute('role', 'button');
+      tr.setAttribute('tabindex', '0');
+      tr.setAttribute('aria-label', `${t('kniffel.' + categoryId)}: ${rowScore}`);
+      const handler = () => {
+        if (categoryHandler) categoryHandler({ id: categoryId, name: 'kniffel.' + categoryId, score: rowScore });
+      };
+      tr.addEventListener('click', handler);
+      tr.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
     }
+    return tr;
+  }
 
-    // Upper bonus row
-    tbody.appendChild(createBonusRow(state, orderedPlayers));
-
-    // Separator / upper total
-    tbody.appendChild(createSectionRow('scoreboard.upperTotal', state, UPPER_CATEGORIES, orderedPlayers));
-
-    // Lower block
-    for (const cat of LOWER_CATEGORIES) {
-      tbody.appendChild(createCategoryRow(cat, state, orderedPlayers));
+  function createBonusValueRow(state, orderedPlayers) {
+    const tr = document.createElement('tr');
+    tr.className = 'scoreboard__row scoreboard__row--bonus';
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
+      const td = document.createElement('td');
+      td.className = 'adaptive scoreboard__cell' + (isActive ? '' : ' scoreboard__col--inactive');
+      const sheet = state.scores[player.id];
+      td.textContent = sheet?.categories?.upperBonus != null ? String(sheet.categories.upperBonus) : '–';
+      tr.appendChild(td);
     }
+    return tr;
+  }
 
-    // Total row
-    tbody.appendChild(createTotalRow(state, orderedPlayers));
+  function createSectionValueRow(state, categories, orderedPlayers) {
+    const tr = document.createElement('tr');
+    tr.className = 'scoreboard__row scoreboard__row--section';
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
+      const td = document.createElement('td');
+      td.className = 'adaptive scoreboard__cell scoreboard__cell--section' + (isActive ? '' : ' scoreboard__col--inactive');
+      const sheet = state.scores[player.id];
+      let sum = 0;
+      if (sheet?.categories) {
+        for (const cat of categories) {
+          if (sheet.categories[cat] != null) sum += sheet.categories[cat];
+        }
+      }
+      td.textContent = String(sum);
+      tr.appendChild(td);
+    }
+    return tr;
+  }
 
-    table.appendChild(tbody);
-    rootEl.appendChild(table);
+  function createTotalValueRow(state, orderedPlayers) {
+    const tr = document.createElement('tr');
+    tr.className = 'scoreboard__row scoreboard__row--total';
+    for (const player of orderedPlayers) {
+      const origIdx = state.players.indexOf(player);
+      const isActive = origIdx === state.currentPlayerIndex;
+      const td = document.createElement('td');
+      td.className = 'adaptive scoreboard__cell scoreboard__cell--total' + (isActive ? '' : ' scoreboard__col--inactive');
+      const sheet = state.scores[player.id];
+      td.textContent = String(sheet?.totalScore ?? 0);
+      tr.appendChild(td);
+    }
+    return tr;
   }
 
   /**

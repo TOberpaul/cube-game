@@ -696,14 +696,11 @@ h1,h2,h3,h4,h5,h6,p {
   text-align: center;
 }
 
-.scoreboard__category-header {
-  text-align: left;
-}
-
 .scoreboard__category {
   text-align: left;
   font-weight: 500;
   white-space: nowrap;
+  padding-right: 0.75rem;
 }
 
 .scoreboard__player-header {
@@ -731,20 +728,38 @@ h1,h2,h3,h4,h5,h6,p {
   display: none;
 }
 
-.scoreboard--solo::after {
-  display: none;
+.scoreboard__split {
+  display: flex;
+  width: 100%;
+}
+
+.scoreboard__table--labels {
+  flex-shrink: 0;
+}
+
+.scoreboard__scroll-wrapper {
+  flex: 1;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scoreboard__table--values {
+  min-width: 100%;
+}
+
+.scoreboard__table--values td,
+.scoreboard__table--values th {
+  min-width: 5rem;
 }
 
 .scoreboard__table {
-  width: 100%;
   border-collapse: collapse;
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
-  table-layout: fixed;
 }
 
-.scoreboard__table td:last-child,
-.scoreboard__table th:last-child {
+.scoreboard__table--values td:last-child,
+.scoreboard__table--values th:last-child {
   border-right: none !important;
 }
 
