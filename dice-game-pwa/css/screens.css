@@ -714,6 +714,11 @@ h1,h2,h3,h4,h5,h6,p {
   padding-bottom: 0.25rem;
 }
 
+.scoreboard__avatar-row th {
+  height: 2.5rem;
+  vertical-align: bottom;
+}
+
 .scoreboard__col--inactive {
   opacity: 0.5;
 }
