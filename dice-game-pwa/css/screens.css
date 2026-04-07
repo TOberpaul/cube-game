@@ -693,26 +693,17 @@ h1,h2,h3,h4,h5,h6,p {
 
 .scoreboard__table th:not(.scoreboard__category):not(.scoreboard__category-header),
 .scoreboard__table td:not(.scoreboard__category):not(.scoreboard__category-header) {
-  min-width: 33dvw;
+  text-align: center;
 }
 
 .scoreboard__category-header {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  background: var(--db-background);
-  box-shadow: 1px 0 0 var(--db-border);
+  text-align: left;
 }
 
 .scoreboard__category {
   text-align: left;
   font-weight: 500;
-  position: sticky;
-  left: 0;
-  z-index: 1;
   white-space: nowrap;
-  background: var(--db-background);
-  box-shadow: 1px 0 0 var(--db-border);
 }
 
 .scoreboard__player-header {
@@ -740,28 +731,16 @@ h1,h2,h3,h4,h5,h6,p {
   display: none;
 }
 
-.scoreboard::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 2rem;
-  background: linear-gradient(to left, var(--db-background), transparent);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .scoreboard--solo::after {
   display: none;
 }
 
 .scoreboard__table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
   border-collapse: collapse;
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
+  table-layout: fixed;
 }
 
 .scoreboard__table td:last-child,

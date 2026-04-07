@@ -178,12 +178,6 @@ export function createGameScreen() {
     scoreboard.mount(scoreArea, state);
     scoreboard.onCategorySelect(handleCategorySelect);
 
-    // Hide scoreboard fade for solo
-    if (state.players.length <= 1) {
-      const scoreboardEl = scoreArea.querySelector('.scoreboard');
-      if (scoreboardEl) scoreboardEl.classList.add('scoreboard--solo');
-    }
-
     // Reset scroll to dice page AFTER everything is mounted
     const pages = container.querySelector('#game-pages');
     if (pages) {
@@ -424,8 +418,15 @@ export function createGameScreen() {
     // Update dice display — animate if a roll just happened
     if (renderer && state.dice) {
       const justRolled = state.rollsThisTurn > _prevRollsThisTurn || 
-        (state.rollsThisTurn === 0 && _prevRollsThisTurn > 0); // turn changed, reset
-      renderer.update(state.dice, justRolled);
+        (state.rollsThisTurn === 0 && _prevRollsThisTurn > 0);
+      // Build a roll result with rolledIndices (non-held dice)
+      const rolledIndices = [];
+      if (justRolled) {
+        for (let i = 0; i < state.dice.values.length; i++) {
+          if (!state.dice.held[i]) rolledIndices.push(i);
+        }
+      }
+      renderer.update({ values: state.dice.values, rolledIndices }, justRolled);
       if (justRolled) {
         announceDiceResult(state.dice.values);
         triggerHaptic();

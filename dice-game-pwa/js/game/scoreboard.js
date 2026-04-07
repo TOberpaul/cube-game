@@ -138,10 +138,6 @@ export function createScoreboard() {
     }
     rootEl.appendChild(roundEl);
 
-    // Scrollable table wrapper
-    const wrapper = document.createElement('div');
-    wrapper.className = 'scoreboard__scroll-wrapper';
-
     const table = document.createElement('table');
     table.className = 'scoreboard__table';
     table.setAttribute('role', 'table');
@@ -208,8 +204,7 @@ export function createScoreboard() {
     tbody.appendChild(createTotalRow(state, orderedPlayers));
 
     table.appendChild(tbody);
-    wrapper.appendChild(table);
-    rootEl.appendChild(wrapper);
+    rootEl.appendChild(table);
   }
 
   /**
