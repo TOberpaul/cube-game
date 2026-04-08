@@ -37,8 +37,8 @@ jobs:
         run: npm run build
         working-directory: dice-game-react
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
+          VITE_SUPABASE_URL: https://oxaofethipnpdxskajla.supabase.co
+          VITE_SUPABASE_KEY: ${{ secrets.SUPABASE }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
