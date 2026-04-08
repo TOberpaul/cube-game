@@ -27,7 +27,7 @@ describe('parseHash', () => {
   it('falls back to home for unknown routes', () => {
     expect(parseHash('#unknown')).toEqual({ route: 'home', params: {} });
     expect(parseHash('#settings')).toEqual({ route: 'home', params: {} });
-    expect(parseHash('#lobby')).toEqual({ route: 'home', params: {} });
+    expect(parseHash('#lobby')).toEqual({ route: 'lobby', params: {} });
     expect(parseHash('#join')).toEqual({ route: 'home', params: {} });
     expect(parseHash('#answer')).toEqual({ route: 'home', params: {} });
   });

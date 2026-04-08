@@ -44,14 +44,21 @@ vi.mock('@pwa/store/game-store', () => ({
   }),
 }));
 
+// Mock Supabase to avoid requiring real credentials in tests
+vi.mock('../multiplayer/supabase', () => ({
+  supabase: null,
+  isSupabaseAvailable: false,
+}));
+
 import ScreenRouter from './ScreenRouter';
 import { GameProvider } from '../context/GameContext';
+import { MultiplayerProvider } from '../multiplayer/MultiplayerContext';
 
 // Fade duration used in ScreenRouter
 const FADE_DURATION_MS = 200;
 
 function renderWithProviders(ui: React.ReactElement) {
-  return render(<GameProvider>{ui}</GameProvider>);
+  return render(<MultiplayerProvider><GameProvider>{ui}</GameProvider></MultiplayerProvider>);
 }
 
 beforeEach(() => {

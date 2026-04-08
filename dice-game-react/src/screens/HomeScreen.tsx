@@ -60,6 +60,11 @@ export default function HomeScreen() {
         ))}
       </div>
 
+      <button type="button" className="adaptive button button--full-width" data-interactive=""
+        data-material="filled-2" data-size="l" onClick={() => navigate('lobby')}>
+        🌐 Online spielen
+      </button>
+
       <Modal open={showKniffelModal} onClose={() => setShowKniffelModal(false)} title={t('mode.kniffel')}
         footer={
           <button type="button" className="adaptive button button--full-width" data-interactive=""

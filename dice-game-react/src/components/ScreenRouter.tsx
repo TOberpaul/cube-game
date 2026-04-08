@@ -3,11 +3,13 @@ import { useHashRouter, type Route } from '../hooks/useHashRouter';
 import HomeScreen from '../screens/HomeScreen';
 import GameScreen from '../screens/GameScreen';
 import ResultScreen from '../screens/ResultScreen';
+import LobbyScreen from '../screens/LobbyScreen';
 
 const SCREEN_MAP: Record<Route, ComponentType> = {
   home: HomeScreen,
   game: GameScreen,
   result: ResultScreen,
+  lobby: LobbyScreen,
 };
 
 /** Duration of the fade transition in ms. */

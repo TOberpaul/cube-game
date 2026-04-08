@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export type Route = 'home' | 'game' | 'result';
+export type Route = 'home' | 'game' | 'result' | 'lobby';
 export type RouteParams = Record<string, string>;
 
 export interface RouterState {
@@ -8,7 +8,7 @@ export interface RouterState {
   params: RouteParams;
 }
 
-const VALID_ROUTES: ReadonlySet<string> = new Set<Route>(['home', 'game', 'result']);
+const VALID_ROUTES: ReadonlySet<string> = new Set<Route>(['home', 'game', 'result', 'lobby']);
 
 /**
  * Parse a hash string like `#route?key=value&key2=value2` into a RouterState.

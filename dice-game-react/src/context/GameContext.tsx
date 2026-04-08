@@ -58,6 +58,7 @@ export interface GameContextValue {
   selectScore: (option: ScoreOption) => void;
   resetDice: (count: number) => void;
   loadGame: (gameId: string) => Promise<void>;
+  applyState: (state: GameState) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -150,14 +151,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!savedState) {
       throw new Error(`Game not found: ${gameId}`);
     }
-    // Create a new engine and restore state by dispatching
     const engine = createGameEngine(registryRef.current);
     engineRef.current = engine;
     attachEngineListeners(engine);
-    // Restore state into React (engine itself doesn't have a restore method,
-    // so we set the React state directly from the persisted data)
     dispatch({ type: 'STATE_CHANGE', payload: savedState });
   }, [attachEngineListeners]);
+
+  const applyState = useCallback((state: GameState) => {
+    dispatch({ type: 'STATE_CHANGE', payload: state });
+  }, []);
 
   const value: GameContextValue = {
     gameState,
@@ -171,6 +173,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     selectScore,
     resetDice,
     loadGame,
+    applyState,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -16,7 +16,10 @@ export default function PlayerBar({ players, currentPlayerIndex, scores }: Playe
         return (
           <div key={player.id} role="listitem" aria-current={isActive ? 'true' : undefined}
             className={`player-bar__item ${isActive ? 'player-bar__item--active' : 'player-bar__item--inactive'}`}>
-            <span className="player-bar__avatar" aria-hidden="true">{getAvatar(index)}</span>
+            <span className="player-bar__avatar-wrapper">
+              <span className="player-bar__avatar" aria-hidden="true">{getAvatar(index)}</span>
+              {isActive && <span className="adaptive badge player-bar__badge" data-material="inverted" data-container-contrast="max" aria-label="Am Zug">●</span>}
+            </span>
             <span className="player-bar__name">{player.name}</span>
             <span className="player-bar__score">{totalScore}</span>
           </div>

@@ -1,4 +1,5 @@
 import { GameProvider } from './context/GameContext';
+import { MultiplayerProvider } from './multiplayer/MultiplayerContext';
 import ScreenRouter from './components/ScreenRouter';
 import { useI18n } from './hooks/useI18n';
 
@@ -8,10 +9,12 @@ export default function App() {
   if (!ready) return null;
 
   return (
-    <GameProvider>
-      <div data-size="m">
-        <ScreenRouter />
-      </div>
-    </GameProvider>
+    <MultiplayerProvider>
+      <GameProvider>
+        <div data-size="m">
+          <ScreenRouter />
+        </div>
+      </GameProvider>
+    </MultiplayerProvider>
   );
 }

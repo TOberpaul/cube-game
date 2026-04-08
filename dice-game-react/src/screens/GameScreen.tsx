@@ -1,6 +1,7 @@
 import { useRef, useCallback, useState, useMemo, useEffect } from 'react';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { useGameContext } from '../context/GameContext';
+import { useMultiplayer } from '../multiplayer/MultiplayerContext';
 import { t } from '@pwa/i18n';
 import { ArrowLeft } from 'lucide-react';
 import type { ScoreOption } from '@pwa/game/game-engine';
@@ -12,7 +13,8 @@ import Modal from '../components/Modal';
 
 export default function GameScreen() {
   const { params, navigate } = useHashRouter();
-  const { gameState, gameEngine, roll, toggleHold, resetDice, selectScore, registry, startGame } = useGameContext();
+  const { gameState, gameEngine, roll, toggleHold, resetDice, selectScore, registry, startGame, applyState } = useGameContext();
+  const { isOnline, isHost, sendAction, onGameAction, localPlayerId } = useMultiplayer();
   const diceAreaRef = useRef<DiceAreaHandle>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [diceAnnouncement, setDiceAnnouncement] = useState('');
@@ -23,16 +25,52 @@ export default function GameScreen() {
   const isFreeRoll = modeId === 'free-roll';
   const diceCount = gameState?.dice?.count ?? 5;
 
+  // Is it the local player's turn?
+  const isMyTurn = !isOnline || (gameState?.players[gameState.currentPlayerIndex]?.id === localPlayerId);
+
   useEffect(() => {
     if (!gameState && params.modeId)
       startGame(params.modeId, [{ id: 'p1', name: 'Spieler 1', isHost: true }], params.playType || 'solo');
   }, [gameState, params.modeId, params.playType, startGame]);
 
+  // Online sync: Host broadcasts state changes, clients apply them
+  const syncInitialized = useRef(false);
+  useEffect(() => {
+    if (!isOnline || syncInitialized.current) return;
+    syncInitialized.current = true;
+
+    if (isHost) {
+      // Host: listen for client actions and execute them locally
+      onGameAction((action) => {
+        if (action.type === 'roll') {
+          const result = roll();
+          sendAction('state-update', { state: gameEngine?.getState(), diceResult: result });
+        } else if (action.type === 'toggle-hold') {
+          toggleHold(action.payload as number);
+          sendAction('state-update', { state: gameEngine?.getState() });
+        } else if (action.type === 'select-score') {
+          selectScore(action.payload as ScoreOption);
+          sendAction('state-update', { state: gameEngine?.getState() });
+        }
+      });
+    } else {
+      // Client: apply state updates from host
+      onGameAction((action) => {
+        if (action.type === 'state-update' && action.payload) {
+          const { state, diceResult } = action.payload as { state: unknown; diceResult?: { values: number[]; rolledIndices: number[] } };
+          if (state) applyState(state as Parameters<typeof applyState>[0]);
+          if (diceResult && diceAreaRef.current) {
+            diceAreaRef.current.update(diceResult, true);
+          }
+        }
+      });
+    }
+  }, [isOnline, isHost, onGameAction, roll, toggleHold, selectScore, sendAction, gameEngine, applyState]);
   const modeConfig = registry.get(modeId);
   const rollsPerTurn: number | null = modeConfig?.rollsPerTurn ?? null;
   const rollsThisTurn = gameState?.rollsThisTurn ?? 0;
   const isFinished = gameState?.status === 'finished';
-  const rollDisabled = isFinished || (rollsPerTurn !== null && rollsThisTurn >= rollsPerTurn);
+  const rollDisabled = isFinished || (rollsPerTurn !== null && rollsThisTurn >= rollsPerTurn) || !isMyTurn;
 
   const potentialScores: ScoreOption[] = useMemo(() => {
     if (!gameState || !isKniffel || rollsThisTurn === 0 || !modeConfig?.scoring) return [];
@@ -46,18 +84,33 @@ export default function GameScreen() {
 
   const confirmScore = useCallback(() => {
     if (!pendingScore) return;
-    selectScore(pendingScore);
+
+    if (isOnline && !isHost) {
+      sendAction('select-score', pendingScore);
+    } else {
+      selectScore(pendingScore);
+      if (isOnline && isHost) {
+        sendAction('state-update', { state: gameEngine?.getState() });
+      }
+    }
     setPendingScore(null);
     scrollContainerRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
-  }, [pendingScore, selectScore]);
+  }, [pendingScore, selectScore, isOnline, isHost, sendAction, gameEngine]);
 
   const cancelScore = useCallback(() => {
     setPendingScore(null);
   }, []);
 
   const handleRoll = useCallback(async () => {
-    if (rollDisabled) return;
+    if (rollDisabled || !isMyTurn) return;
     if (navigator.vibrate) navigator.vibrate(50);
+
+    if (isOnline && !isHost) {
+      // Client: send roll request to host
+      sendAction('roll');
+      return;
+    }
+
     const engineState = gameEngine?.getState();
     const heldBefore = engineState?.dice?.held ? [...engineState.dice.held] : [];
     const result = roll();
@@ -66,19 +119,32 @@ export default function GameScreen() {
       await diceAreaRef.current.update(result, true);
       for (let i = 0; i < heldBefore.length; i++) if (heldBefore[i]) diceAreaRef.current.setHeld(i, true);
     }
+    if (isOnline && isHost) {
+      sendAction('state-update', { state: gameEngine?.getState(), diceResult: result });
+    }
     if (isKniffel && rollsPerTurn !== null && rollsThisTurn + 1 >= rollsPerTurn) {
       const page = scrollContainerRef.current?.querySelector<HTMLElement>('[data-snap-page="scoreboard"]');
       if (page) scrollContainerRef.current!.scrollTo({ left: page.offsetLeft, behavior: 'smooth' });
     }
-  }, [rollDisabled, roll, isKniffel, rollsPerTurn, rollsThisTurn, gameEngine]);
+  }, [rollDisabled, isMyTurn, isOnline, isHost, roll, isKniffel, rollsPerTurn, rollsThisTurn, gameEngine, sendAction]);
 
   const handleDieClick = useCallback((index: number) => {
+    if (!isMyTurn) return;
+
+    if (isOnline && !isHost) {
+      sendAction('toggle-hold', index);
+      return;
+    }
+
     const es = gameEngine?.getState();
     if (!es || es.status !== 'playing' || es.rollsThisTurn === 0) return;
     const wasHeld = es.dice.held[index];
     toggleHold(index);
     diceAreaRef.current?.setHeld(index, !wasHeld);
-  }, [gameEngine, toggleHold]);
+    if (isOnline && isHost) {
+      sendAction('state-update', { state: gameEngine?.getState() });
+    }
+  }, [gameEngine, toggleHold, isMyTurn, isOnline, isHost, sendAction]);
 
   const prevRollsRef = useRef(0);
   useEffect(() => {
