@@ -1,0 +1,202 @@
+/* App-specific styles */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0; padding: 0; min-height: 100dvh;
+  background: var(--db-background, #0D0E11);
+  color: var(--db-text, #fff);
+}
+#root { min-height: 100dvh; }
+
+/* Screen-reader only */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* Dice area */
+.dice-area { flex: 1; min-height: 200px; position: relative; }
+.dice-area canvas { display: block; width: 100% !important; height: 100% !important; }
+
+/* ScreenRouter transition */
+.screen-transition { transition: opacity 200ms ease; }
+.screen-transition--fading { opacity: 0; }
+
+/* Scroll-snap container */
+.scroll-snap-x {
+  display: flex; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; height: 100dvh;
+}
+.snap-page {
+  flex: 0 0 100%; width: 100%; scroll-snap-align: start;
+  display: flex; flex-direction: column;
+  padding: var(--layout-spacing-min); gap: var(--size-gap-max);
+  height: 100dvh; overflow: hidden;
+}
+.snap-page--scroll { overflow-y: auto; }
+
+/* Game screen */
+.game-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.game-controls {
+  display: flex; flex-direction: column;
+  gap: var(--size-gap-max); flex-shrink: 0;
+}
+.game-dice-count {
+  display: flex; gap: var(--size-gap-min);
+  align-items: center; justify-content: center;
+}
+.game-dice-count__label { font-size: var(--size-text-min); opacity: 0.7; }
+.game-dice-count-section {
+  display: flex; flex-direction: column; gap: var(--size-gap-min);
+  align-items: center;
+}
+
+/* Alert banners */
+.alert-banner {
+  padding: var(--size-padding); text-align: center;
+  border-radius: var(--size-border-radius); flex-shrink: 0;
+}
+.alert-banner--warning { background: #a86800; color: #fff; }
+.alert-banner--danger { background: #c00; color: #fff; }
+
+/* Player bar */
+.player-bar {
+  display: flex; gap: var(--size-gap-max);
+  padding: var(--size-padding) 0; overflow-x: auto;
+  justify-content: safe center; flex-shrink: 0;
+}
+.player-bar__item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--size-gap-min); padding: var(--size-padding-min); flex: 0 0 auto;
+}
+.player-bar__item--active { opacity: 1; }
+.player-bar__item--inactive { opacity: 0.5; }
+.player-bar__avatar { font-size: 2rem; }
+.player-bar__name { font-size: var(--size-text-min); }
+.player-bar__score { font-size: var(--size-text); font-weight: bold; }
+
+/* Home screen */
+.home-screen {
+  display: flex; flex-direction: column;
+  padding: var(--layout-spacing); gap: var(--layout-spacing-min);
+}
+.mode-grid {
+  display: grid; gap: var(--layout-spacing-min);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.mode-card { cursor: pointer; text-align: center; }
+
+.highscore-section {
+  display: flex; flex-direction: column; gap: var(--size-gap-max);
+}
+.highscore-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: var(--size-gap-min);
+}
+.highscore-item {
+  display: flex; align-items: center; gap: var(--size-gap-max);
+  padding: var(--size-padding-min) var(--size-padding);
+}
+.highscore-item__name { flex: 1; }
+.highscore-item__score { font-weight: bold; }
+
+/* Player setup */
+.player-setup {
+  display: flex; flex-direction: column; gap: var(--size-gap-max);
+}
+.player-setup__actions {
+  display: flex; flex-direction: column; gap: var(--size-gap-max);
+}
+
+/* Result screen */
+.result-screen {
+  padding: var(--layout-spacing);
+  display: flex; flex-direction: column; gap: var(--layout-spacing-min);
+}
+.result-screen__error { opacity: 0.7; }
+.result-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: var(--size-gap-max);
+}
+.result-item {
+  display: flex; align-items: center; gap: var(--size-gap-max);
+  padding: var(--size-padding) 0;
+}
+.result-item__rank { font-weight: bold; min-width: 60px; }
+.result-item__name { flex: 1; }
+.result-item__score { font-weight: bold; }
+.result-actions {
+  display: flex; justify-content: center; padding: var(--layout-spacing-min) 0;
+}
+
+/* Scoreboard */
+.scoreboard-wrapper { display: flex; }
+.scoreboard-labels { flex: 0 0 auto; width: auto; }
+.scoreboard-labels thead th {
+  vertical-align: bottom; text-align: left;
+}
+.scoreboard-labels__category { white-space: nowrap; }
+.scoreboard-labels__category--total { font-weight: bold; }
+.scoreboard-labels__category--computed { opacity: 0.7; }
+
+.scoreboard-scores { flex: 1; overflow-x: auto; position: relative; }
+.scoreboard-scores .table th,
+.scoreboard-scores .table td { border-left: none;}
+.scoreboard-scores--overflow {
+  mask-image: linear-gradient(to right, black calc(100% - var(--layout-spacing-max)), transparent);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - var(--layout-spacing-max)), transparent);
+}
+.scoreboard-scores--scrolled-end {
+  mask-image: none; -webkit-mask-image: none;
+}
+.scoreboard-scores .table { width: 100%; }
+
+.scoreboard-player-header {
+  text-align: center; white-space: nowrap; vertical-align: bottom;
+  padding-top: var(--size-padding) !important;
+  padding-bottom: var(--size-padding) !important;
+}
+.scoreboard-player-header > * { display: block; }
+.scoreboard-player-header--active { opacity: 1; }
+.scoreboard-player-header:not(.scoreboard-player-header--active) { opacity: 0.5; }
+
+thead{
+  height: calc(var(--size-container)*2);
+}
+
+.scoreboard-player-name { 
+  white-space: nowrap; 
+  font-weight: bold; 
+  gap: var(--size-gap-min);
+  line-height: auto;
+}
+.scoreboard-player-name--inactive { font-weight: normal; }
+
+.scoreboard-player-name  span.player-bar__avatar{
+  line-height: normal;
+}
+.avatar{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: visible;
+}
+
+.scoreboard-cell { text-align: center; }
+.scoreboard-cell--potential { opacity: 0.5; }
+.scoreboard-cell--total { font-weight: bold; }
+.scoreboard-row--clickable { cursor: pointer; }
+
+/* Score confirmation dialog */
+.score-confirm {
+  text-align: center; display: flex; flex-direction: column;
+  gap: var(--layout-spacing-min);
+}
+.score-confirm__value { font-size: 2rem; font-weight: bold; }
+.score-confirm__actions { display: flex; gap: var(--size-gap-max); }

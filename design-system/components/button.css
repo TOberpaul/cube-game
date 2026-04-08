@@ -13,6 +13,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--size-gap-min);
   padding: 0 var(--size-padding);
   font-weight: 600;
   text-decoration: none;

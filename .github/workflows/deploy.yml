@@ -22,13 +22,28 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: dice-game-react/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: dice-game-react
+
+      - name: Build
+        run: npm run build
+        working-directory: dice-game-react
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dice-game-pwa
+          path: dice-game-react/dist
 
       - name: Deploy to GitHub Pages
         id: deployment

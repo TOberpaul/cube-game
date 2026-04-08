@@ -1,0 +1,52 @@
+/* ==============================================
+   Design System CSS Imports
+   Aggregates all CSS from design-system/ directory
+   ============================================== */
+
+/* Foundation — Theme colors, spacing tokens, typography, .adaptive class */
+@import '@design/foundation.css';
+
+/* Components */
+@import '@design/components/accordion.css';
+@import '@design/components/avatar.css';
+@import '@design/components/badge.css';
+@import '@design/components/breadcrumb.css';
+@import '@design/components/button.css';
+@import '@design/components/card.css';
+@import '@design/components/check.css';
+@import '@design/components/divider.css';
+@import '@design/components/headline.css';
+@import '@design/components/icon.css';
+@import '@design/components/input.css';
+@import '@design/components/link.css';
+@import '@design/components/list.css';
+@import '@design/components/modal.css';
+@import '@design/components/notification.css';
+@import '@design/components/pagination.css';
+@import '@design/components/progress.css';
+@import '@design/components/section.css';
+@import '@design/components/select.css';
+@import '@design/components/table.css';
+@import '@design/components/tabs.css';
+@import '@design/components/tag.css';
+@import '@design/components/textarea.css';
+@import '@design/components/toggle.css';
+@import '@design/components/tooltip.css';
+
+/* Modules */
+@import '@design/modules/cta.css';
+@import '@design/modules/feature-grid.css';
+@import '@design/modules/footer.css';
+@import '@design/modules/form-section.css';
+@import '@design/modules/header.css';
+@import '@design/modules/hero.css';
+@import '@design/modules/sidebar.css';
+@import '@design/modules/stats-row.css';
+@import '@design/modules/testimonial.css';
+
+/* Templates */
+@import '@design/templates/content-page.css';
+@import '@design/templates/dashboard.css';
+@import '@design/templates/form-page.css';
+@import '@design/templates/landingpage.css';
+@import '@design/templates/page.css';

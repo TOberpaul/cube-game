@@ -7,6 +7,7 @@
      </thead>
      <tbody>
        <tr><td>Cell</td><td>Cell</td></tr>
+       <tr><td class="adaptive" data-material="inverted" data-container-contrast="max">Filled</td></tr>
      </tbody>
    </table>
    ======================================== */
@@ -19,11 +20,11 @@
   border-radius: 0;
 }
 
-.table th,
-.table td {
+.table th, .table td  {
   padding: var(--size-padding-min) var(--size-padding);
   text-align: left;
-  border-bottom: var(--size-1) solid var(--db-border);
+  border: var(--size-1) solid var(--db-border);
+  min-width: 33dvw;
 }
 
 .table th {
@@ -36,4 +37,14 @@
 
 .table tbody tr[data-interactive]:hover {
   background: var(--db-background-hovered);
+}
+
+/* Adaptive cells inside tables: reset border-radius and min-size from .adaptive base */
+.table td.adaptive,
+.table th.adaptive {
+  border-radius: 0;
+  min-height: auto;
+  min-width: auto;
+  border: none;
+  border-bottom: var(--size-1) solid var(--db-border);
 }
