@@ -22,6 +22,8 @@
   margin: auto;
   width: min(calc(100% - var(--layout-spacing-min)), var(--size-640));
   max-height: calc(100dvh - var(--layout-spacing-max));
+  height: fit-content;
+  height: -webkit-fit-content;
   padding: 0;
   gap: 0;
   display: flex;
@@ -47,7 +49,7 @@
   flex-direction: column;
   padding: var(--layout-spacing-min);
   overflow-y: auto;
-  flex: 1;
+  flex: 1 1 auto;
 }
 
 .modal__footer {

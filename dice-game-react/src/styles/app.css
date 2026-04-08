@@ -140,6 +140,7 @@ html, body {
 .scoreboard-labels { flex: 0 0 auto; width: auto; }
 .scoreboard-labels thead th {
   vertical-align: bottom; text-align: left;
+  height: calc(var(--size-container)*2);
 }
 .scoreboard-labels__category { white-space: nowrap; }
 .scoreboard-labels__category--total { font-weight: bold; }
@@ -167,6 +168,10 @@ html, body {
 .scoreboard-player-header:not(.scoreboard-player-header--active) { opacity: 0.5; }
 
 thead{
+  height: auto;
+  min-height: calc(var(--size-container)*2);
+}
+thead th {
   height: calc(var(--size-container)*2);
 }
 
@@ -211,4 +216,5 @@ h2[tabindex="-1"]:focus {
 .modal .modal__body {
   min-height: 200px;
   overflow-y: auto;
+  flex-basis: auto;
 }
