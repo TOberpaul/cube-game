@@ -36,6 +36,9 @@ const DiceArea = forwardRef<DiceAreaHandle, DiceAreaProps>(
       const renderer = createDiceRenderer();
       rendererRef.current = renderer;
 
+      // Clear container before creating new renderer (prevents duplicate canvases)
+      container.innerHTML = '';
+
       renderer.create(container, diceCount).catch(() => {
         console.warn('DiceRenderer: WebGL not available');
         rendererRef.current = null;
