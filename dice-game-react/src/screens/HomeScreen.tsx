@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useGameContext } from '../context/GameContext';
+import { useMultiplayer } from '../multiplayer/MultiplayerContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { t } from '../hooks/useI18n';
 import Modal from '../components/Modal';
@@ -10,8 +11,12 @@ interface HighscoreEntry { name: string; score: number; date: number; }
 
 export default function HomeScreen() {
   const { registry, gameStore, storeReady, startGame } = useGameContext();
+  const { hostCreateRoom, clientJoinRoom } = useMultiplayer();
   const { navigate } = useHashRouter();
   const [showKniffelModal, setShowKniffelModal] = useState(false);
+  const [showOnlineModal, setShowOnlineModal] = useState(false);
+  const [onlineName, setOnlineName] = useState('Spieler');
+  const [joinCode, setJoinCode] = useState('');
   const [highscores, setHighscores] = useState<HighscoreEntry[]>([]);
   const startGameRef = useRef<(() => void) | null>(null);
 
@@ -43,6 +48,22 @@ export default function HomeScreen() {
     }
   }, [navigate, startGame]);
 
+  const handleCreateRoom = useCallback(() => {
+    const name = onlineName.trim() || 'Spieler';
+    hostCreateRoom(name);
+    setShowOnlineModal(false);
+    navigate('lobby');
+  }, [onlineName, hostCreateRoom, navigate]);
+
+  const handleJoinRoom = useCallback(() => {
+    const code = joinCode.trim().toUpperCase();
+    if (!code) return;
+    const name = onlineName.trim() || 'Spieler';
+    clientJoinRoom(code, name);
+    setShowOnlineModal(false);
+    navigate('lobby');
+  }, [joinCode, onlineName, clientJoinRoom, navigate]);
+
   return (
     <div className="home-screen">
       <h1 className="adaptive headline" data-level="1">{t('home.title')}</h1>
@@ -59,7 +80,7 @@ export default function HomeScreen() {
           </button>
         ))}
         <button type="button" className="adaptive card mode-card"
-          data-interactive="" data-material="filled-2" onClick={() => navigate('lobby')}>
+          data-interactive="" data-material="filled-2" onClick={() => setShowOnlineModal(true)}>
           <div className="card__content">
             <span className="headline" data-level="4">Online Kniffel</span>
             <span>Spiele Kniffel online mit Freunden.</span>
@@ -74,6 +95,37 @@ export default function HomeScreen() {
             onClick={() => startGameRef.current?.()}>{t('home.startLocal')}</button>
         }>
         <PlayerSetup onStartReady={(fn) => { startGameRef.current = fn; }} />
+      </Modal>
+
+      <Modal open={showOnlineModal} onClose={() => setShowOnlineModal(false)} title="Online Kniffel">
+        <div className="player-setup">
+          <label className="adaptive input">
+            <span>Dein Name</span>
+            <input type="text" className="adaptive input__field" data-material="filled-2" data-interactive=""
+              value={onlineName} onChange={(e) => setOnlineName(e.target.value)} placeholder="Spieler" />
+          </label>
+
+          <button className="adaptive button button--full-width" data-interactive=""
+            data-material="inverted" data-container-contrast="max"
+            onClick={handleCreateRoom}>Raum erstellen</button>
+
+          <div className="lobby-divider">
+            <span className="adaptive divider" />
+            <span className="lobby-divider__text">oder</span>
+            <span className="adaptive divider" />
+          </div>
+
+          <label className="adaptive input">
+            <span>Raum-Code</span>
+            <input type="text" className="adaptive input__field" data-material="filled-2" data-interactive=""
+              value={joinCode} onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+              placeholder="z.B. ABC12" maxLength={5} />
+          </label>
+
+          <button className="adaptive button button--full-width" data-interactive=""
+            data-material="filled" disabled={!joinCode.trim()}
+            onClick={handleJoinRoom}>Raum beitreten</button>
+        </div>
       </Modal>
 
       {highscores.length > 0 && (

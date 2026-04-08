@@ -19,6 +19,7 @@ export default function GameScreen() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [diceAnnouncement, setDiceAnnouncement] = useState('');
   const [pendingScore, setPendingScore] = useState<ScoreOption | null>(null);
+  const restoringRef = useRef(false);
 
   const modeId = params.modeId || gameState?.modeId || 'free-roll';
   const isKniffel = modeId === 'kniffel';
@@ -28,10 +29,28 @@ export default function GameScreen() {
   // Is it the local player's turn?
   const isMyTurn = !isOnline || (gameState?.players[gameState.currentPlayerIndex]?.id === localPlayerId);
 
+  const { gameStore, storeReady } = useGameContext();
+
+  // On reload: try to restore last active game from store before creating a new one
   useEffect(() => {
-    if (!gameState && params.modeId)
-      startGame(params.modeId, [{ id: 'p1', name: 'Spieler 1', isHost: true }], params.playType || 'solo');
-  }, [gameState, params.modeId, params.playType, startGame]);
+    if (gameState || !params.modeId || restoringRef.current) return;
+    if (!storeReady || !gameStore) {
+      // Store not ready yet, wait
+      return;
+    }
+    restoringRef.current = true;
+    gameStore.listActive().then((active: unknown[]) => {
+      const games = active as { modeId: string; players: { id: string; name: string; isHost?: boolean }[] }[];
+      const match = games.find((g) => g.modeId === params.modeId);
+      if (match) {
+        applyState(match as Parameters<typeof applyState>[0]);
+      } else {
+        startGame(params.modeId!, [{ id: 'p1', name: 'Spieler 1', isHost: true }], params.playType || 'solo');
+      }
+    }).catch(() => {
+      startGame(params.modeId!, [{ id: 'p1', name: 'Spieler 1', isHost: true }], params.playType || 'solo');
+    });
+  }, [gameState, params.modeId, params.playType, startGame, storeReady, gameStore, applyState]);
 
   // Online sync: Host broadcasts state changes, clients apply them
   const syncInitialized = useRef(false);
