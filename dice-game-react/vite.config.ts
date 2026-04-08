@@ -9,8 +9,9 @@ export default defineConfig({
     alias: {
       '@pwa': path.resolve(__dirname, '../dice-game-pwa/js'),
       '@design': path.resolve(__dirname, '../design-system'),
-      // Map three/addons/ to the npm package's examples (used by dice-renderer.js)
-      'three/addons/': path.resolve(__dirname, 'node_modules/three/examples/jsm/'),
+      'three/addons/loaders/GLTFLoader.js': path.resolve(__dirname, 'node_modules/three/examples/jsm/loaders/GLTFLoader.js'),
+      'three': path.resolve(__dirname, 'node_modules/three'),
+      'motion': path.resolve(__dirname, 'node_modules/motion'),
     },
   },
   server: {
