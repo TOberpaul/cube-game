@@ -137,7 +137,7 @@
   "multiplayer.backToHome": "Zurück zum Start",
   "mode.freeRoll": "Freies Würfeln",
   "mode.freeRoll.description": "Würfle ohne Regeln — einfach zum Spaß.",
-  "mode.kniffel": "Kniffel",
+  "mode.kniffel": "Offline Kniffel",
   "mode.kniffel.description": "Das klassische Würfelspiel mit 13 Kategorien.",
   "error.generic": "Ein Fehler ist aufgetreten.",
   "error.loadFailed": "Laden fehlgeschlagen.",

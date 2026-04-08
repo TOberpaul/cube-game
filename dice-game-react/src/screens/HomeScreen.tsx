@@ -58,12 +58,14 @@ export default function HomeScreen() {
             </div>
           </button>
         ))}
+        <button type="button" className="adaptive card mode-card"
+          data-interactive="" data-material="filled-2" onClick={() => navigate('lobby')}>
+          <div className="card__content">
+            <span className="headline" data-level="4">Online Kniffel</span>
+            <span>Spiele Kniffel online mit Freunden.</span>
+          </div>
+        </button>
       </div>
-
-      <button type="button" className="adaptive button button--full-width" data-interactive=""
-        data-material="filled-2" data-size="l" onClick={() => navigate('lobby')}>
-        🌐 Online spielen
-      </button>
 
       <Modal open={showKniffelModal} onClose={() => setShowKniffelModal(false)} title={t('mode.kniffel')}
         footer={
