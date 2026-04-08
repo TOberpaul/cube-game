@@ -200,3 +200,15 @@ thead{
 }
 .score-confirm__value { font-size: 2rem; font-weight: bold; }
 .score-confirm__actions { display: flex; gap: var(--size-gap-max); }
+
+/* Fix: headline focus ring from ScreenRouter focus management */
+h1[tabindex="-1"]:focus,
+h2[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Fix: modal min-height on mobile */
+.modal .modal__body {
+  min-height: 200px;
+  overflow-y: auto;
+}

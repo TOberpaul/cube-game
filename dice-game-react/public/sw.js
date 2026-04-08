@@ -1,84 +1,42 @@
-const CACHE_NAME = 'dice-game-v1';
+const CACHE_NAME = 'dice-game-v2';
 
-const PRECACHE_URLS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.svg',
-  '/icons/icon-512.svg',
-];
-
-// Install: precache known static assets
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_URLS);
-    })
-  );
-  // Activate new SW immediately
   self.skipWaiting();
 });
 
-// Activate: clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    })
+    caches.keys().then((names) =>
+      Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
+    )
   );
-  // Take control of all clients immediately
   self.clients.claim();
 });
 
-// Fetch: cache-first strategy for static assets, network-first for navigation
 self.addEventListener('fetch', (event) => {
-  const { request } = event;
+  if (event.request.method !== 'GET') return;
 
-  // Only handle GET requests
-  if (request.method !== 'GET') return;
-
-  // For navigation requests, try network first then cache
-  if (request.mode === 'navigate') {
+  if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        })
-        .catch(() => caches.match('/index.html'))
+      fetch(event.request).then((r) => {
+        const clone = r.clone();
+        caches.open(CACHE_NAME).then((c) => c.put(event.request, clone));
+        return r;
+      }).catch(() => caches.match(event.request))
     );
     return;
   }
 
-  // For static assets: cache-first, fallback to network
   event.respondWith(
-    caches.match(request).then((cached) => {
+    caches.match(event.request).then((cached) => {
       if (cached) return cached;
-
-      return fetch(request).then((response) => {
-        // Cache successful responses for static assets
-        if (response.ok && shouldCache(request.url)) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+      return fetch(event.request).then((r) => {
+        if (r.ok) {
+          const clone = r.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(event.request, clone));
         }
-        return response;
+        return r;
       });
     })
   );
 });
-
-// Determine if a URL should be cached
-function shouldCache(url) {
-  const cacheableExtensions = [
-    '.html', '.css', '.js', '.mjs',
-    '.glb', '.gltf',
-    '.svg', '.png', '.ico', '.webp',
-    '.json', '.woff', '.woff2',
-  ];
-  return cacheableExtensions.some((ext) => url.includes(ext));
-}
