@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useGameContext } from '../context/GameContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { t } from '../hooks/useI18n';
@@ -13,6 +13,7 @@ export default function HomeScreen() {
   const { navigate } = useHashRouter();
   const [showKniffelModal, setShowKniffelModal] = useState(false);
   const [highscores, setHighscores] = useState<HighscoreEntry[]>([]);
+  const startGameRef = useRef<(() => void) | null>(null);
 
   const modes = registry.getAll();
 
@@ -50,17 +51,22 @@ export default function HomeScreen() {
       <div className="mode-grid">
         {modes.map((mode) => (
           <button key={mode.id} type="button" className="adaptive card mode-card"
-            data-interactive="" data-material="filled" onClick={() => handleModeClick(mode)}>
+            data-interactive="" data-material="filled-2" onClick={() => handleModeClick(mode)}>
             <div className="card__content">
-              <span className="adaptive headline" data-level="4">{t(mode.name)}</span>
-              <span className="adaptive text text--small">{t(`${mode.name}.description`)}</span>
+              <span className="headline" data-level="4">{t(mode.name)}</span>
+              <span>{t(`${mode.name}.description`)}</span>
             </div>
           </button>
         ))}
       </div>
 
-      <Modal open={showKniffelModal} onClose={() => setShowKniffelModal(false)} title={t('mode.kniffel')}>
-        <PlayerSetup />
+      <Modal open={showKniffelModal} onClose={() => setShowKniffelModal(false)} title={t('mode.kniffel')}
+        footer={
+          <button type="button" className="adaptive button button--full-width" data-interactive=""
+            data-material="inverted" data-container-contrast="max"
+            onClick={() => startGameRef.current?.()}>{t('home.startLocal')}</button>
+        }>
+        <PlayerSetup onStartReady={(fn) => { startGameRef.current = fn; }} />
       </Modal>
 
       {highscores.length > 0 && (
@@ -68,7 +74,7 @@ export default function HomeScreen() {
           <h2 className="adaptive headline" data-level="3">Highscores</h2>
           <ol className="highscore-list">
             {highscores.map((entry, i) => (
-              <li key={`${entry.name}-${entry.date}-${i}`} className="adaptive highscore-item" data-material="semi-transparent">
+              <li key={`${entry.name}-${entry.date}-${i}`} className="adaptive highscore-item" data-material="">
                 <span>{i + 1}.</span>
                 <span className="highscore-item__name">{entry.name}</span>
                 <span className="highscore-item__score">{entry.score}</span>

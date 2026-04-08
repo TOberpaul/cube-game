@@ -6,13 +6,14 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: ReactNode;
+  footer?: ReactNode;
   ariaLabel?: string;
 }
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export default function Modal({ open, onClose, title, children, ariaLabel }: ModalProps) {
+export default function Modal({ open, onClose, title, children, footer, ariaLabel }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -67,6 +68,11 @@ export default function Modal({ open, onClose, title, children, ariaLabel }: Mod
       <div className="modal__body">
         {children}
       </div>
+      {footer && (
+        <div className="modal__footer">
+          {footer}
+        </div>
+      )}
     </dialog>
   );
 }

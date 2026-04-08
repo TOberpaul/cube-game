@@ -33,6 +33,7 @@
   flex-direction: column;
   gap: var(--size-gap-max);
   padding: var(--layout-spacing-min);
+  text-align: left;
 }
 
 .card__actions {

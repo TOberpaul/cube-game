@@ -1,12 +1,15 @@
 import { useState, useCallback } from 'react';
-import { t } from '../hooks/useI18n';
 import { useGameContext } from '../context/GameContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { Plus, Minus } from 'lucide-react';
 
 const MAX_PLAYERS = 8;
 
-export default function PlayerSetup() {
+export interface PlayerSetupProps {
+  onStartReady?: (onStart: () => void) => void;
+}
+
+export default function PlayerSetup({ onStartReady }: PlayerSetupProps) {
   const { startGame } = useGameContext();
   const { navigate } = useHashRouter();
   const [names, setNames] = useState<string[]>(['Spieler 1']);
@@ -29,6 +32,9 @@ export default function PlayerSetup() {
     startGame('kniffel', players, playType);
     navigate('game', { modeId: 'kniffel', playType });
   }, [names, startGame, navigate]);
+
+  // Expose handleStart to parent
+  onStartReady?.(handleStart);
 
   return (
     <div className="player-setup">
@@ -57,10 +63,6 @@ export default function PlayerSetup() {
           </button>
         )}
       </div>
-
-      <button type="button" className="adaptive button button--full-width" data-interactive=""
-        data-material="inverted" data-container-contrast="max"
-        onClick={handleStart}>{t('home.startLocal')}</button>
     </div>
   );
 }

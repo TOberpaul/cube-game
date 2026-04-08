@@ -75,8 +75,9 @@ export default function GameScreen() {
   const handleDieClick = useCallback((index: number) => {
     const es = gameEngine?.getState();
     if (!es || es.status !== 'playing' || es.rollsThisTurn === 0) return;
+    const wasHeld = es.dice.held[index];
     toggleHold(index);
-    diceAreaRef.current?.setHeld(index, !es.dice.held[index]);
+    diceAreaRef.current?.setHeld(index, !wasHeld);
   }, [gameEngine, toggleHold]);
 
   const prevRollsRef = useRef(0);
@@ -165,17 +166,15 @@ export default function GameScreen() {
       </div>
 
       <Modal open={!!pendingScore} onClose={cancelScore}
-        title={pendingScore ? t(`kniffel.${pendingScore.id}`) : ''}>
+        title={pendingScore ? t(`kniffel.${pendingScore.id}`) : ''}
+        footer={pendingScore && (
+          <button className="adaptive button button--full-width" data-interactive=""
+            data-material="inverted" data-container-contrast="max"
+            onClick={confirmScore}>Eintragen</button>
+        )}>
         {pendingScore && (
           <div className="score-confirm">
             <p className="score-confirm__value">{pendingScore.score} Punkte</p>
-            <div className="score-confirm__actions">
-              <button className="adaptive button button--full-width" data-interactive="" data-material="filled"
-                onClick={cancelScore}>Abbrechen</button>
-              <button className="adaptive button button--full-width" data-interactive=""
-                data-material="inverted" data-container-contrast="max"
-                onClick={confirmScore}>Eintragen</button>
-            </div>
           </div>
         )}
       </Modal>
