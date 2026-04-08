@@ -72,9 +72,20 @@ function setupChannel(channel: RealtimeChannel, playerId: string, playerName: st
     callbacks.onGameAction?.(payload as GameAction);
   });
 
+  const trackPresence = async () => {
+    try {
+      await channel.track({ id: playerId, name: playerName, isHost });
+    } catch (e) {
+      console.warn('Presence track failed, retrying...', e);
+      setTimeout(trackPresence, 2000);
+    }
+  };
+
   channel.subscribe(async (status) => {
     if (status === 'SUBSCRIBED') {
-      await channel.track({ id: playerId, name: playerName, isHost });
+      await trackPresence();
+    } else if (status === 'CHANNEL_ERROR') {
+      console.warn('Channel error, will retry...');
     }
   });
 }

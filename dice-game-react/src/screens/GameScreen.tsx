@@ -54,37 +54,56 @@ export default function GameScreen() {
 
   // Online sync: Host broadcasts state changes, clients apply them
   const syncInitialized = useRef(false);
+  // Use refs for stable access in callbacks
+  const rollRef = useRef(roll);
+  const toggleHoldRef = useRef(toggleHold);
+  const selectScoreRef = useRef(selectScore);
+  const gameEngineRef = useRef(gameEngine);
+  const sendActionRef = useRef(sendAction);
+  const applyStateRef = useRef(applyState);
+  const diceAreaRefStable = diceAreaRef;
+
+  useEffect(() => { rollRef.current = roll; }, [roll]);
+  useEffect(() => { toggleHoldRef.current = toggleHold; }, [toggleHold]);
+  useEffect(() => { selectScoreRef.current = selectScore; }, [selectScore]);
+  useEffect(() => { gameEngineRef.current = gameEngine; }, [gameEngine]);
+  useEffect(() => { sendActionRef.current = sendAction; }, [sendAction]);
+  useEffect(() => { applyStateRef.current = applyState; }, [applyState]);
+
   useEffect(() => {
     if (!isOnline || syncInitialized.current) return;
     syncInitialized.current = true;
 
     if (isHost) {
-      // Host: listen for client actions and execute them locally
       onGameAction((action) => {
         if (action.type === 'roll') {
-          const result = roll();
-          sendAction('state-update', { state: gameEngine?.getState(), diceResult: result });
+          try {
+            const result = rollRef.current();
+            const newState = gameEngineRef.current?.getState();
+            sendActionRef.current('state-update', { state: newState, diceResult: result });
+          } catch (e) {
+            console.warn('Online roll failed:', e);
+          }
         } else if (action.type === 'toggle-hold') {
-          toggleHold(action.payload as number);
-          sendAction('state-update', { state: gameEngine?.getState() });
+          toggleHoldRef.current(action.payload as number);
+          sendActionRef.current('state-update', { state: gameEngineRef.current?.getState() });
         } else if (action.type === 'select-score') {
-          selectScore(action.payload as ScoreOption);
-          sendAction('state-update', { state: gameEngine?.getState() });
+          selectScoreRef.current(action.payload as ScoreOption);
+          sendActionRef.current('state-update', { state: gameEngineRef.current?.getState() });
         }
       });
     } else {
-      // Client: apply state updates from host
       onGameAction((action) => {
         if (action.type === 'state-update' && action.payload) {
           const { state, diceResult } = action.payload as { state: unknown; diceResult?: { values: number[]; rolledIndices: number[] } };
-          if (state) applyState(state as Parameters<typeof applyState>[0]);
-          if (diceResult && diceAreaRef.current) {
-            diceAreaRef.current.update(diceResult, true);
+          if (state) applyStateRef.current(state as Parameters<typeof applyState>[0]);
+          if (diceResult && diceAreaRefStable.current) {
+            diceAreaRefStable.current.update(diceResult, true);
           }
         }
       });
     }
-  }, [isOnline, isHost, onGameAction, roll, toggleHold, selectScore, sendAction, gameEngine, applyState]);
+  }, [isOnline, isHost, onGameAction]);
   const modeConfig = registry.get(modeId);
   const rollsPerTurn: number | null = modeConfig?.rollsPerTurn ?? null;
   const rollsThisTurn = gameState?.rollsThisTurn ?? 0;
@@ -125,7 +144,6 @@ export default function GameScreen() {
     if (navigator.vibrate) navigator.vibrate(50);
 
     if (isOnline && !isHost) {
-      // Client: send roll request to host
       sendAction('roll');
       return;
     }
@@ -172,6 +190,19 @@ export default function GameScreen() {
       for (let i = 0; i < gameState.dice.held.length; i++) diceAreaRef.current.setHeld(i, false);
     prevRollsRef.current = gameState.rollsThisTurn;
   }, [gameState?.rollsThisTurn]);
+
+  // Sync held visuals from state (important for online clients)
+  const prevHeldRef = useRef<boolean[]>([]);
+  useEffect(() => {
+    if (!gameState || !diceAreaRef.current) return;
+    const held = gameState.dice.held;
+    for (let i = 0; i < held.length; i++) {
+      if (held[i] !== prevHeldRef.current[i]) {
+        diceAreaRef.current.setHeld(i, held[i]);
+      }
+    }
+    prevHeldRef.current = [...held];
+  }, [gameState?.dice?.held]);
 
   const rollLabel = rollsPerTurn !== null ? `${t('game.roll')} (${rollsThisTurn}/${rollsPerTurn})` : t('game.roll');
 
