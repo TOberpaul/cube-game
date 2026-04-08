@@ -11,7 +11,7 @@ export function useI18n() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/locales/de.json')
+    fetch(`${import.meta.env.BASE_URL}locales/de.json`)
       .then((res) => res.json())
       .then((messages) => {
         if (!cancelled) {
