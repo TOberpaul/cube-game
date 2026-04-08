@@ -198,7 +198,7 @@ export default function GameScreen() {
     const held = gameState.dice.held;
     for (let i = 0; i < held.length; i++) {
       if (held[i] !== prevHeldRef.current[i]) {
-        diceAreaRef.current.setHeld(i, held[i]);
+        diceAreaRef.current.setHeld(i, !!held[i]);
       }
     }
     prevHeldRef.current = [...held];
