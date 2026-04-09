@@ -28,7 +28,12 @@ export function MultiplayerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const hostCreateRoom = useCallback((playerName: string) => {
-    roomRef.current?.destroy();
+    // Clean up previous room completely
+    if (roomRef.current) {
+      roomRef.current.destroy();
+      roomRef.current = null;
+    }
+    actionHandlersRef.current = [];
     const r = createRoom(playerName, {
       onPlayersChanged: handlePlayersChanged,
       onGameAction: handleGameAction,
@@ -39,7 +44,12 @@ export function MultiplayerProvider({ children }: { children: ReactNode }) {
   }, [handlePlayersChanged, handleGameAction]);
 
   const clientJoinRoom = useCallback((roomId: string, playerName: string) => {
-    roomRef.current?.destroy();
+    // Clean up previous room completely
+    if (roomRef.current) {
+      roomRef.current.destroy();
+      roomRef.current = null;
+    }
+    actionHandlersRef.current = [];
     const r = joinRoom(roomId, playerName, {
       onPlayersChanged: handlePlayersChanged,
       onGameAction: handleGameAction,

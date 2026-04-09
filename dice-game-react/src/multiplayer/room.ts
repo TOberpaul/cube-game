@@ -54,17 +54,27 @@ function getSupabase() {
 }
 
 function setupChannel(channel: RealtimeChannel, playerId: string, playerName: string, isHost: boolean, callbacks: RoomCallbacks, playersRef: { current: RoomPlayer[] }) {
+  const localPlayer: RoomPlayer = { id: playerId, name: playerName, isHost };
+  let tracked = false;
+
   channel.on('presence', { event: 'sync' }, () => {
     const state = channel.presenceState<{ id: string; name: string; isHost: boolean }>();
-    playersRef.current = Object.values(state).flat().map((p) => ({
+    const remotePlayers = Object.values(state).flat().map((p) => ({
       id: p.id, name: p.name, isHost: p.isHost,
     }));
+    // If we haven't been tracked yet or aren't in the list, ensure we're included
+    const hasLocal = remotePlayers.some((p) => p.id === playerId);
+    playersRef.current = hasLocal ? remotePlayers : [localPlayer, ...remotePlayers];
     callbacks.onPlayersChanged?.(playersRef.current);
   });
 
   channel.on('presence', { event: 'leave' }, ({ leftPresences }) => {
     for (const p of leftPresences) {
-      callbacks.onPlayerLeave?.((p as unknown as RoomPlayer).id);
+      const left = p as unknown as RoomPlayer;
+      // Don't report self as leaving
+      if (left.id !== playerId) {
+        callbacks.onPlayerLeave?.(left.id);
+      }
     }
   });
 
@@ -75,6 +85,7 @@ function setupChannel(channel: RealtimeChannel, playerId: string, playerName: st
   const trackPresence = async () => {
     try {
       await channel.track({ id: playerId, name: playerName, isHost });
+      tracked = true;
     } catch (e) {
       console.warn('Presence track failed, retrying...', e);
       setTimeout(trackPresence, 2000);
