@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useGameContext } from '../context/GameContext';
+import { useAuth } from '../context/AuthContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { t } from '../hooks/useI18n';
 import { getAvatar } from '@pwa/avatars';
+import { submitHighscore } from '../multiplayer/highscores';
 import type { GameState, Player } from '@pwa/game/game-engine';
 
 export interface RankedPlayer { player: Player; avatar: string; totalScore: number; rank: number; }
@@ -20,9 +22,11 @@ export function computeRankings(gameState: GameState): RankedPlayer[] {
 
 export default function ResultScreen() {
   const { gameState, loadGame, storeReady } = useGameContext();
+  const { user } = useAuth();
   const { params, navigate } = useHashRouter();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const submittedRef = useRef(false);
 
   useEffect(() => {
     if (gameState) return;
@@ -31,6 +35,19 @@ export default function ResultScreen() {
     setLoading(true);
     loadGame(params.gameId).then(() => setLoading(false)).catch(() => { setError(true); setLoading(false); });
   }, [gameState, params.gameId, storeReady, loadGame]);
+
+  // Auto-submit highscores for logged-in users
+  useEffect(() => {
+    if (!gameState || !user || submittedRef.current) return;
+    if (gameState.status !== 'finished' || gameState.modeId !== 'kniffel') return;
+    submittedRef.current = true;
+    for (const player of gameState.players) {
+      const score = gameState.scores[player.id]?.totalScore;
+      if (score != null && score > 0) {
+        submitHighscore(user.id, player.name, score);
+      }
+    }
+  }, [gameState, user]);
 
   if (error) return (
     <div className="result-screen" data-result-error="">

@@ -53,12 +53,13 @@ vi.mock('../multiplayer/supabase', () => ({
 import ScreenRouter from './ScreenRouter';
 import { GameProvider } from '../context/GameContext';
 import { MultiplayerProvider } from '../multiplayer/MultiplayerContext';
+import { AuthProvider } from '../context/AuthContext';
 
 // Fade duration used in ScreenRouter
 const FADE_DURATION_MS = 200;
 
 function renderWithProviders(ui: React.ReactElement) {
-  return render(<MultiplayerProvider><GameProvider>{ui}</GameProvider></MultiplayerProvider>);
+  return render(<AuthProvider><MultiplayerProvider><GameProvider>{ui}</GameProvider></MultiplayerProvider></AuthProvider>);
 }
 
 beforeEach(() => {

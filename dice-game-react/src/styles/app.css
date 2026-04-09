@@ -274,3 +274,18 @@ h2[tabindex="-1"]:focus {
 .lobby-waiting {
   text-align: center; opacity: 0.7; padding: var(--layout-spacing-min);
 }
+
+/* Home topbar with auth */
+.home-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.highscore-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--size-gap-max);
+}
+.highscore-tabs {
+  display: flex; gap: var(--size-gap-min);
+}
+.highscore-empty {
+  opacity: 0.5; text-align: center; padding: var(--size-padding);
+}

@@ -1,31 +1,43 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useGameContext } from '../context/GameContext';
+import { useAuth } from '../context/AuthContext';
 import { useMultiplayer } from '../multiplayer/MultiplayerContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { t } from '../hooks/useI18n';
+import { LogIn, LogOut } from 'lucide-react';
 import Modal from '../components/Modal';
 import PlayerSetup from '../components/PlayerSetup';
+import { fetchGlobalHighscores, type GlobalHighscore } from '../multiplayer/highscores';
 import type { GameModeConfig } from '@pwa/game/game-mode-registry';
 
-interface HighscoreEntry { name: string; score: number; date: number; }
+interface LocalHighscore { name: string; score: number; date: number; }
 
 export default function HomeScreen() {
   const { registry, gameStore, storeReady, startGame } = useGameContext();
+  const { user, displayName, signInWithGoogle, signOut } = useAuth();
   const { hostCreateRoom, clientJoinRoom } = useMultiplayer();
   const { navigate } = useHashRouter();
   const [showKniffelModal, setShowKniffelModal] = useState(false);
   const [showOnlineModal, setShowOnlineModal] = useState(false);
-  const [onlineName, setOnlineName] = useState('Spieler');
+  const [onlineName, setOnlineName] = useState(displayName || 'Spieler');
   const [joinCode, setJoinCode] = useState('');
-  const [highscores, setHighscores] = useState<HighscoreEntry[]>([]);
+  const [localHighscores, setLocalHighscores] = useState<LocalHighscore[]>([]);
+  const [globalHighscores, setGlobalHighscores] = useState<GlobalHighscore[]>([]);
+  const [hsTab, setHsTab] = useState<'local' | 'global'>('local');
   const startGameRef = useRef<(() => void) | null>(null);
 
   const modes = registry.getAll();
 
+  // Update online name when user logs in
+  useEffect(() => {
+    if (displayName) setOnlineName(displayName);
+  }, [displayName]);
+
+  // Load local highscores
   useEffect(() => {
     if (!storeReady || !gameStore) return;
     gameStore.listFinished().then((finished) => {
-      const scores: HighscoreEntry[] = [];
+      const scores: LocalHighscore[] = [];
       for (const game of finished) {
         if (!game.scores || !game.players) continue;
         for (const player of game.players) {
@@ -35,18 +47,23 @@ export default function HomeScreen() {
         }
       }
       scores.sort((a, b) => b.score - a.score);
-      setHighscores(scores.slice(0, 5));
+      setLocalHighscores(scores.slice(0, 10));
     }).catch(() => {});
   }, [storeReady, gameStore]);
 
+  // Load global highscores
+  useEffect(() => {
+    fetchGlobalHighscores(10).then(setGlobalHighscores);
+  }, []);
+
   const handleModeClick = useCallback((mode: GameModeConfig) => {
     if (mode.id === 'free-roll') {
-      startGame('free-roll', [{ id: 'p1', name: 'Spieler 1', isHost: true }], 'solo');
+      startGame('free-roll', [{ id: 'p1', name: displayName || 'Spieler 1', isHost: true }], 'solo');
       navigate('game', { modeId: 'free-roll', playType: 'solo' });
     } else if (mode.id === 'kniffel') {
       setShowKniffelModal(true);
     }
-  }, [navigate, startGame]);
+  }, [navigate, startGame, displayName]);
 
   const handleCreateRoom = useCallback(() => {
     const name = onlineName.trim() || 'Spieler';
@@ -64,9 +81,27 @@ export default function HomeScreen() {
     navigate('lobby');
   }, [joinCode, onlineName, clientJoinRoom, navigate]);
 
+  const highscores = hsTab === 'local' ? localHighscores : globalHighscores;
+  const hasAnyHighscores = localHighscores.length > 0 || globalHighscores.length > 0;
+
   return (
     <div className="home-screen">
-      <h1 className="adaptive headline" data-level="1">{t('home.title')}</h1>
+      <div className="home-topbar">
+        <h1 className="adaptive headline" data-level="1">{t('home.title')}</h1>
+        {user ? (
+          <button className="adaptive button" data-interactive="" data-material="filled" data-size="s"
+            onClick={signOut}>
+            <LogOut className="icon" size={16} />
+            {displayName?.split(' ')[0]}
+          </button>
+        ) : (
+          <button className="adaptive button" data-interactive="" data-material="filled" data-size="s"
+            onClick={signInWithGoogle}>
+            <LogIn className="icon" size={16} />
+            Anmelden
+          </button>
+        )}
+      </div>
       <p className="adaptive text">{t('home.subtitle')}</p>
 
       <div className="mode-grid">
@@ -104,42 +139,56 @@ export default function HomeScreen() {
             <input type="text" className="adaptive input__field" data-material="filled-2" data-interactive=""
               value={onlineName} onChange={(e) => setOnlineName(e.target.value)} placeholder="Spieler" />
           </label>
-
           <button className="adaptive button button--full-width" data-interactive=""
             data-material="inverted" data-container-contrast="max"
             onClick={handleCreateRoom}>Raum erstellen</button>
-
           <div className="lobby-divider">
             <span className="adaptive divider" />
             <span className="lobby-divider__text">oder</span>
             <span className="adaptive divider" />
           </div>
-
           <label className="adaptive input">
             <span>Raum-Code</span>
             <input type="text" className="adaptive input__field" data-material="filled-2" data-interactive=""
               value={joinCode} onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               placeholder="z.B. ABC12" maxLength={5} />
           </label>
-
           <button className="adaptive button button--full-width" data-interactive=""
             data-material="filled" disabled={!joinCode.trim()}
             onClick={handleJoinRoom}>Raum beitreten</button>
         </div>
       </Modal>
 
-      {highscores.length > 0 && (
+      {hasAnyHighscores && (
         <section className="highscore-section">
-          <h2 className="adaptive headline" data-level="3">Highscores</h2>
-          <ol className="highscore-list">
-            {highscores.map((entry, i) => (
-              <li key={`${entry.name}-${entry.date}-${i}`} className="adaptive highscore-item" data-material="">
-                <span>{i + 1}.</span>
-                <span className="highscore-item__name">{entry.name}</span>
-                <span className="highscore-item__score">{entry.score}</span>
-              </li>
-            ))}
-          </ol>
+          <div className="highscore-header">
+            <h2 className="adaptive headline" data-level="3">Highscores</h2>
+            <div className="highscore-tabs" role="tablist">
+              <button role="tab" aria-selected={hsTab === 'local'} className="adaptive button" data-interactive=""
+                data-material={hsTab === 'local' ? 'inverted' : 'filled'} data-size="s"
+                onClick={() => setHsTab('local')}>Lokal</button>
+              <button role="tab" aria-selected={hsTab === 'global'} className="adaptive button" data-interactive=""
+                data-material={hsTab === 'global' ? 'inverted' : 'filled'} data-size="s"
+                onClick={() => setHsTab('global')}>Global</button>
+            </div>
+          </div>
+          {highscores.length > 0 ? (
+            <ol className="highscore-list">
+              {highscores.map((entry, i) => (
+                <li key={`${hsTab}-${i}`} className="adaptive highscore-item" data-material="">
+                  <span>{i + 1}.</span>
+                  <span className="highscore-item__name">
+                    {'player_name' in entry ? entry.player_name : entry.name}
+                  </span>
+                  <span className="highscore-item__score">{entry.score}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="highscore-empty">
+              {hsTab === 'global' ? 'Noch keine globalen Highscores.' : 'Noch keine lokalen Highscores.'}
+            </p>
+          )}
         </section>
       )}
     </div>
