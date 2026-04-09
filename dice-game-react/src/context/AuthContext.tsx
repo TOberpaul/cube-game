@@ -22,11 +22,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
 
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      setLoading(false);
-    });
+    // Check if URL contains auth callback tokens (from OAuth redirect)
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      // Let Supabase extract the tokens from the URL fragment
+      // Then clean up the URL to restore normal hash routing
+      supabase.auth.getSession().then(({ data: { session: s } }) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+        setLoading(false);
+        // Restore hash to home after auth
+        window.location.hash = '#home';
+      });
+    } else {
+      supabase.auth.getSession().then(({ data: { session: s } }) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+        setLoading(false);
+      });
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);

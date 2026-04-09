@@ -62,12 +62,23 @@ export function buildHash(route: Route, params?: RouteParams): string {
  *
  * Validates: Requirements 3.1, 3.2, 3.5, 3.6, 3.7
  */
+/**
+ * Checks if the current hash contains an OAuth callback token.
+ */
+function isAuthCallback(hash: string): boolean {
+  return hash.includes('access_token') || hash.includes('error_description');
+}
+
 export function useHashRouter(): {
   route: Route;
   params: RouteParams;
   navigate: (route: Route, params?: RouteParams) => void;
 } {
   const [state, setState] = useState<RouterState>(() => {
+    // Don't touch the hash if it contains auth callback tokens
+    if (isAuthCallback(window.location.hash)) {
+      return { route: 'home', params: {} };
+    }
     const initial = parseHash(window.location.hash);
     const canonicalHash = buildHash(initial.route, initial.params);
     if (window.location.hash !== canonicalHash) {
@@ -83,6 +94,7 @@ export function useHashRouter(): {
 
   useEffect(() => {
     const handleHashChange = () => {
+      if (isAuthCallback(window.location.hash)) return;
       const parsed = parseHash(window.location.hash);
       const canonical = buildHash(parsed.route, parsed.params);
       if (window.location.hash !== canonical) {
