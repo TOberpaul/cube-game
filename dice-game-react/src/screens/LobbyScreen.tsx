@@ -83,7 +83,7 @@ export default function LobbyScreen() {
           {players.map((p) => (
             <li key={p.id} className="adaptive lobby-player-item" data-material="filled-2">
               <span>{p.name}</span>
-              {p.isHost && <span className="adaptive badge" data-material="inverted">Host</span>}
+              {p.isHost && <span className="adaptive badge" data-material="inverted" data-relation="smaller">Host</span>}
             </li>
           ))}
         </ul>

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useMultiplayer } from '../multiplayer/MultiplayerContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { t } from '../hooks/useI18n';
-import { LogIn, LogOut } from 'lucide-react';
+import { LogIn, LogOut, X } from 'lucide-react';
 import Modal from '../components/Modal';
 import PlayerSetup from '../components/PlayerSetup';
 import { fetchGlobalHighscores, type GlobalHighscore } from '../multiplayer/highscores';
@@ -24,6 +24,7 @@ export default function HomeScreen() {
   const [localHighscores, setLocalHighscores] = useState<LocalHighscore[]>([]);
   const [globalHighscores, setGlobalHighscores] = useState<GlobalHighscore[]>([]);
   const [hsTab, setHsTab] = useState<'local' | 'global'>('local');
+  const [hsHintDismissed, setHsHintDismissed] = useState(false);
   const startGameRef = useRef<(() => void) | null>(null);
 
   const modes = registry.getAll();
@@ -89,16 +90,14 @@ export default function HomeScreen() {
       <div className="home-topbar">
         <h1 className="adaptive headline" data-level="1">{t('home.title')}</h1>
         {user ? (
-          <button className="adaptive button" data-interactive="" data-material="filled" data-size="s"
-            onClick={signOut}>
-            <LogOut className="icon" size={16} />
-            {displayName?.split(' ')[0]}
+          <button className="adaptive button button--icon-only" data-interactive="" data-material="transparent"
+            aria-label="Abmelden" onClick={signOut}>
+            <LogOut className="icon" size={20} />
           </button>
         ) : (
-          <button className="adaptive button" data-interactive="" data-material="filled" data-size="s"
-            onClick={signInWithGoogle}>
-            <LogIn className="icon" size={16} />
-            Anmelden
+          <button className="adaptive button button--icon-only" data-interactive="" data-material="transparent"
+            aria-label="Anmelden" onClick={signInWithGoogle}>
+            <LogIn className="icon" size={20} />
           </button>
         )}
       </div>
@@ -165,13 +164,24 @@ export default function HomeScreen() {
             <h2 className="adaptive headline" data-level="3">Highscores</h2>
             <div className="highscore-tabs" role="tablist">
               <button role="tab" aria-selected={hsTab === 'local'} className="adaptive button" data-interactive=""
-                data-material={hsTab === 'local' ? 'inverted' : 'filled'} data-size="s"
+                data-material={hsTab === 'local' ? 'inverted' : 'filled'} data-container-contrast={hsTab === 'local' ? 'max' : undefined} data-size="s"
                 onClick={() => setHsTab('local')}>Lokal</button>
               <button role="tab" aria-selected={hsTab === 'global'} className="adaptive button" data-interactive=""
-                data-material={hsTab === 'global' ? 'inverted' : 'filled'} data-size="s"
+                data-material={hsTab === 'global' ? 'inverted' : 'filled'} data-container-contrast={hsTab === 'global' ? 'max' : undefined} data-size="s"
                 onClick={() => setHsTab('global')}>Global</button>
             </div>
           </div>
+          {hsTab === 'global' && !user && !hsHintDismissed && (
+            <div className="adaptive notification" data-material="filled" data-color="cyan" role="status">
+              <div className="notification__content">
+                <p className="notification__message">Melde dich an, um deine Scores im globalen Ranking zu speichern.</p>
+              </div>
+              <button className="adaptive button button--icon-only" data-interactive="" data-material="transparent" data-relation="smaller"
+                aria-label="Schließen" onClick={() => setHsHintDismissed(true)}>
+                <X className="icon" size={16} />
+              </button>
+            </div>
+          )}
           {highscores.length > 0 ? (
             <ol className="highscore-list">
               {highscores.map((entry, i) => (

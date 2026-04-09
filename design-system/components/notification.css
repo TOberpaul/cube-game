@@ -44,7 +44,7 @@
 }
 
 .notification__message {
-  font-size: var(--size-text-min);
-  line-height: var(--size-line-height-min);
+  font-size: var(--size-text);
+  line-height: var(--size-line-height);
   margin: 0;
 }
