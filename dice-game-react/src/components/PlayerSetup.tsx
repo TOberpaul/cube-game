@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useGameContext } from '../context/GameContext';
+import { useAuth } from '../context/AuthContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { Plus, Minus } from 'lucide-react';
 
@@ -11,8 +12,9 @@ export interface PlayerSetupProps {
 
 export default function PlayerSetup({ onStartReady }: PlayerSetupProps) {
   const { startGame } = useGameContext();
+  const { displayName } = useAuth();
   const { navigate } = useHashRouter();
-  const [names, setNames] = useState<string[]>(['Spieler 1']);
+  const [names, setNames] = useState<string[]>([displayName || 'Spieler 1']);
 
   const addPlayer = useCallback(() => {
     if (names.length >= MAX_PLAYERS) return;
