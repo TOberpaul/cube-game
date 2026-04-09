@@ -55,7 +55,6 @@ function getSupabase() {
 
 function setupChannel(channel: RealtimeChannel, playerId: string, playerName: string, isHost: boolean, callbacks: RoomCallbacks, playersRef: { current: RoomPlayer[] }) {
   const localPlayer: RoomPlayer = { id: playerId, name: playerName, isHost };
-  let tracked = false;
 
   channel.on('presence', { event: 'sync' }, () => {
     const state = channel.presenceState<{ id: string; name: string; isHost: boolean }>();
@@ -85,7 +84,6 @@ function setupChannel(channel: RealtimeChannel, playerId: string, playerName: st
   const trackPresence = async () => {
     try {
       await channel.track({ id: playerId, name: playerName, isHost });
-      tracked = true;
     } catch (e) {
       console.warn('Presence track failed, retrying...', e);
       setTimeout(trackPresence, 2000);
