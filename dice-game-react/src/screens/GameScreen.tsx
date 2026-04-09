@@ -80,12 +80,23 @@ export default function GameScreen() {
           try {
             const result = rollRef.current();
             const newState = gameEngineRef.current?.getState();
+            // Update host dice visuals
+            if (diceAreaRefStable.current) {
+              diceAreaRefStable.current.update(result, true);
+            }
             sendActionRef.current('state-update', { state: newState, diceResult: result });
           } catch (e) {
             console.warn('Online roll failed:', e);
           }
         } else if (action.type === 'toggle-hold') {
-          toggleHoldRef.current(action.payload as number);
+          const index = action.payload as number;
+          const es = gameEngineRef.current?.getState();
+          const wasHeld = es?.dice?.held?.[index];
+          toggleHoldRef.current(index);
+          // Update host dice visuals
+          if (diceAreaRefStable.current) {
+            diceAreaRefStable.current.setHeld(index, !wasHeld);
+          }
           sendActionRef.current('state-update', { state: gameEngineRef.current?.getState() });
         } else if (action.type === 'select-score') {
           selectScoreRef.current(action.payload as ScoreOption);
