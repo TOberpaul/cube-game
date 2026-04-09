@@ -292,3 +292,19 @@ h2[tabindex="-1"]:focus {
 .highscore-empty {
   opacity: 0.5; text-align: center; padding: var(--size-padding);
 }
+
+/* Home avatar button */
+.home-avatar-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--db-border); background: var(--db-background);
+  padding: 0; cursor: pointer; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.home-avatar-img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+.home-avatar-fallback {
+  font-weight: 700; font-size: var(--size-text);
+  color: var(--db-text);
+}

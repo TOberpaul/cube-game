@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useMultiplayer } from '../multiplayer/MultiplayerContext';
 import { useHashRouter } from '../hooks/useHashRouter';
 import { t } from '../hooks/useI18n';
-import { LogIn, LogOut, X } from 'lucide-react';
+import { LogIn, X } from 'lucide-react';
 import Modal from '../components/Modal';
 import PlayerSetup from '../components/PlayerSetup';
 import { fetchGlobalHighscores, type GlobalHighscore } from '../multiplayer/highscores';
@@ -14,7 +14,7 @@ interface LocalHighscore { name: string; score: number; date: number; }
 
 export default function HomeScreen() {
   const { registry, gameStore, storeReady, startGame } = useGameContext();
-  const { user, displayName, signInWithGoogle, signOut } = useAuth();
+  const { user, displayName, avatarUrl, signInWithGoogle, signOut } = useAuth();
   const { hostCreateRoom, clientJoinRoom } = useMultiplayer();
   const { navigate } = useHashRouter();
   const [showKniffelModal, setShowKniffelModal] = useState(false);
@@ -90,9 +90,12 @@ export default function HomeScreen() {
       <div className="home-topbar">
         <h1 className="adaptive headline" data-level="1">{t('home.title')}</h1>
         {user ? (
-          <button className="adaptive button button--icon-only" data-interactive="" data-material="transparent"
-            aria-label="Abmelden" onClick={signOut}>
-            <LogOut className="icon" size={20} />
+          <button className="home-avatar-btn" aria-label="Abmelden" onClick={signOut}>
+            {avatarUrl ? (
+              <img className="home-avatar-img" src={avatarUrl} alt={displayName || ''} referrerPolicy="no-referrer" />
+            ) : (
+              <span className="home-avatar-fallback">{displayName?.charAt(0)?.toUpperCase() || '?'}</span>
+            )}
           </button>
         ) : (
           <button className="adaptive button button--icon-only" data-interactive="" data-material="transparent"

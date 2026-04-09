@@ -7,6 +7,7 @@ export interface AuthContextValue {
   session: Session | null;
   loading: boolean;
   displayName: string | null;
+  avatarUrl: string | null;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -49,9 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const displayName = user?.user_metadata?.full_name || user?.email || null;
+  const avatarUrl = user?.user_metadata?.avatar_url || null;
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, displayName, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, displayName, avatarUrl, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );
