@@ -308,3 +308,14 @@ h2[tabindex="-1"]:focus {
   font-weight: 700; font-size: var(--size-text);
   color: var(--db-text);
 }
+
+/* Profile modal */
+.profile-info {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--size-gap-max); text-align: center;
+}
+.profile-avatar {
+  width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+}
+.profile-name { font-weight: 700; font-size: var(--size-text); }
+.profile-email { opacity: 0.6; font-size: var(--size-text-min); }

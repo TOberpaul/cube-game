@@ -25,6 +25,7 @@ export default function HomeScreen() {
   const [globalHighscores, setGlobalHighscores] = useState<GlobalHighscore[]>([]);
   const [hsTab, setHsTab] = useState<'local' | 'global'>('local');
   const [hsHintDismissed, setHsHintDismissed] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const startGameRef = useRef<(() => void) | null>(null);
 
   const modes = registry.getAll();
@@ -90,7 +91,7 @@ export default function HomeScreen() {
       <div className="home-topbar">
         <h1 className="adaptive headline" data-level="1">{t('home.title')}</h1>
         {user ? (
-          <button className="home-avatar-btn" aria-label="Abmelden" onClick={signOut}>
+          <button className="home-avatar-btn" aria-label="Profil" onClick={() => setShowProfileModal(true)}>
             {avatarUrl ? (
               <img className="home-avatar-img" src={avatarUrl} alt={displayName || ''} referrerPolicy="no-referrer" />
             ) : (
@@ -158,6 +159,20 @@ export default function HomeScreen() {
           <button className="adaptive button button--full-width" data-interactive=""
             data-material="filled" disabled={!joinCode.trim()}
             onClick={handleJoinRoom}>Raum beitreten</button>
+        </div>
+      </Modal>
+
+      <Modal open={showProfileModal} onClose={() => setShowProfileModal(false)} title="Profil"
+        footer={
+          <button className="adaptive button button--full-width" data-interactive=""
+            data-material="filled" onClick={() => { signOut(); setShowProfileModal(false); }}>
+            <LogIn className="icon" size={16} /> Abmelden
+          </button>
+        }>
+        <div className="profile-info">
+          {avatarUrl && <img className="profile-avatar" src={avatarUrl} alt="" referrerPolicy="no-referrer" />}
+          <span className="profile-name">{displayName}</span>
+          <span className="profile-email">{user?.email}</span>
         </div>
       </Modal>
 
