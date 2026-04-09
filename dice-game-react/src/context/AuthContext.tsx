@@ -7,7 +7,9 @@ export interface AuthContextValue {
   session: Session | null;
   loading: boolean;
   displayName: string | null;
+  nickname: string;
   avatarUrl: string | null;
+  setNickname: (name: string) => void;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -18,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [nickname, setNicknameState] = useState(() => localStorage.getItem('dice-game-nickname') || '');
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -63,11 +66,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
-  const displayName = user?.user_metadata?.full_name || user?.email || null;
+  const setNickname = useCallback((name: string) => {
+    setNicknameState(name);
+    localStorage.setItem('dice-game-nickname', name);
+  }, []);
+
+  // Auto-set nickname from Google name on first login
+  useEffect(() => {
+    if (user && !nickname) {
+      const googleName = user.user_metadata?.full_name;
+      if (googleName) setNickname(googleName);
+    }
+  }, [user, nickname, setNickname]);
+
+  const displayName = nickname || user?.user_metadata?.full_name || user?.email || null;
   const avatarUrl = user?.user_metadata?.avatar_url || null;
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, displayName, avatarUrl, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, displayName, nickname, avatarUrl, setNickname, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

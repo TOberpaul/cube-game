@@ -14,7 +14,7 @@ interface LocalHighscore { name: string; score: number; date: number; }
 
 export default function HomeScreen() {
   const { registry, gameStore, storeReady, startGame } = useGameContext();
-  const { user, displayName, avatarUrl, signInWithGoogle, signOut } = useAuth();
+  const { user, displayName, nickname, avatarUrl, setNickname, signInWithGoogle, signOut } = useAuth();
   const { hostCreateRoom, clientJoinRoom } = useMultiplayer();
   const { navigate } = useHashRouter();
   const [showKniffelModal, setShowKniffelModal] = useState(false);
@@ -171,8 +171,13 @@ export default function HomeScreen() {
         }>
         <div className="profile-info">
           {avatarUrl && <img className="profile-avatar" src={avatarUrl} alt="" referrerPolicy="no-referrer" />}
-          <span className="profile-name">{displayName}</span>
           <span className="profile-email">{user?.email}</span>
+          <label className="adaptive input">
+            <span>Nickname</span>
+            <input type="text" className="adaptive input__field" data-material="filled-2" data-interactive=""
+              value={nickname} onChange={(e) => setNickname(e.target.value)}
+              placeholder={user?.user_metadata?.full_name || 'Spieler'} />
+          </label>
         </div>
       </Modal>
 
